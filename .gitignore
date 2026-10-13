@@ -1,5 +1,6 @@
 scada/backend/bin/
 scada/frontend/node_modules/
-scada/frontend/dist/
+scada/backend/internal/web/dist/*
+!scada/backend/internal/web/dist/.gitkeep
 *.tmp
 *.exe

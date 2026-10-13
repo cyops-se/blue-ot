@@ -1,0 +1,978 @@
+{
+  "id": "station",
+  "name": "Station Norra",
+  "width": 1600,
+  "height": 880,
+  "background": "#0d1117",
+  "grid": 10,
+  "elements": [
+    {
+      "id": "text-1",
+      "type": "text",
+      "x": 40,
+      "y": 24,
+      "w": 600,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "text": "Station Norra – 10 kV ställverk",
+        "fontSize": 26,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "rect-2",
+      "type": "rect",
+      "x": 20,
+      "y": 80,
+      "w": 1560,
+      "h": 780,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "line-3",
+      "type": "line",
+      "x": 780,
+      "y": 100,
+      "w": 0,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "transformer-4",
+      "type": "transformer",
+      "x": 755,
+      "y": 130,
+      "w": 50,
+      "h": 80,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "line-5",
+      "type": "line",
+      "x": 780,
+      "y": 210,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "text-6",
+      "type": "text",
+      "x": 820,
+      "y": 140,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "T1 130/10 kV",
+        "fontSize": 14,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-7",
+      "type": "measurement",
+      "x": 820,
+      "y": 170,
+      "w": 200,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "T1_TEMP",
+        "label": "Oljetemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 60,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bar-8",
+      "type": "bar",
+      "x": 1040,
+      "y": 110,
+      "w": 24,
+      "h": 92,
+      "rot": 0,
+      "props": {
+        "tag": "T1_TEMP",
+        "min": 0,
+        "max": 100,
+        "color": "#3d8bfd",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "busbar-9",
+      "type": "busbar",
+      "x": 150,
+      "y": 250,
+      "w": 1300,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 8,
+        "dash": "",
+        "dynTag": "UB",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-10",
+      "type": "text",
+      "x": 60,
+      "y": 238,
+      "w": 90,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "SS 10 kV",
+        "fontSize": 14,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-11",
+      "type": "measurement",
+      "x": 1180,
+      "y": 170,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "UB",
+        "label": "U skena",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 9.5,
+        "highLimit": 11.5,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-12",
+      "type": "measurement",
+      "x": 1180,
+      "y": 130,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "F",
+        "label": "Frekvens",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 49.9,
+        "highLimit": 50.1,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "disconnector-13",
+      "type": "disconnector",
+      "x": 280,
+      "y": 260,
+      "w": 40,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "label": "QS1",
+        "showLabel": true,
+        "statusTag": "QS1_POS",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "QS1_CMD",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-14",
+      "type": "line",
+      "x": 300,
+      "y": 320,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J1_U",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "breaker-15",
+      "type": "breaker",
+      "x": 280,
+      "y": 360,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Q1",
+        "showLabel": true,
+        "statusTag": "Q1_POS",
+        "openValue": 1,
+        "closedValue": 2,
+        "controlTag": "Q1_CMD",
+        "openCmd": 1,
+        "closeCmd": 2,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-16",
+      "type": "line",
+      "x": 300,
+      "y": 400,
+      "w": 0,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J1_I",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-17",
+      "type": "text",
+      "x": 240,
+      "y": 470,
+      "w": 120,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "text": "J1 Fack 1",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-18",
+      "type": "measurement",
+      "x": 210,
+      "y": 510,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J1_U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-19",
+      "type": "measurement",
+      "x": 210,
+      "y": 550,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J1_I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 300,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-20",
+      "type": "measurement",
+      "x": 210,
+      "y": 590,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J1_P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "disconnector-21",
+      "type": "disconnector",
+      "x": 600,
+      "y": 260,
+      "w": 40,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "label": "QS2",
+        "showLabel": true,
+        "statusTag": "QS2_POS",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "QS2_CMD",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-22",
+      "type": "line",
+      "x": 620,
+      "y": 320,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J2_U",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "breaker-23",
+      "type": "breaker",
+      "x": 600,
+      "y": 360,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Q2",
+        "showLabel": true,
+        "statusTag": "Q2_POS",
+        "openValue": 1,
+        "closedValue": 2,
+        "controlTag": "Q2_CMD",
+        "openCmd": 1,
+        "closeCmd": 2,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-24",
+      "type": "line",
+      "x": 620,
+      "y": 400,
+      "w": 0,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J2_I",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-25",
+      "type": "text",
+      "x": 560,
+      "y": 470,
+      "w": 120,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "text": "J2 Fack 2",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-26",
+      "type": "measurement",
+      "x": 530,
+      "y": 510,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J2_U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-27",
+      "type": "measurement",
+      "x": 530,
+      "y": 550,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J2_I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 300,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-28",
+      "type": "measurement",
+      "x": 530,
+      "y": 590,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J2_P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "disconnector-29",
+      "type": "disconnector",
+      "x": 920,
+      "y": 260,
+      "w": 40,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "label": "QS3",
+        "showLabel": true,
+        "statusTag": "QS3_POS",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "QS3_CMD",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-30",
+      "type": "line",
+      "x": 940,
+      "y": 320,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J3_U",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "breaker-31",
+      "type": "breaker",
+      "x": 920,
+      "y": 360,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Q3",
+        "showLabel": true,
+        "statusTag": "Q3_POS",
+        "openValue": 1,
+        "closedValue": 2,
+        "controlTag": "Q3_CMD",
+        "openCmd": 1,
+        "closeCmd": 2,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-32",
+      "type": "line",
+      "x": 940,
+      "y": 400,
+      "w": 0,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J3_I",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-33",
+      "type": "text",
+      "x": 880,
+      "y": 470,
+      "w": 120,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "text": "J3 Fack 3",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-34",
+      "type": "measurement",
+      "x": 850,
+      "y": 510,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J3_U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-35",
+      "type": "measurement",
+      "x": 850,
+      "y": 550,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J3_I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 300,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-36",
+      "type": "measurement",
+      "x": 850,
+      "y": 590,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J3_P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "disconnector-37",
+      "type": "disconnector",
+      "x": 1240,
+      "y": 260,
+      "w": 40,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "label": "QS4",
+        "showLabel": true,
+        "statusTag": "QS4_POS",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "QS4_CMD",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-38",
+      "type": "line",
+      "x": 1260,
+      "y": 320,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J4_U",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "breaker-39",
+      "type": "breaker",
+      "x": 1240,
+      "y": 360,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Q4",
+        "showLabel": true,
+        "statusTag": "Q4_POS",
+        "openValue": 1,
+        "closedValue": 2,
+        "controlTag": "Q4_CMD",
+        "openCmd": 1,
+        "closeCmd": 2,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "line-40",
+      "type": "line",
+      "x": 1260,
+      "y": 400,
+      "w": 0,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "J4_I",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-41",
+      "type": "text",
+      "x": 1200,
+      "y": 470,
+      "w": 120,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "text": "J4 Fack 4",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "measurement-42",
+      "type": "measurement",
+      "x": 1170,
+      "y": 510,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J4_U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-43",
+      "type": "measurement",
+      "x": 1170,
+      "y": 550,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J4_I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 300,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "measurement-44",
+      "type": "measurement",
+      "x": 1170,
+      "y": 590,
+      "w": 180,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "tag": "J4_P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "text-45",
+      "type": "text",
+      "x": 40,
+      "y": 820,
+      "w": 1000,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Klicka på en brytare/frånskiljare för manöver, på ett mätvärde för trend.",
+        "fontSize": 13,
+        "color": "#5c6b7a",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    }
+  ],
+  "updated": "2026-10-12T22:22:04.048408+02:00"
+}

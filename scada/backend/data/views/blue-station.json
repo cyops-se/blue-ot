@@ -1,0 +1,3148 @@
+{
+  "id": "blue-station",
+  "name": "Blue Station",
+  "width": 1800,
+  "height": 1060,
+  "background": "#0d1117",
+  "grid": 10,
+  "elements": [
+    {
+      "id": "bs-text-1",
+      "type": "text",
+      "x": 30,
+      "y": 18,
+      "w": 900,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "text": "Blue Station – 220/20 kV transformatorstation",
+        "fontSize": 26,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-link-2",
+      "type": "link",
+      "x": 1620,
+      "y": 22,
+      "w": 150,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "text": "Station Norra",
+        "view": "station",
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-rect-3",
+      "type": "rect",
+      "x": 30,
+      "y": 70,
+      "w": 470,
+      "h": 200,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-4",
+      "type": "text",
+      "x": 42,
+      "y": 76,
+      "w": 446,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Station och spänningsreglering",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-indicator-5",
+      "type": "indicator",
+      "x": 50,
+      "y": 108,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "Station.CommonAlarm",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Summalarm",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-button-6",
+      "type": "button",
+      "x": 330,
+      "y": 104,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Återställ",
+        "controlTag": "Station.Reset",
+        "value": 1,
+        "askValue": false,
+        "color": "#7a4b00",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-measurement-7",
+      "type": "measurement",
+      "x": 50,
+      "y": 145,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "AVR.USet",
+        "label": "U börvärde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-8",
+      "type": "button",
+      "x": 320,
+      "y": 145,
+      "w": 80,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "AVR.USet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-measurement-9",
+      "type": "measurement",
+      "x": 50,
+      "y": 180,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "AVR.Deadband",
+        "label": "Dödband",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-10",
+      "type": "button",
+      "x": 320,
+      "y": 180,
+      "w": 80,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "AVR.Deadband",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-measurement-11",
+      "type": "measurement",
+      "x": 50,
+      "y": 215,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "AVR.Delay",
+        "label": "Fördröjning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-12",
+      "type": "button",
+      "x": 320,
+      "y": 215,
+      "w": 80,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "AVR.Delay",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-rect-13",
+      "type": "rect",
+      "x": 1300,
+      "y": 70,
+      "w": 470,
+      "h": 200,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-14",
+      "type": "text",
+      "x": 1312,
+      "y": 76,
+      "w": 446,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Simulering",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-toggle-15",
+      "type": "toggle",
+      "x": 1320,
+      "y": 108,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Matning stamnät",
+        "statusTag": "Grid.Available",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "Grid.Available.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "BORTA",
+        "onText": "PÅ",
+        "colorClosed": "#2e7d32",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-measurement-16",
+      "type": "measurement",
+      "x": 1320,
+      "y": 145,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Load.Scale",
+        "label": "Lastskalning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-17",
+      "type": "button",
+      "x": 1590,
+      "y": 145,
+      "w": 80,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "Load.Scale",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-measurement-18",
+      "type": "measurement",
+      "x": 1320,
+      "y": 180,
+      "w": 260,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Env.Ambient",
+        "label": "Omgivningstemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-19",
+      "type": "button",
+      "x": 1590,
+      "y": 180,
+      "w": 80,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "Env.Ambient",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-text-20",
+      "type": "text",
+      "x": 914,
+      "y": 66,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Stamnät 220 kV",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-21",
+      "type": "line",
+      "x": 900,
+      "y": 60,
+      "w": 0,
+      "h": 120,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "Grid.VoltagePresent",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-22",
+      "type": "breaker",
+      "x": 880,
+      "y": 180,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Q0",
+        "showLabel": true,
+        "statusTag": "Q0.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "Q0.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-23",
+      "type": "line",
+      "x": 900,
+      "y": 220,
+      "w": 0,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "Q0.CB",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-measurement-24",
+      "type": "measurement",
+      "x": 960,
+      "y": 100,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Grid.U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-25",
+      "type": "measurement",
+      "x": 960,
+      "y": 132,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Grid.f",
+        "label": "f",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 49.8,
+        "highLimit": 50.2,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-26",
+      "type": "measurement",
+      "x": 1140,
+      "y": 100,
+      "w": 140,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Grid.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-27",
+      "type": "measurement",
+      "x": 1140,
+      "y": 132,
+      "w": 140,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Grid.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-28",
+      "type": "measurement",
+      "x": 960,
+      "y": 164,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "Q0.I",
+        "label": "I Q0",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-text-29",
+      "type": "text",
+      "x": 400,
+      "y": 268,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "220 kV",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-busbar-30",
+      "type": "busbar",
+      "x": 460,
+      "y": 280,
+      "w": 880,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 8,
+        "dash": "",
+        "dynTag": "Q0.CB",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-31",
+      "type": "line",
+      "x": 600,
+      "y": 280,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "Q0.CB",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-32",
+      "type": "breaker",
+      "x": 580,
+      "y": 330,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "",
+        "showLabel": false,
+        "statusTag": "T1.HV.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T1.HV.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-33",
+      "type": "line",
+      "x": 600,
+      "y": 370,
+      "w": 0,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "T1.I.HV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-transformer-34",
+      "type": "transformer",
+      "x": 570,
+      "y": 400,
+      "w": 60,
+      "h": 100,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dynTag": "T1.I.HV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-35",
+      "type": "text",
+      "x": 638,
+      "y": 438,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "T1",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-36",
+      "type": "line",
+      "x": 600,
+      "y": 500,
+      "w": 0,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "T1.I.LV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-37",
+      "type": "breaker",
+      "x": 580,
+      "y": 530,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "",
+        "showLabel": false,
+        "statusTag": "T1.LV.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T1.LV.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-38",
+      "type": "line",
+      "x": 600,
+      "y": 570,
+      "w": 0,
+      "h": 70,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.A.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-39",
+      "type": "text",
+      "x": 626,
+      "y": 340,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "HV",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-40",
+      "type": "text",
+      "x": 626,
+      "y": 540,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "LV",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-rect-41",
+      "type": "rect",
+      "x": 30,
+      "y": 300,
+      "w": 470,
+      "h": 300,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-42",
+      "type": "text",
+      "x": 42,
+      "y": 306,
+      "w": 446,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "T1  220/20 kV  40 MVA",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-43",
+      "type": "measurement",
+      "x": 50,
+      "y": 340,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-44",
+      "type": "measurement",
+      "x": 50,
+      "y": 372,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-45",
+      "type": "measurement",
+      "x": 50,
+      "y": 404,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.I.HV",
+        "label": "I uppsida",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-46",
+      "type": "measurement",
+      "x": 50,
+      "y": 436,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.I.LV",
+        "label": "I nedsida",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-47",
+      "type": "measurement",
+      "x": 50,
+      "y": 468,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Loading",
+        "label": "Belastning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 100,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-48",
+      "type": "measurement",
+      "x": 50,
+      "y": 500,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.OilTemp",
+        "label": "Oljetemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 90,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-bar-49",
+      "type": "bar",
+      "x": 50,
+      "y": 540,
+      "w": 200,
+      "h": 14,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Loading",
+        "min": 0,
+        "max": 150,
+        "color": "#3d8bfd",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "bs-text-50",
+      "type": "text",
+      "x": 50,
+      "y": 558,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Belastning 0–150 %",
+        "fontSize": 11,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-51",
+      "type": "measurement",
+      "x": 280,
+      "y": 340,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Tap",
+        "label": "Lindn.kopplare",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-52",
+      "type": "button",
+      "x": 280,
+      "y": 372,
+      "w": 96,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "▲ Höj",
+        "controlTag": "T1.Tap.Raise",
+        "value": 1,
+        "askValue": false,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-button-53",
+      "type": "button",
+      "x": 384,
+      "y": 372,
+      "w": 96,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "▼ Sänk",
+        "controlTag": "T1.Tap.Lower",
+        "value": 1,
+        "askValue": false,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-54",
+      "type": "toggle",
+      "x": 280,
+      "y": 408,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "AVR",
+        "statusTag": "T1.AVR.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T1.AVR.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-indicator-55",
+      "type": "indicator",
+      "x": 280,
+      "y": 452,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Overload",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överlast",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-indicator-56",
+      "type": "indicator",
+      "x": 280,
+      "y": 480,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T1.OilAlarm",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Hög oljetemp",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-indicator-57",
+      "type": "indicator",
+      "x": 280,
+      "y": 508,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T1.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Skyddsutlösning",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-line-58",
+      "type": "line",
+      "x": 1200,
+      "y": 280,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "Q0.CB",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-59",
+      "type": "breaker",
+      "x": 1180,
+      "y": 330,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "",
+        "showLabel": false,
+        "statusTag": "T2.HV.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T2.HV.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-60",
+      "type": "line",
+      "x": 1200,
+      "y": 370,
+      "w": 0,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "T2.I.HV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-transformer-61",
+      "type": "transformer",
+      "x": 1170,
+      "y": 400,
+      "w": 60,
+      "h": 100,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dynTag": "T2.I.HV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-62",
+      "type": "text",
+      "x": 1238,
+      "y": 438,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "T2",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-63",
+      "type": "line",
+      "x": 1200,
+      "y": 500,
+      "w": 0,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "T2.I.LV",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-64",
+      "type": "breaker",
+      "x": 1180,
+      "y": 530,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "",
+        "showLabel": false,
+        "statusTag": "T2.LV.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T2.LV.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-65",
+      "type": "line",
+      "x": 1200,
+      "y": 570,
+      "w": 0,
+      "h": 70,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.B.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-66",
+      "type": "text",
+      "x": 1226,
+      "y": 340,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "HV",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-67",
+      "type": "text",
+      "x": 1226,
+      "y": 540,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "LV",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-rect-68",
+      "type": "rect",
+      "x": 1300,
+      "y": 300,
+      "w": 470,
+      "h": 300,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-69",
+      "type": "text",
+      "x": 1312,
+      "y": 306,
+      "w": 446,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "T2  220/20 kV  40 MVA",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-70",
+      "type": "measurement",
+      "x": 1320,
+      "y": 340,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-71",
+      "type": "measurement",
+      "x": 1320,
+      "y": 372,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-72",
+      "type": "measurement",
+      "x": 1320,
+      "y": 404,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.I.HV",
+        "label": "I uppsida",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-73",
+      "type": "measurement",
+      "x": 1320,
+      "y": 436,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.I.LV",
+        "label": "I nedsida",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-74",
+      "type": "measurement",
+      "x": 1320,
+      "y": 468,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Loading",
+        "label": "Belastning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 100,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-75",
+      "type": "measurement",
+      "x": 1320,
+      "y": 500,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.OilTemp",
+        "label": "Oljetemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 90,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-bar-76",
+      "type": "bar",
+      "x": 1320,
+      "y": 540,
+      "w": 200,
+      "h": 14,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Loading",
+        "min": 0,
+        "max": 150,
+        "color": "#3d8bfd",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "bs-text-77",
+      "type": "text",
+      "x": 1320,
+      "y": 558,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Belastning 0–150 %",
+        "fontSize": 11,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-78",
+      "type": "measurement",
+      "x": 1550,
+      "y": 340,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Tap",
+        "label": "Lindn.kopplare",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-79",
+      "type": "button",
+      "x": 1550,
+      "y": 372,
+      "w": 96,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "▲ Höj",
+        "controlTag": "T2.Tap.Raise",
+        "value": 1,
+        "askValue": false,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-button-80",
+      "type": "button",
+      "x": 1654,
+      "y": 372,
+      "w": 96,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "▼ Sänk",
+        "controlTag": "T2.Tap.Lower",
+        "value": 1,
+        "askValue": false,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-81",
+      "type": "toggle",
+      "x": 1550,
+      "y": 408,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "AVR",
+        "statusTag": "T2.AVR.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "T2.AVR.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-indicator-82",
+      "type": "indicator",
+      "x": 1550,
+      "y": 452,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Overload",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överlast",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-indicator-83",
+      "type": "indicator",
+      "x": 1550,
+      "y": 480,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T2.OilAlarm",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Hög oljetemp",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-indicator-84",
+      "type": "indicator",
+      "x": 1550,
+      "y": 508,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "T2.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Skyddsutlösning",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-text-85",
+      "type": "text",
+      "x": 40,
+      "y": 610,
+      "w": 150,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "20 kV sektion A",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-86",
+      "type": "measurement",
+      "x": 40,
+      "y": 654,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "BUS.A.U",
+        "label": "U A",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-busbar-87",
+      "type": "busbar",
+      "x": 200,
+      "y": 640,
+      "w": 660,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 8,
+        "dash": "",
+        "dynTag": "BUS.A.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-88",
+      "type": "line",
+      "x": 860,
+      "y": 640,
+      "w": 20,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "BUS.A.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-89",
+      "type": "breaker",
+      "x": 880,
+      "y": 620,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "",
+        "showLabel": false,
+        "statusTag": "BUS.Coupler.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "BUS.Coupler.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-90",
+      "type": "line",
+      "x": 920,
+      "y": 640,
+      "w": 20,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "BUS.B.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-91",
+      "type": "text",
+      "x": 840,
+      "y": 666,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Sektionering",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-busbar-92",
+      "type": "busbar",
+      "x": 940,
+      "y": 640,
+      "w": 660,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 8,
+        "dash": "",
+        "dynTag": "BUS.B.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-text-93",
+      "type": "text",
+      "x": 1620,
+      "y": 610,
+      "w": 150,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "20 kV sektion B",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-94",
+      "type": "measurement",
+      "x": 1620,
+      "y": 654,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "BUS.B.U",
+        "label": "U B",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-line-95",
+      "type": "line",
+      "x": 330,
+      "y": 640,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.A.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-96",
+      "type": "breaker",
+      "x": 310,
+      "y": 680,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "F1",
+        "showLabel": true,
+        "statusTag": "F1.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F1.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-97",
+      "type": "line",
+      "x": 330,
+      "y": 720,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "F1.I",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-98",
+      "type": "line",
+      "x": 324,
+      "y": 762,
+      "w": 6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-99",
+      "type": "line",
+      "x": 336,
+      "y": 762,
+      "w": -6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-100",
+      "type": "text",
+      "x": 230,
+      "y": 776,
+      "w": 200,
+      "h": 26,
+      "rot": 0,
+      "props": {
+        "text": "F1 Bostad",
+        "fontSize": 17,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-101",
+      "type": "measurement",
+      "x": 230,
+      "y": 808,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F1.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-102",
+      "type": "measurement",
+      "x": 230,
+      "y": 840,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F1.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-103",
+      "type": "measurement",
+      "x": 230,
+      "y": 872,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F1.I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-104",
+      "type": "measurement",
+      "x": 230,
+      "y": 904,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F1.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-indicator-105",
+      "type": "indicator",
+      "x": 232,
+      "y": 942,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "F1.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överström utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-measurement-106",
+      "type": "measurement",
+      "x": 230,
+      "y": 970,
+      "w": 130,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F1.OC.Pickup",
+        "label": "I\u003e",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-107",
+      "type": "button",
+      "x": 366,
+      "y": 970,
+      "w": 64,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "F1.OC.Pickup",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-108",
+      "type": "toggle",
+      "x": 230,
+      "y": 1004,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Felsimulering",
+        "statusTag": "F1.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F1.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-line-109",
+      "type": "line",
+      "x": 660,
+      "y": 640,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.A.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-110",
+      "type": "breaker",
+      "x": 640,
+      "y": 680,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "F2",
+        "showLabel": true,
+        "statusTag": "F2.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F2.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-111",
+      "type": "line",
+      "x": 660,
+      "y": 720,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "F2.I",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-112",
+      "type": "line",
+      "x": 654,
+      "y": 762,
+      "w": 6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-113",
+      "type": "line",
+      "x": 666,
+      "y": 762,
+      "w": -6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-114",
+      "type": "text",
+      "x": 560,
+      "y": 776,
+      "w": 200,
+      "h": 26,
+      "rot": 0,
+      "props": {
+        "text": "F2 Industri",
+        "fontSize": 17,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-115",
+      "type": "measurement",
+      "x": 560,
+      "y": 808,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F2.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-116",
+      "type": "measurement",
+      "x": 560,
+      "y": 840,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F2.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-117",
+      "type": "measurement",
+      "x": 560,
+      "y": 872,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F2.I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-118",
+      "type": "measurement",
+      "x": 560,
+      "y": 904,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F2.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-indicator-119",
+      "type": "indicator",
+      "x": 562,
+      "y": 942,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "F2.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överström utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-measurement-120",
+      "type": "measurement",
+      "x": 560,
+      "y": 970,
+      "w": 130,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F2.OC.Pickup",
+        "label": "I\u003e",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-121",
+      "type": "button",
+      "x": 696,
+      "y": 970,
+      "w": 64,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "F2.OC.Pickup",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-122",
+      "type": "toggle",
+      "x": 560,
+      "y": 1004,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Felsimulering",
+        "statusTag": "F2.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F2.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-line-123",
+      "type": "line",
+      "x": 1100,
+      "y": 640,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.B.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-124",
+      "type": "breaker",
+      "x": 1080,
+      "y": 680,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "F3",
+        "showLabel": true,
+        "statusTag": "F3.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F3.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-125",
+      "type": "line",
+      "x": 1100,
+      "y": 720,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "F3.I",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-126",
+      "type": "line",
+      "x": 1094,
+      "y": 762,
+      "w": 6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-127",
+      "type": "line",
+      "x": 1106,
+      "y": 762,
+      "w": -6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-128",
+      "type": "text",
+      "x": 1000,
+      "y": 776,
+      "w": 200,
+      "h": 26,
+      "rot": 0,
+      "props": {
+        "text": "F3 Centrum",
+        "fontSize": 17,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-129",
+      "type": "measurement",
+      "x": 1000,
+      "y": 808,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F3.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-130",
+      "type": "measurement",
+      "x": 1000,
+      "y": 840,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F3.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-131",
+      "type": "measurement",
+      "x": 1000,
+      "y": 872,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F3.I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-132",
+      "type": "measurement",
+      "x": 1000,
+      "y": 904,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F3.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-indicator-133",
+      "type": "indicator",
+      "x": 1002,
+      "y": 942,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "F3.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överström utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-measurement-134",
+      "type": "measurement",
+      "x": 1000,
+      "y": 970,
+      "w": 130,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F3.OC.Pickup",
+        "label": "I\u003e",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-135",
+      "type": "button",
+      "x": 1136,
+      "y": 970,
+      "w": 64,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "F3.OC.Pickup",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-136",
+      "type": "toggle",
+      "x": 1000,
+      "y": 1004,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Felsimulering",
+        "statusTag": "F3.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F3.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-line-137",
+      "type": "line",
+      "x": 1430,
+      "y": 640,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "BUS.B.Live",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-breaker-138",
+      "type": "breaker",
+      "x": 1410,
+      "y": 680,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "F4",
+        "showLabel": true,
+        "statusTag": "F4.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F4.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "bs-line-139",
+      "type": "line",
+      "x": 1430,
+      "y": 720,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "F4.I",
+        "dynRules": [
+          {
+            "op": "\u003e",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "\u003c=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bs-line-140",
+      "type": "line",
+      "x": 1424,
+      "y": 762,
+      "w": 6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-line-141",
+      "type": "line",
+      "x": 1436,
+      "y": 762,
+      "w": -6,
+      "h": 8,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-text-142",
+      "type": "text",
+      "x": 1330,
+      "y": 776,
+      "w": 200,
+      "h": 26,
+      "rot": 0,
+      "props": {
+        "text": "F4 Landsbygd",
+        "fontSize": 17,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "bs-measurement-143",
+      "type": "measurement",
+      "x": 1330,
+      "y": 808,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F4.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-144",
+      "type": "measurement",
+      "x": 1330,
+      "y": 840,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F4.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-145",
+      "type": "measurement",
+      "x": 1330,
+      "y": 872,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F4.I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-measurement-146",
+      "type": "measurement",
+      "x": 1330,
+      "y": 904,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F4.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-indicator-147",
+      "type": "indicator",
+      "x": 1332,
+      "y": 942,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "F4.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Överström utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "bs-measurement-148",
+      "type": "measurement",
+      "x": 1330,
+      "y": 970,
+      "w": 130,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "F4.OC.Pickup",
+        "label": "I\u003e",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "bs-button-149",
+      "type": "button",
+      "x": 1466,
+      "y": 970,
+      "w": 64,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "F4.OC.Pickup",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "bs-toggle-150",
+      "type": "toggle",
+      "x": 1330,
+      "y": 1004,
+      "w": 200,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Felsimulering",
+        "statusTag": "F4.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "F4.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "bs-text-151",
+      "type": "text",
+      "x": 30,
+      "y": 1034,
+      "w": 1400,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Klicka på brytare, omkopplare och knappar för manöver, och på ett mätvärde för trend.  Fylld = Till, tom = Från. Lila = osäkert värde.",
+        "fontSize": 12,
+        "color": "#5c6b7a",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    }
+  ],
+  "updated": "2026-10-13T06:57:14.0809156+02:00"
+}

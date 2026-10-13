@@ -1,0 +1,7 @@
+html, body { overflow: hidden; }
+.v-main { height: 100vh; }
+.fill-page { height: calc(100vh - 48px); overflow: auto; }
+.mono { font-family: Consolas, 'Roboto Mono', monospace; }
+.hmi-svg text { user-select: none; }
+.hmi-clickable { cursor: pointer; }
+.hmi-clickable:hover > .hmi-hover { stroke: #ffffff; stroke-opacity: 0.6; }

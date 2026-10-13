@@ -8,41 +8,62 @@ En SCADA-liknande applikation med:
 
 ```
 blue-ot/
-├── backend/
-│   ├── cmd/scada/        huvudprogram (HTTP + Modbus-poller)
-│   ├── cmd/modsim/       Modbus TCP-simulator
-│   ├── internal/model    datatyper
-│   ├── internal/store    JSON-lagring (config.json, views/*.json, images/)
-│   ├── internal/realtime processbild, historik, händelser, pub/sub
-│   ├── internal/mbus     Modbus-polling, avkodning, skrivning (manöver)
-│   ├── internal/api      REST + WebSocket
-│   └── data/             exempelkonfiguration och exempelvyn "Station Norra"
-└── frontend/             Vuetify-HMI (Vite)
+├── blue-station/            simulator för transformatorstation (Modbus TCP / IEC 104)
+└── scada/
+    ├── backend/
+    │   ├── cmd/scada/        huvudprogram (HTTP + Modbus-poller + inbäddat HMI)
+    │   ├── cmd/modsim/       Modbus TCP-simulator
+    │   ├── internal/model    datatyper
+    │   ├── internal/store    JSON-lagring (config.json, views/*.json, images/)
+    │   ├── internal/realtime processbild, historik, händelser, pub/sub
+    │   ├── internal/mbus     Modbus-polling, avkodning, skrivning (manöver)
+    │   ├── internal/api      REST + WebSocket
+    │   ├── internal/web      inbäddat HMI (go:embed av dist/, byggs av frontend)
+    │   └── data/             exempelkonfiguration och vyerna "Station Norra" och "Blue Station"
+    └── frontend/             Vuetify-HMI (Vite)
 ```
 
 ## Kom igång
 
 Krav: Go 1.21+ och Node 18+.
 
+### Bygga en exe-fil
+
+Webbgränssnittet byggs in i backendens exe-fil, så att samma program servar både REST-API, WebSocket och HMI.
+
 ```bash
-# 1. Simulatorn (Modbus TCP på port 5020)
-cd backend
-go run ./cmd/modsim
-
-# 2. Backend (i ett nytt fönster), API på :8080
-cd backend
-go run ./cmd/scada -data data
-
-# 3. HMI i utvecklingsläge (i ett nytt fönster), http://localhost:5173
-cd frontend
+cd scada/frontend
 npm install
-npm run dev
+npm run build          # skriver till scada/backend/internal/web/dist
+
+cd ../backend
+go build -o bin/ ./cmd/scada ./cmd/modsim
 ```
 
-Produktionsläge: kör `npm run build` och starta sedan backend med
-`go run ./cmd/scada -data data -web ../frontend/dist`. Då serveras HMI:t på http://localhost:8080.
+`bin/scada` (`scada.exe` på Windows) behöver sedan bara katalogen `data/` bredvid sig, eller en sökväg via `-data`. Kör HMI-bygget före `go build`, eftersom ändringar i frontend märks först när backend byggs om. Om backend byggs utan frontend-bygge startar den ändå, men webbgränssnittet svarar då med ett meddelande om att HMI saknas.
 
-Flaggor för `scada`: `-addr :8080`, `-data data`, `-web <katalog>`.
+### Köra
+
+```bash
+# 1. Simulatorn (Modbus TCP på port 5020)
+cd scada/backend
+go run ./cmd/modsim
+
+# 2. SCADA (i ett nytt fönster): HMI och API på http://localhost:8080
+cd scada/backend
+go run ./cmd/scada -data data
+```
+
+### Utveckling av HMI
+
+Med Vites dev-server laddas ändringar i webbläsaren direkt. Anrop till `/api`, `/ws` och `/images` skickas vidare till backend på :8080.
+
+```bash
+cd scada/frontend
+npm run dev            # http://localhost:5173
+```
+
+Flaggor för `scada`: `-addr :8080`, `-data data`, `-web <katalog>`. Med `-web` serveras HMI:t från en katalog på disk i stället för det inbäddade bygget, till exempel `-web internal/web/dist`.
 Flaggor för `modsim`: `-addr 0.0.0.0:5020`, `-delay 1.5s` (brytarens manövertid).
 
 ## Användning
@@ -91,7 +112,7 @@ Flaggor för `modsim`: `-addr 0.0.0.0:5020`, `-delay 1.5s` (brytarens manöverti
 
 ## Vyn Blue Station
 
-Vyn **Blue Station** (`data/views/blue-station.json`) är byggd på signallistan i [`../blue-station/README.md`](../blue-station/README.md). Den visar en transformatorstation 220/20 kV med följande delar:
+Vyn **Blue Station** (`data/views/blue-station.json`) är byggd på signallistan i [`blue-station/README.md`](blue-station/README.md). Den visar en transformatorstation 220/20 kV med följande delar:
 
 - Inkommande stamnät med linjebrytare Q0, mätvärden U, f, P, Q och ström genom Q0.
 - Transformatorerna T1 och T2. Varje transformator har brytare på upp- och nedsidan, P, Q, strömmar, belastning (med stapel) och oljetemperatur, med larmgräns vid 90 °C. Där finns också lindningskopplarläge, knappar för att höja och sänka, omkopplare för AVR auto/manuell samt indikeringar för överlast, hög oljetemperatur och skyddsutlösning.
@@ -99,11 +120,11 @@ Vyn **Blue Station** (`data/views/blue-station.json`) är byggd på signallistan
 - Avgångarna F1–F4. Varje avgång har brytare, P, Q, I, energi, indikering för överströmsutlösning, inställning av I> (börvärde) och omkopplare för felsimulering.
 - En panel för station och spänningsreglering med summalarm, Återställ (`Station.Reset`) och börvärden för AVR, och en simuleringspanel med matning från stamnätet, lastskalning och omgivningstemperatur.
 
-Enheten `blue-station` (127.0.0.1:502) och dess 99 taggar finns i `data/config.json`. Brytare och omkopplare har två taggar: lägestaggen läser discrete input (till exempel `F1.CB`) och manövertaggen skriver coil (`F1.CB.Cmd`). Pulskommandon (`T1.Tap.Raise`, `Station.Reset` …) är skrivbara coils som skrivs med 1, och börvärden är float32 i holdingregister. Konfigurationen och vyn genereras av `backend/tools/gen_blue_station.py`. Kör `python tools/gen_blue_station.py` i `backend/` för att skapa dem på nytt.
+Enheten `blue-station` (127.0.0.1:502) och dess 99 taggar finns i `data/config.json`. Brytare och omkopplare har två taggar: lägestaggen läser discrete input (till exempel `F1.CB`) och manövertaggen skriver coil (`F1.CB.Cmd`). Pulskommandon (`T1.Tap.Raise`, `Station.Reset` …) är skrivbara coils som skrivs med 1, och börvärden är float32 i holdingregister. Konfigurationen och vyn genereras av `backend/tools/gen_blue_station.py`. Kör `python tools/gen_blue_station.py` i `scada/backend/` för att skapa dem på nytt.
 
 ```bash
-cd ../blue-station && go run ./cmd/blue-station -http :8090   # Modbus :502; webben flyttas från :8080
-cd backend && go run ./cmd/scada -data data
+cd blue-station && go run ./cmd/blue-station -http :8090   # Modbus :502; webben flyttas från :8080
+cd scada/backend && go run ./cmd/scada -data data
 ```
 
 Scenarierna i blue-stations README (fel på avgång → utlösning → Återställ → tillslag, sektionering, överlast, AVR) kan köras direkt från vyn.
