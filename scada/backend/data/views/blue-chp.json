@@ -1,0 +1,3098 @@
+{
+  "id": "blue-chp",
+  "name": "Blue CHP",
+  "width": 1800,
+  "height": 1090,
+  "background": "#0d1117",
+  "grid": 10,
+  "elements": [
+    {
+      "id": "chp-text-1",
+      "type": "text",
+      "x": 30,
+      "y": 18,
+      "w": 900,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "text": "Blue CHP – kraftvärmeverk",
+        "fontSize": 26,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-link-2",
+      "type": "link",
+      "x": 1620,
+      "y": 22,
+      "w": 150,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "text": "Blue Station ›",
+        "view": "blue-station",
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-line-3",
+      "type": "line",
+      "x": 155,
+      "y": 95,
+      "w": 786,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 6,
+        "dash": "",
+        "dynTag": "CHP.Steam.Pressure",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 50,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 50,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-4",
+      "type": "text",
+      "x": 560,
+      "y": 65,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Ångsamlare",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-5",
+      "type": "measurement",
+      "x": 700,
+      "y": 43,
+      "w": 180,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Steam.Pressure",
+        "label": "Tryck",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 97,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-line-6",
+      "type": "line",
+      "x": 155,
+      "y": 95,
+      "w": 0,
+      "h": 25,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.P1.SteamFlow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-rect-7",
+      "type": "rect",
+      "x": 105,
+      "y": 120,
+      "w": 100,
+      "h": 150,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "CHP.P1.Running",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-8",
+      "type": "text",
+      "x": 115,
+      "y": 128,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "P1",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-9",
+      "type": "text",
+      "x": 115,
+      "y": 150,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Flis",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-bar-10",
+      "type": "bar",
+      "x": 143,
+      "y": 178,
+      "w": 24,
+      "h": 80,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.Load",
+        "min": 0,
+        "max": 100,
+        "color": "#ffa94d",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "chp-indicator-11",
+      "type": "indicator",
+      "x": 177,
+      "y": 182,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.Running",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-line-12",
+      "type": "line",
+      "x": 417,
+      "y": 95,
+      "w": 0,
+      "h": 25,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.P2.SteamFlow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-rect-13",
+      "type": "rect",
+      "x": 367,
+      "y": 120,
+      "w": 100,
+      "h": 150,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "CHP.P2.Running",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-14",
+      "type": "text",
+      "x": 377,
+      "y": 128,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "P2",
+        "fontSize": 18,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-15",
+      "type": "text",
+      "x": 377,
+      "y": 150,
+      "w": 80,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Bioolja",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-bar-16",
+      "type": "bar",
+      "x": 405,
+      "y": 178,
+      "w": 24,
+      "h": 80,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.Load",
+        "min": 0,
+        "max": 100,
+        "color": "#ffa94d",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "chp-indicator-17",
+      "type": "indicator",
+      "x": 439,
+      "y": 182,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.Running",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-line-18",
+      "type": "line",
+      "x": 941,
+      "y": 95,
+      "w": 0,
+      "h": 25,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 6,
+        "dash": "",
+        "dynTag": "CHP.Turbine.SteamFlow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-rect-19",
+      "type": "rect",
+      "x": 896,
+      "y": 120,
+      "w": 90,
+      "h": 70,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "CHP.Turbine.AtSpeed",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-20",
+      "type": "text",
+      "x": 896,
+      "y": 143,
+      "w": 90,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Turbin",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-line-21",
+      "type": "line",
+      "x": 986,
+      "y": 155,
+      "w": 187,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#8b949e",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-ellipse-22",
+      "type": "ellipse",
+      "x": 1173,
+      "y": 125,
+      "w": 60,
+      "h": 60,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dynTag": "CHP.Gen.P",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-23",
+      "type": "text",
+      "x": 1173,
+      "y": 143,
+      "w": 60,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "G",
+        "fontSize": 20,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-line-24",
+      "type": "line",
+      "x": 1233,
+      "y": 155,
+      "w": 57,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "CHP.Gen.P",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-breaker-25",
+      "type": "breaker",
+      "x": 1290,
+      "y": 135,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Gen.CB",
+        "showLabel": false,
+        "statusTag": "CHP.Gen.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.Gen.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "chp-line-26",
+      "type": "line",
+      "x": 1330,
+      "y": 155,
+      "w": 130,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "CHP.Net.Live",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-text-27",
+      "type": "text",
+      "x": 1470,
+      "y": 143,
+      "w": 300,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "20 kV → Blue Station fack G1",
+        "fontSize": 13,
+        "color": "#e6edf3",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-rect-28",
+      "type": "rect",
+      "x": 881,
+      "y": 225,
+      "w": 120,
+      "h": 46,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-29",
+      "type": "text",
+      "x": 881,
+      "y": 236,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Kondensor",
+        "fontSize": 13,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-line-30",
+      "type": "line",
+      "x": 941,
+      "y": 190,
+      "w": 0,
+      "h": 35,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "CHP.Turbine.SteamFlow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-31",
+      "type": "line",
+      "x": 679,
+      "y": 95,
+      "w": 0,
+      "h": 153,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "8 5",
+        "dynTag": "CHP.Bypass.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-32",
+      "type": "line",
+      "x": 679,
+      "y": 248,
+      "w": 202,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "8 5",
+        "dynTag": "CHP.Bypass.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 0.5,
+            "color": "#e6edf3"
+          },
+          {
+            "op": "<=",
+            "value": 0.5,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-measurement-33",
+      "type": "measurement",
+      "x": 690,
+      "y": 150,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Bypass.Position",
+        "label": "Bypass",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-line-34",
+      "type": "line",
+      "x": 1001,
+      "y": 248,
+      "w": 719,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#ff6b6b"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-35",
+      "type": "line",
+      "x": 1720,
+      "y": 248,
+      "w": 0,
+      "h": 572,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#ff6b6b"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-36",
+      "type": "line",
+      "x": 1760,
+      "y": 290,
+      "w": 0,
+      "h": 670,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#4dabf7"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-37",
+      "type": "line",
+      "x": 941,
+      "y": 290,
+      "w": 819,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#4dabf7"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-38",
+      "type": "line",
+      "x": 941,
+      "y": 271,
+      "w": 0,
+      "h": 19,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#4dabf7"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-rect-39",
+      "type": "rect",
+      "x": 30,
+      "y": 310,
+      "w": 250,
+      "h": 452,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-40",
+      "type": "text",
+      "x": 42,
+      "y": 316,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Panna P1 – flis 120 MW",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-toggle-41",
+      "type": "toggle",
+      "x": 42,
+      "y": 346,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Drift",
+        "statusTag": "CHP.P1.Run",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P1.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-toggle-42",
+      "type": "toggle",
+      "x": 42,
+      "y": 378,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Lastreglering",
+        "statusTag": "CHP.P1.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P1.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-indicator-43",
+      "type": "indicator",
+      "x": 44,
+      "y": 415,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.Running",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "I drift",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-indicator-44",
+      "type": "indicator",
+      "x": 44,
+      "y": 447,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Pannskydd utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-measurement-45",
+      "type": "measurement",
+      "x": 42,
+      "y": 474,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.Load",
+        "label": "Last",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-46",
+      "type": "measurement",
+      "x": 42,
+      "y": 506,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.FuelPower",
+        "label": "Bränsleeffekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-47",
+      "type": "measurement",
+      "x": 42,
+      "y": 538,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.FuelFlow",
+        "label": "Bränsleflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-48",
+      "type": "measurement",
+      "x": 42,
+      "y": 570,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.SteamFlow",
+        "label": "Ångflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-49",
+      "type": "measurement",
+      "x": 42,
+      "y": 602,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.SteamTemp",
+        "label": "Ångtemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-50",
+      "type": "measurement",
+      "x": 42,
+      "y": 634,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.O2",
+        "label": "O₂ rökgas",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-51",
+      "type": "measurement",
+      "x": 42,
+      "y": 666,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.FlueTemp",
+        "label": "Rökgastemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-52",
+      "type": "measurement",
+      "x": 42,
+      "y": 698,
+      "w": 158,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P1.LoadSet",
+        "label": "Last bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-53",
+      "type": "button",
+      "x": 206,
+      "y": 698,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.P1.LoadSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-toggle-54",
+      "type": "toggle",
+      "x": 42,
+      "y": 730,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Bränslematningsfel",
+        "statusTag": "CHP.P1.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P1.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-rect-55",
+      "type": "rect",
+      "x": 292,
+      "y": 310,
+      "w": 250,
+      "h": 452,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-56",
+      "type": "text",
+      "x": 304,
+      "y": 316,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Panna P2 – bioolja 50 MW",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-toggle-57",
+      "type": "toggle",
+      "x": 304,
+      "y": 346,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Drift",
+        "statusTag": "CHP.P2.Run",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P2.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-toggle-58",
+      "type": "toggle",
+      "x": 304,
+      "y": 378,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Lastreglering",
+        "statusTag": "CHP.P2.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P2.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-indicator-59",
+      "type": "indicator",
+      "x": 306,
+      "y": 415,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.Running",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "I drift",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-indicator-60",
+      "type": "indicator",
+      "x": 306,
+      "y": 447,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Pannskydd utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-measurement-61",
+      "type": "measurement",
+      "x": 304,
+      "y": 474,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.Load",
+        "label": "Last",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-62",
+      "type": "measurement",
+      "x": 304,
+      "y": 506,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.FuelPower",
+        "label": "Bränsleeffekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-63",
+      "type": "measurement",
+      "x": 304,
+      "y": 538,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.FuelFlow",
+        "label": "Bränsleflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-64",
+      "type": "measurement",
+      "x": 304,
+      "y": 570,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.SteamFlow",
+        "label": "Ångflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-65",
+      "type": "measurement",
+      "x": 304,
+      "y": 602,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.SteamTemp",
+        "label": "Ångtemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-66",
+      "type": "measurement",
+      "x": 304,
+      "y": 634,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.O2",
+        "label": "O₂ rökgas",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-67",
+      "type": "measurement",
+      "x": 304,
+      "y": 666,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.FlueTemp",
+        "label": "Rökgastemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-68",
+      "type": "measurement",
+      "x": 304,
+      "y": 698,
+      "w": 158,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.P2.LoadSet",
+        "label": "Last bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-69",
+      "type": "button",
+      "x": 468,
+      "y": 698,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.P2.LoadSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-toggle-70",
+      "type": "toggle",
+      "x": 304,
+      "y": 730,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Brännarfel",
+        "statusTag": "CHP.P2.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.P2.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-rect-71",
+      "type": "rect",
+      "x": 554,
+      "y": 310,
+      "w": 250,
+      "h": 452,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-72",
+      "type": "text",
+      "x": 566,
+      "y": 316,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Ångsamlare och bypass",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-73",
+      "type": "measurement",
+      "x": 566,
+      "y": 346,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Steam.Pressure",
+        "label": "Tryck",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-74",
+      "type": "measurement",
+      "x": 566,
+      "y": 378,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Steam.Flow",
+        "label": "Ångproduktion",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-75",
+      "type": "measurement",
+      "x": 566,
+      "y": 410,
+      "w": 158,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Steam.PressureSet",
+        "label": "Tryck bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-76",
+      "type": "button",
+      "x": 730,
+      "y": 410,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Steam.PressureSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-indicator-77",
+      "type": "indicator",
+      "x": 568,
+      "y": 447,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Steam.HighPressure",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Högt ångtryck",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-toggle-78",
+      "type": "toggle",
+      "x": 566,
+      "y": 474,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Bypass",
+        "statusTag": "CHP.Bypass.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.Bypass.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-measurement-79",
+      "type": "measurement",
+      "x": 566,
+      "y": 506,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Bypass.Position",
+        "label": "Ventilläge",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-80",
+      "type": "measurement",
+      "x": 566,
+      "y": 538,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Bypass.Flow",
+        "label": "Ångflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-81",
+      "type": "measurement",
+      "x": 566,
+      "y": 570,
+      "w": 158,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Bypass.ManualPos",
+        "label": "Läge man",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-82",
+      "type": "button",
+      "x": 730,
+      "y": 570,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Bypass.ManualPos",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-rect-83",
+      "type": "rect",
+      "x": 816,
+      "y": 310,
+      "w": 250,
+      "h": 452,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-84",
+      "type": "text",
+      "x": 828,
+      "y": 316,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Turbin",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-toggle-85",
+      "type": "toggle",
+      "x": 828,
+      "y": 346,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Turbin",
+        "statusTag": "CHP.Turbine.Run",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.Turbine.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-measurement-86",
+      "type": "measurement",
+      "x": 828,
+      "y": 378,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Turbine.Speed",
+        "label": "Varvtal",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-87",
+      "type": "measurement",
+      "x": 828,
+      "y": 410,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Turbine.SteamFlow",
+        "label": "Ångflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-indicator-88",
+      "type": "indicator",
+      "x": 830,
+      "y": 447,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Turbine.AtSpeed",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "På varvtal",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-indicator-89",
+      "type": "indicator",
+      "x": 830,
+      "y": 479,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Turbine.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Turbinskydd utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-button-90",
+      "type": "button",
+      "x": 828,
+      "y": 506,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Snabbstopp",
+        "controlTag": "CHP.Turbine.EmergencyStop",
+        "value": 1,
+        "askValue": false,
+        "color": "#8b1e1e",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-rect-91",
+      "type": "rect",
+      "x": 1078,
+      "y": 310,
+      "w": 250,
+      "h": 452,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-92",
+      "type": "text",
+      "x": 1090,
+      "y": 316,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Generator",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-93",
+      "type": "measurement",
+      "x": 1090,
+      "y": 346,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.P",
+        "label": "P",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-94",
+      "type": "measurement",
+      "x": 1090,
+      "y": 378,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.Q",
+        "label": "Q",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-95",
+      "type": "measurement",
+      "x": 1090,
+      "y": 410,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-96",
+      "type": "measurement",
+      "x": 1090,
+      "y": 442,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.f",
+        "label": "f",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-97",
+      "type": "measurement",
+      "x": 1090,
+      "y": 474,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.I",
+        "label": "I",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-98",
+      "type": "measurement",
+      "x": 1090,
+      "y": 506,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-99",
+      "type": "measurement",
+      "x": 1090,
+      "y": 538,
+      "w": 158,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.QSet",
+        "label": "Q bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-100",
+      "type": "button",
+      "x": 1254,
+      "y": 538,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Gen.QSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-indicator-101",
+      "type": "indicator",
+      "x": 1092,
+      "y": 575,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Gen.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Nätbortfallsskydd utlöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-text-102",
+      "type": "text",
+      "x": 1090,
+      "y": 606,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Generatorbrytaren manövreras i bilden ovan",
+        "fontSize": 11,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-rect-103",
+      "type": "rect",
+      "x": 1340,
+      "y": 310,
+      "w": 330,
+      "h": 196,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-104",
+      "type": "text",
+      "x": 1352,
+      "y": 316,
+      "w": 306,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Anslutning 20 kV",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-indicator-105",
+      "type": "indicator",
+      "x": 1354,
+      "y": 351,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Net.Link",
+        "onValue": 0,
+        "onColor": "#ffb300",
+        "offColor": "#3a4450",
+        "label": "Fristående (ingen länk)",
+        "blink": false
+      }
+    },
+    {
+      "id": "chp-indicator-106",
+      "type": "indicator",
+      "x": 1354,
+      "y": 383,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Net.Live",
+        "onValue": 0,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Spänningslös anslutning",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-measurement-107",
+      "type": "measurement",
+      "x": 1352,
+      "y": 410,
+      "w": 306,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Net.U",
+        "label": "U",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-108",
+      "type": "measurement",
+      "x": 1352,
+      "y": 442,
+      "w": 306,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Net.f",
+        "label": "f",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-rect-109",
+      "type": "rect",
+      "x": 1340,
+      "y": 518,
+      "w": 330,
+      "h": 244,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-110",
+      "type": "text",
+      "x": 1352,
+      "y": 524,
+      "w": 306,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Verk och simulering",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-indicator-111",
+      "type": "indicator",
+      "x": 1354,
+      "y": 559,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Plant.CommonAlarm",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Summalarm",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-button-112",
+      "type": "button",
+      "x": 1516,
+      "y": 554,
+      "w": 142,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Återställ",
+        "controlTag": "CHP.Plant.Reset",
+        "value": 1,
+        "askValue": false,
+        "color": "#7a4b00",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-measurement-113",
+      "type": "measurement",
+      "x": 1352,
+      "y": 586,
+      "w": 238,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Env.Outdoor",
+        "label": "Utetemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-114",
+      "type": "button",
+      "x": 1596,
+      "y": 586,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Env.Outdoor",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-measurement-115",
+      "type": "measurement",
+      "x": 1352,
+      "y": 618,
+      "w": 238,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Heat.Scale",
+        "label": "Värmebehov",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-116",
+      "type": "button",
+      "x": 1596,
+      "y": 618,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Heat.Scale",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-measurement-117",
+      "type": "measurement",
+      "x": 1352,
+      "y": 650,
+      "w": 238,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Acc.LevelSet",
+        "label": "Ack. nivå bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-button-118",
+      "type": "button",
+      "x": 1596,
+      "y": 650,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "CHP.Acc.LevelSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "chp-line-119",
+      "type": "line",
+      "x": 1720,
+      "y": 820,
+      "w": -1440,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#ff6b6b"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-line-120",
+      "type": "line",
+      "x": 280,
+      "y": 960,
+      "w": 1480,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 5,
+        "dash": "",
+        "dynTag": "CHP.DH.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#4dabf7"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-rect-121",
+      "type": "rect",
+      "x": 40,
+      "y": 790,
+      "w": 240,
+      "h": 200,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-122",
+      "type": "text",
+      "x": 52,
+      "y": 800,
+      "w": 216,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Fjärrvärmenät",
+        "fontSize": 16,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-123",
+      "type": "text",
+      "x": 52,
+      "y": 824,
+      "w": 216,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "kunder",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-124",
+      "type": "measurement",
+      "x": 52,
+      "y": 860,
+      "w": 216,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.Demand",
+        "label": "Behov",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-125",
+      "type": "measurement",
+      "x": 52,
+      "y": 894,
+      "w": 216,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.Delivered",
+        "label": "Levererat",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-126",
+      "type": "measurement",
+      "x": 52,
+      "y": 928,
+      "w": 216,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.DiffPressure",
+        "label": "Diff.tryck",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 0.6,
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-text-127",
+      "type": "text",
+      "x": 300,
+      "y": 796,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Framledning",
+        "fontSize": 12,
+        "color": "#ff6b6b",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-128",
+      "type": "text",
+      "x": 300,
+      "y": 966,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Retur",
+        "fontSize": 12,
+        "color": "#4dabf7",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-129",
+      "type": "measurement",
+      "x": 300,
+      "y": 840,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.SupplyTemp",
+        "label": "Framledning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-130",
+      "type": "measurement",
+      "x": 300,
+      "y": 874,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.SupplyTempSet",
+        "label": "Framledning bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-131",
+      "type": "measurement",
+      "x": 300,
+      "y": 908,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.ReturnTemp",
+        "label": "Retur",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-132",
+      "type": "measurement",
+      "x": 540,
+      "y": 840,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.Production",
+        "label": "Produktion",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-133",
+      "type": "measurement",
+      "x": 540,
+      "y": 874,
+      "w": 226,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.Flow",
+        "label": "Flöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-indicator-134",
+      "type": "indicator",
+      "x": 790,
+      "y": 846,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.LowDP",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Lågt differenstryck",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-indicator-135",
+      "type": "indicator",
+      "x": 790,
+      "y": 880,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.SupplyLow",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Låg framledningstemp",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-indicator-136",
+      "type": "indicator",
+      "x": 790,
+      "y": 914,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.DH.SupplyHigh",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Hög framledningstemp",
+        "blink": true
+      }
+    },
+    {
+      "id": "chp-ellipse-137",
+      "type": "ellipse",
+      "x": 1095,
+      "y": 945,
+      "w": 30,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#4dabf7",
+        "strokeWidth": 3,
+        "dynTag": "CHP.DH.Pump1",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#2ecc71"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-toggle-138",
+      "type": "toggle",
+      "x": 1025,
+      "y": 984,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Pump 1",
+        "statusTag": "CHP.DH.Pump1",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.DH.Pump1.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "DRIFT",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-ellipse-139",
+      "type": "ellipse",
+      "x": 1275,
+      "y": 945,
+      "w": 30,
+      "h": 30,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#4dabf7",
+        "strokeWidth": 3,
+        "dynTag": "CHP.DH.Pump2",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#2ecc71"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chp-toggle-140",
+      "type": "toggle",
+      "x": 1205,
+      "y": 984,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Pump 2",
+        "statusTag": "CHP.DH.Pump2",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "CHP.DH.Pump2.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "DRIFT",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "chp-line-141",
+      "type": "line",
+      "x": 1480,
+      "y": 820,
+      "w": 0,
+      "h": 12,
+      "rot": 0,
+      "props": {
+        "stroke": "#ff6b6b",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-rect-142",
+      "type": "rect",
+      "x": 1445,
+      "y": 832,
+      "w": 70,
+      "h": 116,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#e6edf3",
+        "strokeWidth": 2,
+        "radius": 8,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-bar-143",
+      "type": "bar",
+      "x": 1455,
+      "y": 842,
+      "w": 50,
+      "h": 96,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Acc.Level",
+        "min": 0,
+        "max": 100,
+        "color": "#e8590c",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "chp-line-144",
+      "type": "line",
+      "x": 1480,
+      "y": 948,
+      "w": 0,
+      "h": 12,
+      "rot": 0,
+      "props": {
+        "stroke": "#4dabf7",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-text-145",
+      "type": "text",
+      "x": 1410,
+      "y": 984,
+      "w": 140,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Ackumulator",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "chp-measurement-146",
+      "type": "measurement",
+      "x": 1528,
+      "y": 834,
+      "w": 180,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Acc.Level",
+        "label": "Nivå",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-147",
+      "type": "measurement",
+      "x": 1528,
+      "y": 868,
+      "w": 180,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Acc.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-measurement-148",
+      "type": "measurement",
+      "x": 1528,
+      "y": 902,
+      "w": 180,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "CHP.Acc.Power",
+        "label": "Effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "chp-text-149",
+      "type": "text",
+      "x": 30,
+      "y": 1064,
+      "w": 1600,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Klicka på brytare, omkopplare och knappar för manöver, och på ett mätvärde för trend. Fylld brytare = Till, tom = Från. Lila = osäkert värde.",
+        "fontSize": 12,
+        "color": "#5c6b7a",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    }
+  ],
+  "updated": "2026-10-13T20:45:31.857312+02:00"
+}

@@ -337,4 +337,17 @@ func (s *Station) buildPoints() {
 			}
 			return nil
 		}})
+
+	// G1 is appended last so that the addresses of all earlier points are unchanged.
+	g := s.G1
+	b.group = fmt.Sprintf("%s – %s (sektion %s)", g.Name, g.Desc, []string{"A", "B"}[g.Bus])
+	b.add(Point{ID: "G1.CB", Desc: "G1 brytare kraftvärmeverk", Kind: KindBreaker, get: dp(&g.CB), ctrl: s.breakerCtrl(&g.CB)})
+	b.add(Point{ID: "G1.P", Desc: "G1 aktiv effekt (inmatning)", Unit: "MW", Kind: KindMeasurement, Deadband: 0.1, get: an(func() float64 { return g.P })})
+	b.add(Point{ID: "G1.Q", Desc: "G1 reaktiv effekt (inmatning)", Unit: "Mvar", Kind: KindMeasurement, Deadband: 0.1, get: an(func() float64 { return g.Q })})
+	b.add(Point{ID: "G1.I", Desc: "G1 ström", Unit: "A", Kind: KindMeasurement, Deadband: 2, get: an(func() float64 { return g.I })})
+	b.add(Point{ID: "G1.Energy", Desc: "G1 inmatad energi", Unit: "MWh", Kind: KindMeasurement, Deadband: 0.01, get: an(func() float64 { return g.EnergyMWh })})
+	b.add(Point{ID: "G1.GenOnline", Desc: "G1 generator i kraftvärmeverket inkopplad", Kind: KindStatus, OnText: "I DRIFT", OffText: "UR DRIFT",
+		get: sp(func() bool { return g.GenOnline })})
+	b.add(Point{ID: "G1.Link", Desc: "G1 förbindelse med kraftvärmeverket", Kind: KindStatus, OnText: "LÄNK", OffText: "AVBROTT",
+		get: sp(func() bool { return g.LinkOK })})
 }

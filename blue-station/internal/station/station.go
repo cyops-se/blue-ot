@@ -12,8 +12,11 @@
 //	[T1.LV]         [T2.LV]
 //	   |               |
 //	 ==A==[Coupler]==B==       20 kV busbar, section A and B
-//	  |  |           |  |
-//	 F1  F2         F3  F4     distribution feeders
+//	  |  |           |  |  |
+//	 F1  F2         F3  F4 G1  distribution feeders and generator bay
+//
+// The generator bay G1 connects the CHP plant simulated by blue-chp. Its
+// output is delivered through SetGenerator (see package chplink).
 package station
 
 import (
@@ -120,6 +123,23 @@ type Feeder struct {
 	ocTimer   float64
 }
 
+// Generator is the bay where the CHP plant (blue-chp) is connected. The
+// plant can only run in parallel with the grid: it trips on loss of mains,
+// so the busbar is never energised by the generator alone.
+type Generator struct {
+	Name, Desc string
+	Bus        int
+	CB         Breaker
+
+	P, Q, I   float64 // export into the busbar
+	EnergyMWh float64
+
+	GenOnline  bool // generator breaker in the plant closed
+	LinkOK     bool
+	genP, genQ float64
+	energized  bool
+}
+
 type Event struct {
 	Seq  uint64    `json:"seq"`
 	Time time.Time `json:"time"`
@@ -144,6 +164,7 @@ type Station struct {
 	BusKV          [2]float64
 	BusLive        [2]bool
 	F              [4]*Feeder
+	G1             *Generator
 
 	USet, DeadbandPct, DelayS float64
 	LoadScale, AmbientC       float64
@@ -190,6 +211,8 @@ func New(cfg Config, timeScale float64) *Station {
 	for _, f := range s.F {
 		f.CB.Closed = true
 	}
+	s.G1 = &Generator{Name: "G1", Desc: "Kraftvärmeverk (blue-chp)", Bus: 1}
+	s.G1.CB.Closed = true
 	s.updateDemand(0)
 	s.solve()
 	for _, t := range s.T {
@@ -253,6 +276,29 @@ func (s *Station) Events() []Event {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return append([]Event(nil), s.events...)
+}
+
+// GridSide returns the state of the generator bay as seen by the plant.
+func (s *Station) GridSide() (busLive bool, busKV, hz float64, bayClosed bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	g := s.G1
+	return s.BusLive[g.Bus], s.BusKV[g.Bus], s.GridHz, g.CB.Closed
+}
+
+// SetGenerator stores the latest output reported by the plant. linkOK is
+// false when the plant could not be reached; the generator then contributes
+// nothing. The values are used from the next simulation step.
+func (s *Station) SetGenerator(linkOK, online bool, p, q float64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	g := s.G1
+	g.LinkOK = linkOK
+	g.GenOnline = linkOK && online
+	g.genP, g.genQ = 0, 0
+	if g.GenOnline {
+		g.genP, g.genQ = p, q
+	}
 }
 
 // Control executes a command on a point. src identifies the origin in the event log.
@@ -339,6 +385,16 @@ func (s *Station) solve() {
 			p += f.P
 			q += f.Q
 		}
+		gen := s.G1
+		if inGroup(gen.Bus) {
+			gen.energized = live && gen.CB.Closed
+			gen.P, gen.Q = 0, 0
+			if gen.energized && gen.GenOnline {
+				gen.P, gen.Q = gen.genP, gen.genQ
+			}
+			p -= gen.P // the generator covers part of the load (or exports)
+			q -= gen.Q
+		}
 
 		var u, ratio float64
 		if live {
@@ -367,6 +423,12 @@ func (s *Station) solve() {
 			}
 			isum += f.I
 		}
+		if inGroup(s.G1.Bus) {
+			s.G1.I = 0
+			if s.G1.energized && u > 0 {
+				s.G1.I = math.Hypot(s.G1.P, s.G1.Q) / (sqrt3 * u) * 1000
+			}
+		}
 		if fault {
 			u *= cfg.FaultVoltagePU
 		}
@@ -383,7 +445,12 @@ func (s *Station) solve() {
 			}
 			var pl, ql, il float64
 			if t.feeding {
-				pl, ql, il = p/n, q/n, isum/n
+				pl, ql = p/n, q/n
+				il = isum / n
+				if !fault && u > 0 {
+					// net flow, which may be reversed when the generator exports
+					il = math.Hypot(pl, ql) / (sqrt3 * u) * 1000
+				}
 			}
 			t.ILV = il
 			t.Loading = il / ratedLV * 100
@@ -400,6 +467,7 @@ func (s *Station) solve() {
 
 // dynamics advances timers, thermal model, protection and voltage regulation.
 func (s *Station) dynamics(dt float64) {
+	s.G1.EnergyMWh += s.G1.P * dt / 3600
 	for _, f := range s.F {
 		f.EnergyMWh += f.P * dt / 3600
 		if !f.energized || f.I <= f.PickupA {
@@ -520,7 +588,7 @@ func (s *Station) tripTrafo(t *Transformer, reason string) {
 }
 
 func (s *Station) reset() {
-	s.Line.Lockout, s.Coupler.Lockout = false, false
+	s.Line.Lockout, s.Coupler.Lockout, s.G1.CB.Lockout = false, false, false
 	for _, t := range s.T {
 		t.HV.Lockout, t.LV.Lockout, t.Trip = false, false, false
 	}

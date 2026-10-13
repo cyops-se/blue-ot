@@ -1,6 +1,8 @@
+**Svenska** · [English](README-en.md)
+
 # Blue Station – simulator för transformatorstation
 
-En enkel transformatorstation skriven i Go (bara standardbiblioteket). Stationen matas från stamnätet (220 kV) och försörjer fyra distributionsnät (20 kV). Den kan övervakas och styras via **Modbus TCP** och **IEC 60870-5-104**, och har dessutom ett webbgränssnitt.
+En enkel transformatorstation skriven i Go (bara standardbiblioteket). Stationen matas från stamnätet (220 kV) och försörjer fyra distributionsnät (20 kV). I fack G1 är kraftvärmeverket [blue-chp](../blue-chp/README.md) anslutet som produktionskälla. Den kan övervakas och styras via **Modbus TCP** och **IEC 60870-5-104**, och har dessutom ett webbgränssnitt.
 
 ```
           Stamnät 220 kV
@@ -12,10 +14,10 @@ En enkel transformatorstation skriven i Go (bara standardbiblioteket). Stationen
      (T1)              (T2)           220/20 kV, 40 MVA, lindningskopplare 1–17 (±1,25 %/steg)
     [T1.LV]           [T2.LV]
        |                 |
-   ====A====[Coupler]====B====        20 kV-skena, sektion A och B (sektioneringen är normalt öppen)
-     |    |            |    |
-    F1    F2          F3    F4
- Bostad Industri    Centrum Landsbygd
+   ====A====[Coupler]====B=========    20 kV-skena, sektion A och B (sektioneringen är normalt öppen)
+     |    |            |    |    |
+    F1    F2          F3    F4   G1
+ Bostad Industri    Centrum Landsbygd Kraftvärmeverk (blue-chp)
 ```
 
 ## Köra
@@ -36,6 +38,7 @@ go test ./...
 | `-iec-utc` | `false` | Tidsstämplar (CP56Time2a) i UTC i stället för lokal tid |
 | `-tick` | `1s` | Simuleringens tidssteg |
 | `-timescale` | `1` | Hastighet på dygnsklockan som styr lastprofilerna |
+| `-chp` | `http://127.0.0.1:8082` | Adress till blue-chp för fack G1 (tom = ingen kraftvärme) |
 
 På Linux krävs root eller `CAP_NET_BIND_SERVICE` för port 502. Använd annars t.ex. `-modbus :5020`.
 
@@ -49,6 +52,7 @@ På Linux krävs root eller `CAP_NET_BIND_SERVICE` för port 502. Använd annars
   - Avgångarna har I> (2 s) och I>> (3×I>, momentant).
   - Transformatorerna har ett reservskydd för överström (>150 % i 5 s) och löser ut på hög oljetemperatur.
   - En utlösning blockerar tillslag tills `Station.Reset` har körts.
+- **Kraftvärme (G1):** fack G1 på sektion B matar in den effekt som generatorn i blue-chp producerar. En gång per sekund skickar stationen sektionens spänning och frekvens samt läget på G1-brytaren till blue-chp, och får tillbaka generatorns P och Q. Inmatningen minskar lasten på T2. När verket producerar mer än sektionen förbrukar går effekten tillbaka genom transformatorn mot stamnätet. Generatorn kan inte hålla en skena spänningssatt på egen hand. Om G1 slås från eller sektion B blir spänningslös löser verkets nätbortfallsskydd ut. `G1.Link` visar om förbindelsen med blue-chp fungerar.
 - **Felsimulering:** `Fx.FaultSim` lägger en kortslutning på avgången (6 kA). Spänningen på sektionen sjunker och skyddet löser ut. Felet ligger kvar tills det tas bort, så ett nytt tillslag löser ut igen.
 
 ### Förslag på scenarier
@@ -57,6 +61,7 @@ På Linux krävs root eller `CAP_NET_BIND_SERVICE` för port 502. Använd annars
 2. Slå från `T1.LV.CB` så att sektion A blir spänningslös. Slå till `BUS.Coupler.CB`, så matar T2 hela stationen.
 3. Gör som i scenario 2 och sätt sedan `Load.Scale` = 150 %. Då kommer larm för överlast och oljetemperatur, och till sist löser T2 ut.
 4. Ändra `AVR.USet` och se hur lindningskopplarna stegar.
+5. Starta blue-chp. G1 matar in drygt 25 MW, och T2 matar tillbaka mot stamnätet. Slå från `G1.CB` så löser generatorn i blue-chp ut på nätbortfall. Slå till igen, återställ i blue-chp (`Plant.Reset`) och synkronisera (`Gen.CB`).
 
 ## Modbus TCP
 
@@ -188,12 +193,22 @@ På Linux krävs root eller `CAP_NET_BIND_SERVICE` för port 502. Använd annars
 | `Env.Ambient` | Simulering: omgivningstemperatur | °C | HR 16–17 | M_ME_NC 4109 | C_SE_NC 8109 |
 | `Station.CommonAlarm` | Summalarm | – | DI 113 | M_SP 2014 | – |
 | `Station.Reset` | Återställ skyddsutlösningar och blockeringar | – | Coil 44 | – | C_SC 6005 |
+| `G1.CB` | G1 brytare kraftvärmeverk | – | Coil 10, DI 10 | M_DP 1011 | C_DC 5011 |
+| `G1.P` | G1 aktiv effekt (inmatning) | MW | IR 70–71 | M_ME_NC 3036 | – |
+| `G1.Q` | G1 reaktiv effekt (inmatning) | Mvar | IR 72–73 | M_ME_NC 3037 | – |
+| `G1.I` | G1 ström | A | IR 74–75 | M_ME_NC 3038 | – |
+| `G1.Energy` | G1 inmatad energi | MWh | IR 76–77 | M_ME_NC 3039 | – |
+| `G1.GenOnline` | G1 generator i kraftvärmeverket inkopplad | – | DI 114 | M_SP 2015 | – |
+| `G1.Link` | G1 förbindelse med kraftvärmeverket | – | DI 115 | M_SP 2016 | – |
+
+Punkterna för G1 ligger sist i listan, så alla tidigare adresser är oförändrade.
 
 ## Struktur
 
 ```
 cmd/blue-station/     main, flaggor
 internal/station/     stationsmodell, lastflöde, skydd, AVR, signallista
+internal/chplink/     koppling av fack G1 till blue-chp
 internal/modbus/      Modbus TCP-server
 internal/iec104/      IEC 60870-5-104-server (slav)
 internal/web/         webbgränssnitt och JSON-API

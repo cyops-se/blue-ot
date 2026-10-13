@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"blue-station/internal/chplink"
 	"blue-station/internal/iec104"
 	"blue-station/internal/modbus"
 	"blue-station/internal/station"
@@ -28,6 +29,7 @@ func main() {
 	tick := flag.Duration("tick", time.Second, "simuleringens tidssteg")
 	timeScale := flag.Float64("timescale", 1, "hastighet på dygnsklockan som styr lastprofilerna (t.ex. 60 = en timme per minut)")
 	points := flag.Bool("points", false, "skriv ut signallistan som Markdown och avsluta")
+	chp := flag.String("chp", "http://127.0.0.1:8082", "adress till blue-chp för fack G1 (tom = ingen kraftvärme)")
 	flag.Parse()
 
 	st := station.New(station.DefaultConfig(), *timeScale)
@@ -40,6 +42,10 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	go st.Run(ctx, *tick)
+	if *chp != "" {
+		go chplink.Run(ctx, st, *chp, *tick, log.Printf)
+		log.Printf("Fack G1 kopplat mot kraftvärmeverket på %s", *chp)
+	}
 
 	errc := make(chan error, 3)
 	if *mbAddr != "" {

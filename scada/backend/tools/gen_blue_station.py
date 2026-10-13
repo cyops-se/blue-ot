@@ -113,6 +113,15 @@ setpoint("Env.Ambient", "Simulering: omgivningstemperatur", 16, "°C")
 alarm("Station.CommonAlarm", "Summalarm", 113)
 pulse("Station.Reset", "Återställ skyddsutlösningar", 44)
 
+# generator bay G1 (blue-chp), appended last in blue-station's signal list
+breaker("G1.CB", "G1 brytare kraftvärmeverk", 10)
+meas("G1.P", "G1 aktiv effekt (inmatning)", 70, "MW")
+meas("G1.Q", "G1 reaktiv effekt (inmatning)", 72, "Mvar")
+meas("G1.I", "G1 ström", 74, "A")
+meas("G1.Energy", "G1 inmatad energi", 76, "MWh")
+tag("G1.GenOnline", "G1 generator i kraftvärmeverket inkopplad", "discrete", 114, log=True, state={"0": "Ur drift", "1": "I drift"})
+tag("G1.Link", "G1 förbindelse med kraftvärmeverket", "discrete", 115, log=True, state={"0": "Avbrott", "1": "Länk"})
+
 # merge into config.json (replacing earlier blue-station entries)
 cfg = json.load(open("data/config.json", encoding="utf-8"))
 cfg["devices"] = [d for d in cfg["devices"] if d["id"] != DEV] + [dict(
@@ -160,7 +169,7 @@ def m(x, y, tag, label, w=200, h=28, lo="", hi=""):
 
 def cb(x, y, status, label, show=True):
     add("breaker", x, y, 40, 40, label=label, showLabel=show, statusTag=status, openValue=0, closedValue=1,
-        controlTag=status + ".Cmd", openCmd=0, closeCmd=1, colorClosed="#ff4d4d", colorOpen="#2ecc71")
+        controlTag=status + ".Cmd", openCmd=0, closeCmd=1, colorClosed="#2ecc71", colorOpen="#2ecc71")
 
 
 def toggle(x, y, status, label, w=200, on="PÅ", off="AV", color="#3d8bfd"):
@@ -263,8 +272,9 @@ add("busbar", 940, BUS_LV, 660, 0, stroke=FG, strokeWidth=8, dash="", **live("BU
 text(1620, BUS_LV - 30, 150, "20 kV sektion B", 13)
 m(1620, BUS_LV + 14, "BUS.B.U", "U B", 150)
 
-# feeders
-for (F, desc), FX, bus in zip(FEEDERS, (330, 660, 1100, 1430), "AABB"):
+# feeders (F3/F4 sit a bit to the left to make room for the generator bay G1)
+FEEDER_X = (330, 660, 1060, 1330)
+for (F, desc), FX, bus in zip(FEEDERS, FEEDER_X, "AABB"):
     line(FX, BUS_LV, 0, 40, dyn=live(f"BUS.{bus}.Live"))
     cb(FX - 20, BUS_LV + 40, f"{F}.CB", F)
     line(FX, BUS_LV + 80, 0, 50, dyn=live(f"{F}.I", ">", 0.5))
@@ -283,7 +293,24 @@ for (F, desc), FX, bus in zip(FEEDERS, (330, 660, 1100, 1430), "AABB"):
     toggle(FX - 100, y + 196, f"{F}.FaultSim", "Felsimulering", 200, on="FEL", off="AV", color="#c62828")
 
 text(30, H - 26, 1400, "Klicka på brytare, omkopplare och knappar för manöver, och på ett mätvärde för trend. "
-     "Röd brytare = Till, grön = Från. Lila = osäkert värde.", 12, DIM)
+     " Fylld = Till, tom = Från. Lila = osäkert värde.", 12, DIM)
+
+# generator bay G1 – added after all other elements so that their ids are unchanged
+GX1 = 1560
+line(GX1, BUS_LV, 0, 40, dyn=live("BUS.B.Live"))
+cb(GX1 - 20, BUS_LV + 40, "G1.CB", "G1")
+line(GX1, BUS_LV + 80, 0, 26, dyn=live("G1.I", ">", 0.5))
+add("ellipse", GX1 - 16, BUS_LV + 106, 32, 32, fill="#00000000", stroke=FG, strokeWidth=3, **live("G1.GenOnline", "==", 1))
+add("text", GX1 - 16, BUS_LV + 106, 32, 32, text="G", fontSize=16, color=FG, bold=True, align="middle", **NODYN)
+text(GX1 - 100, BUS_LV + 142, 200, "G1 Kraftvärme", 17, FG, True, "middle", 26)
+y = BUS_LV + 168
+m(GX1 - 100, y, "G1.P", "P")
+m(GX1 - 100, y + 32, "G1.Q", "Q")
+m(GX1 - 100, y + 64, "G1.I", "I")
+m(GX1 - 100, y + 96, "G1.Energy", "Energi")
+add("indicator", GX1 - 98, y + 134, 18, 18, tag="G1.GenOnline", onValue=1, onColor="#2ecc71", offColor="#3a4450", label="Generator i drift", blink=False)
+add("indicator", GX1 - 98, y + 162, 18, 18, tag="G1.Link", onValue=0, onColor="#ff4d4d", offColor="#3a4450", label="Länkavbrott", blink=False)
+add("link", GX1 - 100, y + 196, 200, 28, text="Kraftvärmeverket ›", view="blue-chp", color=PANEL, textColor=FG)
 
 view = dict(id="blue-station", name="Blue Station", width=W, height=H, background="#0d1117", grid=10,
             elements=els, updated=datetime.datetime.now().astimezone().isoformat())

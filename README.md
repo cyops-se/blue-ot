@@ -1,152 +1,87 @@
-# Blue OT SCADA
+**Svenska** · [English](README-en.md)
 
-En SCADA-liknande applikation med:
+# Blue OT
 
-- **Backend (Go)**: pollar Modbus TCP-enheter, håller en realtidsdatabas med kort historik, händelselista, REST-API och WebSocket-push.
-- **HMI (Vue 3 + Vuetify 3)**: driftbilder med statisk grafik och dynamiska symboler, vy-editor, manöver av brytare och frånskiljare, mätvärdestabell med trender, händelselista och konfiguration av enheter och taggar.
-- **Modbus-simulator** (`modsim`): ett ställverk med fyra fack, så att allt kan testas utan riktig utrustning.
+Blue OT är en labbmiljö för OT, alltså driftteknik och industriella styrsystem. Den består av ett SCADA-system och tre simulatorer som tillsammans bildar en liten kraftsystemanläggning. Allt är skrivet i Go, och SCADA-systemet har ett webbaserat HMI i Vue och Vuetify. Simulatorerna talar riktiga industriprotokoll, Modbus TCP och IEC 60870-5-104, så de kan också användas med andra SCADA-system, protokollanalysatorer eller säkerhetsverktyg.
+
+## Komponenter
+
+| Komponent | Vad det är | Gränssnitt | Dokumentation |
+|---|---|---|---|
+| **scada** | SCADA-system med Go-backend och webb-HMI. Det pollar enheter över Modbus TCP, visar driftbilder och mätvärden, loggar händelser och låter operatören manövrera brytare, omkopplare och börvärden. Driftbilderna ritas i en inbyggd vy-editor. Backend och HMI levereras som en enda exe-fil. | HTTP/REST och WebSocket (HMI), Modbus TCP-klient | [scada/README.md](scada/README.md) |
+| **modsim** | En liten Modbus TCP-simulator som ingår i SCADA-projektet. Den simulerar ett 10 kV-ställverk med fyra fack, brytare, frånskiljare med förregling och mätvärden. Den är tänkt för att snabbt testa SCADA utan något annat. | Modbus TCP-server | [scada/README.md](scada/README.md#modsim) |
+| **blue-station** | Simulator för en transformatorstation på 220/20 kV. Den har stamnätsmatning, två transformatorer med lindningskopplare och spänningsreglering, en sektionerad 20 kV-skena, fyra avgångar med dygnsprofiler och överströmsskydd, och fack G1 där kraftvärmeverket är anslutet. | Modbus TCP, IEC 60870-5-104, webbgränssnitt med JSON-API | [blue-station/README.md](blue-station/README.md) |
+| **blue-chp** | Simulator för ett kraftvärmeverk med två pannor, ångsamlare och bypass, en mottrycksturbin med generator och ett fjärrvärmenät med pumpar och värmeackumulator. Generatorn matar in el i blue-station. | Modbus TCP, IEC 60870-5-104, webbgränssnitt med JSON-API, länk till blue-station | [blue-chp/README.md](blue-chp/README.md) |
+
+## Hur delarna hänger ihop
+
+```
+                         ┌────────────────────────────────────────┐
+   webbläsare ──HTTP/WS──►  scada  (HMI + REST + WebSocket, :8080) │
+                         └───┬───────────────┬────────────────┬───┘
+                             │ Modbus TCP    │ Modbus TCP     │ Modbus TCP
+                             ▼               ▼                ▼
+                      ┌──────────┐   ┌───────────────┐   ┌───────────────┐
+                      │  modsim  │   │ blue-station  │   │   blue-chp    │
+                      │  :5020   │   │ :502  IEC:2404│   │ :1502 IEC:2405│
+                      └──────────┘   │ webb (valfri) │   │ webb :8082    │
+                                     └───────┬───────┘   └───────▲───────┘
+                                             │  fack G1, 20 kV   │
+                                             └──── /api/link ────┘
+                                     skenans spänning, frekvens och brytarläge →
+                                     ← generatorns P och Q
+```
+
+- **SCADA ↔ simulatorerna:** SCADA är Modbus-klient och pollar varje simulator som en egen enhet. Tagg- och vykonfigurationen för blue-station och blue-chp följer med i `scada/backend/data` och kan genereras om från simulatorernas signallistor.
+- **blue-station ↔ blue-chp:** kopplingen motsvarar 20 kV-kabeln mellan verket och stationen. Det är ingen SCADA-kommunikation. Varje sekund skickar stationen läget på anslutningspunkten till kraftvärmeverket och får tillbaka generatorns produktion, som matas in på sektion B. Om facket öppnas eller skenan blir spänningslös löser generatorns nätbortfallsskydd ut. Båda simulatorerna fungerar också var för sig.
+
+## Snabbstart
+
+Krav: Go 1.21 eller senare. För att bygga om HMI behövs dessutom Node 18 eller senare.
+
+Starta varje del i ett eget terminalfönster:
+
+```bash
+# Simulatorerna
+cd blue-chp     && go run ./cmd/blue-chp                     # Modbus :1502, IEC 104 :2405, webb :8082
+cd blue-station && go run ./cmd/blue-station -http :8090     # Modbus :502,  IEC 104 :2404, webb :8090
+cd scada/backend && go run ./cmd/modsim                      # Modbus :5020
+
+# SCADA – bygg HMI en gång, starta sedan backend
+cd scada/frontend && npm install && npm run build
+cd scada/backend  && go run ./cmd/scada -data data           # http://localhost:8080
+```
+
+Öppna http://localhost:8080 och välj någon av vyerna **Station Norra** (modsim), **Blue Station** eller **Blue CHP**. Simulatorernas egna webbgränssnitt, med alla signaler och en händelselogg, finns på http://localhost:8090 (blue-station) och http://localhost:8082 (blue-chp).
+
+blue-station använder också port 8080 för sitt webbgränssnitt som standard. Om SCADA körs på samma dator måste stationens webb därför flyttas med `-http`, som i exemplet ovan. På Linux krävs root eller `CAP_NET_BIND_SERVICE` för Modbus-porten 502. Använd annars t.ex. `-modbus :5021` och ändra porten för enheten `blue-station` i SCADA.
+
+### Portar
+
+| Komponent | Modbus TCP | IEC 60870-5-104 | HTTP |
+|---|---|---|---|
+| scada | (klient) | – | 8080 |
+| modsim | 5020 | – | – |
+| blue-station | 502 | 2404 (CA 1) | 8080 som standard, 8090 i exemplet ovan |
+| blue-chp | 1502 | 2405 (CA 2) | 8082 (webb och länk till blue-station) |
+
+## Katalogstruktur
 
 ```
 blue-ot/
-├── blue-station/            simulator för transformatorstation (Modbus TCP / IEC 104)
-└── scada/
-    ├── backend/
-    │   ├── cmd/scada/        huvudprogram (HTTP + Modbus-poller + inbäddat HMI)
-    │   ├── cmd/modsim/       Modbus TCP-simulator
-    │   ├── internal/model    datatyper
-    │   ├── internal/store    JSON-lagring (config.json, views/*.json, images/)
-    │   ├── internal/realtime processbild, historik, händelser, pub/sub
-    │   ├── internal/mbus     Modbus-polling, avkodning, skrivning (manöver)
-    │   ├── internal/api      REST + WebSocket
-    │   ├── internal/web      inbäddat HMI (go:embed av dist/, byggs av frontend)
-    │   └── data/             exempelkonfiguration och vyerna "Station Norra" och "Blue Station"
-    └── frontend/             Vuetify-HMI (Vite)
+├── scada/
+│   ├── backend/        Go: SCADA-server (cmd/scada), modsim (cmd/modsim), data/ med konfiguration och vyer, tools/ med generatorskript
+│   └── frontend/       Vue 3 + Vuetify 3: HMI, byggs in i backendens exe-fil
+├── blue-station/       Go: simulator för transformatorstation 220/20 kV
+└── blue-chp/           Go: simulator för kraftvärmeverk med fjärrvärme
 ```
 
-## Kom igång
+Varje Go-katalog (`scada/backend`, `blue-station` och `blue-chp`) är en egen modul. Testerna körs med `go test ./...` i respektive katalog. Simulatorerna använder bara Go:s standardbibliotek.
 
-Krav: Go 1.21+ och Node 18+.
+## Säkerhet
 
-### Bygga en exe-fil
+Allt i Blue OT är tänkt för labb, utbildning och test. Varken SCADA eller simulatorerna har autentisering eller kryptering, och alla manövrar tas emot från vem som helst som når portarna. Kör dem bara i isolerade nät och anslut aldrig SCADA till riktig utrustning utan att först lägga till behörighetsstyrning.
 
-Webbgränssnittet byggs in i backendens exe-fil, så att samma program servar både REST-API, WebSocket och HMI.
+## Licens
 
-```bash
-cd scada/frontend
-npm install
-npm run build          # skriver till scada/backend/internal/web/dist
-
-cd ../backend
-go build -o bin/ ./cmd/scada ./cmd/modsim
-```
-
-`bin/scada` (`scada.exe` på Windows) behöver sedan bara katalogen `data/` bredvid sig, eller en sökväg via `-data`. Kör HMI-bygget före `go build`, eftersom ändringar i frontend märks först när backend byggs om. Om backend byggs utan frontend-bygge startar den ändå, men webbgränssnittet svarar då med ett meddelande om att HMI saknas.
-
-### Köra
-
-```bash
-# 1. Simulatorn (Modbus TCP på port 5020)
-cd scada/backend
-go run ./cmd/modsim
-
-# 2. SCADA (i ett nytt fönster): HMI och API på http://localhost:8080
-cd scada/backend
-go run ./cmd/scada -data data
-```
-
-### Utveckling av HMI
-
-Med Vites dev-server laddas ändringar i webbläsaren direkt. Anrop till `/api`, `/ws` och `/images` skickas vidare till backend på :8080.
-
-```bash
-cd scada/frontend
-npm run dev            # http://localhost:5173
-```
-
-Flaggor för `scada`: `-addr :8080`, `-data data`, `-web <katalog>`. Med `-web` serveras HMI:t från en katalog på disk i stället för det inbäddade bygget, till exempel `-web internal/web/dist`.
-Flaggor för `modsim`: `-addr 0.0.0.0:5020`, `-delay 1.5s` (brytarens manövertid).
-
-## Användning
-
-### Driftbild
-- **Brytare och frånskiljare**: klicka för att öppna manöverdialogen. Den följer select-before-operate: först väljer du *Frånslag/Tillslag* (*Öppna/Slut*), sedan bekräftar du med *Utför*. Dialogen väntar sedan på att läget ändras. Om enheten avvisar manövern visas felet i dialogen.
-- **Mätvärden och staplar**: klicka för att visa en trend (5–60 min ur backendens minneshistorik).
-- **Kvalitet**: värden med dålig kvalitet visas lila med `???` och symboler med `?`.
-
-### Vy-editor (`/views/:id/edit`)
-- Dra symboler från paletten till ritytan, eller dubbelklicka på en symbol för att lägga den i mitten.
-- Markera ett element för att ändra position, storlek, rotation, färger och **taggkoppling** i egenskapspanelen.
-- Linjer och samlingsskenor har handtag i båda ändar. Övriga element har ett storlekshandtag nere till höger.
-- Kortkommandon: `Del` tar bort, `Ctrl+D` duplicerar, piltangenterna flyttar (`Shift` ger större steg, `Alt` 1 px), `Ctrl+Z` ångrar och `Ctrl+S` sparar.
-- Bilder (png, jpg, svg, webp) laddas upp via bildelementet och lagras i `data/images/`.
-
-| Symbol | Konfiguration |
-|---|---|
-| Linje, samlingsskena, rektangel, ellips, text, transformator | Färg, linjebredd och **dynamisk färg**: tagg och regler (`==`, `>`, `<` …), där första matchande regel gäller |
-| Bild, jord | Statisk grafik |
-| Brytare / frånskiljare | Lägestagg och värden för öppen/sluten, manövertagg och värden för frånslag/tillslag, färger |
-| Mätvärde | Tagg, etikett, enhet och decimaler (som standard från taggen), gränsvärden med larmfärg |
-| Indikering | Tagg, aktivt värde, färger, blinkning |
-| Stapel | Tagg, min/max. Fylls vågrätt om stapeln är bredare än hög |
-| Kommandoknapp | Skrivbar tagg och värde. Med "Fråga efter värde" fungerar den som börvärdesinmatning |
-| Omkopplare | Läges- och manövertagg med egna texter för PÅ och AV (t.ex. AUTO/MAN, FEL/AV) |
-| Vy-länk | Navigering till en annan vy |
-
-### Konfiguration (`/config`)
-- **Enheter**: IP-adress/port, unit id, pollintervall och timeout.
-- **Taggar**: område (coil, discrete, input, holding), adress (0-baserad), datatyp (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), ord- och bytebyte, skala och offset, bit i register, skrivbar, händelseloggning och lägestexter.
-
-Ändringar sparas i `data/config.json` och pollern startas om direkt.
-
-## Simulatorns registerkarta
-
-| Område | Adress | Innehåll |
-|---|---|---|
-| Holding | 100–103 | Läge för brytare Q1–Q4 (0 = mellanläge, 1 = öppen, 2 = sluten, 3 = fel) |
-| Holding | 200–203 | Manöver för Q1–Q4 (skriv 1 = frånslag, 2 = tillslag) |
-| Discrete | 0–3 | Läge för frånskiljare QS1–QS4 (1 = sluten) |
-| Coil | 0–3 | Manöver för QS1–QS4 (1 = slut, 0 = öppna). Förreglad: avvisas om brytaren inte är öppen |
-| Input | 6n, 6n+2, 6n+4 | Fack n (0–3): U kV, I A, P MW (float32, ABCD) |
-| Input | 30 / 32 | Frekvens Hz / spänning på samlingsskenan kV (float32) |
-| Input | 40 | T1 oljetemperatur (int16, skala 0,1) |
-
-## Vyn Blue Station
-
-Vyn **Blue Station** (`data/views/blue-station.json`) är byggd på signallistan i [`blue-station/README.md`](blue-station/README.md). Den visar en transformatorstation 220/20 kV med följande delar:
-
-- Inkommande stamnät med linjebrytare Q0, mätvärden U, f, P, Q och ström genom Q0.
-- Transformatorerna T1 och T2. Varje transformator har brytare på upp- och nedsidan, P, Q, strömmar, belastning (med stapel) och oljetemperatur, med larmgräns vid 90 °C. Där finns också lindningskopplarläge, knappar för att höja och sänka, omkopplare för AVR auto/manuell samt indikeringar för överlast, hög oljetemperatur och skyddsutlösning.
-- 20 kV-skenans sektioner A och B med sektioneringsbrytare och spänningsmätning. Skenor och ledningar färgas efter om de är spänningssatta.
-- Avgångarna F1–F4. Varje avgång har brytare, P, Q, I, energi, indikering för överströmsutlösning, inställning av I> (börvärde) och omkopplare för felsimulering.
-- En panel för station och spänningsreglering med summalarm, Återställ (`Station.Reset`) och börvärden för AVR, och en simuleringspanel med matning från stamnätet, lastskalning och omgivningstemperatur.
-
-Enheten `blue-station` (127.0.0.1:502) och dess 99 taggar finns i `data/config.json`. Brytare och omkopplare har två taggar: lägestaggen läser discrete input (till exempel `F1.CB`) och manövertaggen skriver coil (`F1.CB.Cmd`). Pulskommandon (`T1.Tap.Raise`, `Station.Reset` …) är skrivbara coils som skrivs med 1, och börvärden är float32 i holdingregister. Konfigurationen och vyn genereras av `backend/tools/gen_blue_station.py`. Kör `python tools/gen_blue_station.py` i `scada/backend/` för att skapa dem på nytt.
-
-```bash
-cd blue-station && go run ./cmd/blue-station -http :8090   # Modbus :502; webben flyttas från :8080
-cd scada/backend && go run ./cmd/scada -data data
-```
-
-Scenarierna i blue-stations README (fel på avgång → utlösning → Återställ → tillslag, sektionering, överlast, AVR) kan köras direkt från vyn.
-
-## REST-API
-
-| Metod | Sökväg | Beskrivning |
-|---|---|---|
-| GET | `/api/config` | Enheter och taggar |
-| POST/PUT/DELETE | `/api/devices[/{id}]` | Hantera enheter |
-| POST/PUT/DELETE | `/api/tags[/{id}]` | Hantera taggar |
-| GET | `/api/values` | Ögonblicksbild av alla värden |
-| GET | `/api/status` | Kommunikationsstatus per enhet |
-| GET | `/api/history/{tag}?minutes=10` | Historik `[{t, v}]` |
-| GET | `/api/events` | Händelselista (nyast först) |
-| POST | `/api/commands` | `{"tag":"Q1_CMD","value":1,"source":"Q1","text":"Frånslag"}` |
-| GET/POST | `/api/views` | Lista eller skapa vyer |
-| GET/PUT/DELETE | `/api/views/{id}` | Läs, spara eller ta bort en vy |
-| GET/POST | `/api/images` | Lista eller ladda upp bilder (multipart, fält `file`) |
-| WS | `/ws` | `snapshot` vid anslutning, därefter `values`, `device` och `event` |
-
-## Begränsningar och nästa steg
-- Ingen inloggning eller behörighetsstyrning. Manövrar loggas som "operatör". Lägg till autentisering innan systemet används mot riktig utrustning.
-- Historiken finns bara i minnet (1 h per tagg vid 1 s polling). För längre lagring behövs en tidsseriedatabas.
-- Ingen larmhantering med kvittering. Gränsvärden på mätvärdessymboler är enbart visuella.
+MIT, se [LICENSE](LICENSE).

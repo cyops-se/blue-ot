@@ -112,3 +112,53 @@ func TestSetpointRange(t *testing.T) {
 		t.Fatalf("förväntade ErrRange, fick %v", err)
 	}
 }
+
+func TestGeneratorBay(t *testing.T) {
+	s := newTest(t)
+	s.Tick(1)
+	before := s.T[1].P
+	s.SetGenerator(true, true, 20, 4)
+	s.Tick(1)
+	g := s.G1
+	if g.P != 20 || g.I <= 0 {
+		t.Fatalf("G1 ska mata in 20 MW, P=%.1f I=%.0f", g.P, g.I)
+	}
+	if s.T[1].P > before-19 {
+		t.Errorf("T2 ska avlastas av generatorn: före %.1f MW, efter %.1f MW", before, s.T[1].P)
+	}
+	if s.T[1].P >= 0 {
+		t.Errorf("med 20 MW inmatning och ca 13 MW last ska T2 mata tillbaka mot stamnätet, P=%.1f", s.T[1].P)
+	}
+	if live, _, _, closed := s.GridSide(); !live || !closed {
+		t.Error("anslutningspunkten ska vara spänningssatt och facket slutet")
+	}
+
+	// Opening the bay disconnects the generator immediately.
+	if err := ctrl(t, s, "G1.CB", Ctrl{On: false}); err != nil {
+		t.Fatal(err)
+	}
+	if g.P != 0 {
+		t.Errorf("öppet fack ska inte mata in, P=%.1f", g.P)
+	}
+	if _, _, _, closed := s.GridSide(); closed {
+		t.Error("GridSide ska rapportera öppet fack")
+	}
+
+	// A dead busbar is reported to the plant (which then trips on loss of mains).
+	ctrl(t, s, "G1.CB", Ctrl{On: true})
+	ctrl(t, s, "T2.LV.CB", Ctrl{On: false})
+	if live, _, _, _ := s.GridSide(); live {
+		t.Error("sektion B ska vara spänningslös")
+	}
+	if g.P != 0 {
+		t.Error("generatorn får inte mata en spänningslös skena (ingen ödrift)")
+	}
+
+	// Without link the generator contributes nothing.
+	ctrl(t, s, "T2.LV.CB", Ctrl{On: true})
+	s.SetGenerator(false, true, 20, 4)
+	s.Tick(1)
+	if g.P != 0 || g.GenOnline {
+		t.Error("utan länk ska G1 inte mata in")
+	}
+}
