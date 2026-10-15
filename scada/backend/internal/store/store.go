@@ -49,8 +49,18 @@ func Open(dir string) (*Store, error) {
 	if err := json.Unmarshal(b, &s.cfg); err != nil {
 		return nil, fmt.Errorf("parse %s: %w", s.configPath(), err)
 	}
+	iecDev := map[string]bool{}
+	for _, d := range s.cfg.Devices {
+		if d.IsIEC() {
+			iecDev[d.ID] = true
+		}
+	}
 	for i := range s.cfg.Tags {
-		normalizeTag(&s.cfg.Tags[i])
+		if iecDev[s.cfg.Tags[i].Device] {
+			normalizeIECTag(&s.cfg.Tags[i])
+		} else {
+			normalizeTag(&s.cfg.Tags[i])
+		}
 	}
 	return s, nil
 }
@@ -108,11 +118,27 @@ func validateDevice(d *model.Device) error {
 	if d.Host == "" {
 		return errors.New("host saknas")
 	}
-	if d.Port <= 0 || d.Port > 65535 {
-		d.Port = 502
-	}
-	if d.UnitID < 0 || d.UnitID > 255 {
-		return errors.New("unitId måste vara 0-255")
+	switch d.Protocol {
+	case "", model.ProtoModbus:
+		d.Protocol = model.ProtoModbus
+		if d.Port <= 0 || d.Port > 65535 {
+			d.Port = 502
+		}
+		if d.UnitID < 0 || d.UnitID > 255 {
+			return errors.New("unitId måste vara 0-255")
+		}
+	case model.ProtoIEC104:
+		if d.Port <= 0 || d.Port > 65535 {
+			d.Port = 2404
+		}
+		if d.CA < 0 || d.CA > 65535 {
+			return errors.New("gemensam adress (CA) måste vara 0-65535")
+		}
+		if d.CA == 0 {
+			d.CA = 1
+		}
+	default:
+		return fmt.Errorf("okänt protokoll %q (modbus eller iec104)", d.Protocol)
 	}
 	if d.PollMs < 100 {
 		d.PollMs = 1000
@@ -181,6 +207,9 @@ func (s *Store) DeleteDevice(id string) error {
 // ---- tags ----
 
 func normalizeTag(t *model.Tag) {
+	if t.Name == "" {
+		t.Name = t.ID
+	}
 	if t.Scale == 0 {
 		t.Scale = 1
 	}
@@ -203,16 +232,31 @@ func (s *Store) validateTag(t *model.Tag) error {
 	if !idPattern.MatchString(t.ID) {
 		return fmt.Errorf("ogiltigt id %q (tillåtna tecken: A-Z a-z 0-9 _ . -)", t.ID)
 	}
-	switch t.Area {
-	case model.AreaCoil, model.AreaDiscrete, model.AreaInput, model.AreaHolding:
-	default:
-		return fmt.Errorf("okänt område %q", t.Area)
-	}
 	switch t.DataType {
 	case "", model.TypeBool, model.TypeUint16, model.TypeInt16, model.TypeUint32,
 		model.TypeInt32, model.TypeFloat32, model.TypeFloat64:
 	default:
 		return fmt.Errorf("okänd datatyp %q", t.DataType)
+	}
+	var dev *model.Device
+	for i := range s.cfg.Devices {
+		if s.cfg.Devices[i].ID == t.Device {
+			dev = &s.cfg.Devices[i]
+		}
+	}
+	if dev == nil {
+		return fmt.Errorf("okänd enhet %q", t.Device)
+	}
+	if t.Name == "" {
+		t.Name = t.ID
+	}
+	if dev.IsIEC() {
+		return validateIECTag(t)
+	}
+	switch t.Area {
+	case model.AreaCoil, model.AreaDiscrete, model.AreaInput, model.AreaHolding:
+	default:
+		return fmt.Errorf("okänt område %q", t.Area)
 	}
 	if t.Address < 0 || t.Address > 65535 {
 		return errors.New("adress måste vara 0-65535")
@@ -220,20 +264,53 @@ func (s *Store) validateTag(t *model.Tag) error {
 	if t.Bit > 15 {
 		return errors.New("bit måste vara -1..15")
 	}
-	found := false
-	for _, d := range s.cfg.Devices {
-		if d.ID == t.Device {
-			found = true
+	normalizeTag(t)
+	return nil
+}
+
+// validateIECTag checks a tag belonging to an IEC 104 device (addressed by IOA).
+func validateIECTag(t *model.Tag) error {
+	if t.IOA == 0 && t.CtrlIOA == 0 {
+		return errors.New("IEC-tagg kräver en övervaknings-IOA eller styr-IOA")
+	}
+	if t.IOA > 0xFFFFFF || t.CtrlIOA > 0xFFFFFF {
+		return errors.New("IOA måste vara 0-16777215")
+	}
+	if t.CtrlIOA != 0 {
+		switch t.Cmd {
+		case "", "C_DC", "C_SC", "C_RC", "C_SE_NC":
+		default:
+			return fmt.Errorf("okänd kommandotyp %q (C_DC, C_SC, C_RC, C_SE_NC)", t.Cmd)
 		}
 	}
-	if !found {
-		return fmt.Errorf("okänd enhet %q", t.Device)
-	}
+	normalizeIECTag(t)
+	return nil
+}
+
+// normalizeIECTag fills in defaults for an IEC 104 tag (writability follows the
+// control IOA). Called both on load and after validation.
+func normalizeIECTag(t *model.Tag) {
 	if t.Name == "" {
 		t.Name = t.ID
 	}
-	normalizeTag(t)
-	return nil
+	if t.DataType == "" {
+		t.DataType = model.TypeFloat32
+	}
+	if t.Scale == 0 {
+		t.Scale = 1
+	}
+	t.Bit = -1
+	t.Writable = t.CtrlIOA != 0
+	if t.Writable && t.Cmd == "" {
+		if t.DataType == model.TypeBool {
+			t.Cmd = "C_SC"
+		} else {
+			t.Cmd = "C_SE_NC"
+		}
+	}
+	if !t.Writable {
+		t.Cmd = ""
+	}
 }
 
 // UpsertTag creates or replaces a tag (renaming when oldID != t.ID).

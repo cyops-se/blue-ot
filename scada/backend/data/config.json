@@ -13,6 +13,7 @@
     {
       "id": "blue-station",
       "name": "Blue Station 220/20 kV",
+      "protocol": "modbus",
       "host": "172.16.47.230",
       "port": 1502,
       "unitId": 1,

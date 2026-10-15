@@ -1,4 +1,4 @@
-// Command scada runs the SCADA backend: Modbus TCP polling, REST API,
+// Command scada runs the SCADA backend: Modbus TCP / IEC 104 polling, REST API,
 // WebSocket push and the HMI, which is embedded in the executable.
 package main
 
@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"blueot/scada/internal/api"
-	"blueot/scada/internal/mbus"
+	"blueot/scada/internal/comm"
 	"blueot/scada/internal/realtime"
 	"blueot/scada/internal/store"
 	"blueot/scada/internal/web"
@@ -31,7 +31,7 @@ func main() {
 		log.Fatalf("store: %v", err)
 	}
 	hub := realtime.New()
-	mgr := mbus.NewManager(st, hub)
+	mgr := comm.NewManager(st, hub)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -52,7 +52,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              *addr,
-		Handler:           (&api.Server{Store: st, Hub: hub, Modbus: mgr, Web: hmi}).Handler(),
+		Handler:           (&api.Server{Store: st, Hub: hub, Comm: mgr, Web: hmi}).Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	go func() {

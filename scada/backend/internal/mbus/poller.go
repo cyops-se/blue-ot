@@ -1,11 +1,12 @@
-// Package mbus polls Modbus TCP devices and executes commands (writes).
+// Package mbus polls a Modbus TCP device and executes commands (writes). The
+// Worker implements the per-device polling; the comm package owns one Worker
+// per device and dispatches to it.
 package mbus
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"sort"
 	"strconv"
 	"sync"
@@ -15,7 +16,6 @@ import (
 
 	"blueot/scada/internal/model"
 	"blueot/scada/internal/realtime"
-	"blueot/scada/internal/store"
 )
 
 const (
@@ -23,91 +23,6 @@ const (
 	maxBitsPerRead = 1968
 	maxGap         = 16 // merge reads across gaps up to this many addresses
 )
-
-// Manager owns one worker per enabled device.
-type Manager struct {
-	store *store.Store
-	hub   *realtime.Hub
-
-	mu      sync.Mutex
-	ctx     context.Context
-	workers map[string]*worker
-}
-
-// NewManager creates a manager; call Start to begin polling.
-func NewManager(s *store.Store, h *realtime.Hub) *Manager {
-	return &Manager{store: s, hub: h, workers: map[string]*worker{}}
-}
-
-// Start begins polling all enabled devices.
-func (m *Manager) Start(ctx context.Context) {
-	m.mu.Lock()
-	m.ctx = ctx
-	m.mu.Unlock()
-	m.Reload()
-	go func() {
-		<-ctx.Done()
-		m.mu.Lock()
-		defer m.mu.Unlock()
-		for _, w := range m.workers {
-			w.stop()
-		}
-	}()
-}
-
-// Reload restarts the workers after a configuration change.
-func (m *Manager) Reload() {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	for id, w := range m.workers {
-		w.stop()
-		m.hub.RemoveDevice(id)
-	}
-	m.workers = map[string]*worker{}
-
-	cfg := m.store.Config()
-	keep := map[string]bool{}
-	for _, t := range cfg.Tags {
-		keep[t.ID] = true
-	}
-	m.hub.Forget(keep)
-
-	for _, d := range cfg.Devices {
-		if !d.Enabled {
-			continue
-		}
-		var tags []model.Tag
-		for _, t := range cfg.Tags {
-			if t.Device == d.ID {
-				tags = append(tags, t)
-			}
-		}
-		w := newWorker(d, tags, m.hub)
-		ctx, cancel := context.WithCancel(m.ctx)
-		w.cancel = cancel
-		m.workers[d.ID] = w
-		go w.run(ctx)
-	}
-	log.Printf("modbus: %d aktiva enheter, %d taggar", len(m.workers), len(cfg.Tags))
-}
-
-// Write executes a command by writing value to a writable tag.
-func (m *Manager) Write(req model.CommandRequest) error {
-	t, ok := m.store.Tag(req.Tag)
-	if !ok {
-		return fmt.Errorf("okänd tagg %q", req.Tag)
-	}
-	if !t.Writable {
-		return fmt.Errorf("taggen %q är inte skrivbar", t.ID)
-	}
-	m.mu.Lock()
-	w := m.workers[t.Device]
-	m.mu.Unlock()
-	if w == nil {
-		return fmt.Errorf("enheten %q är inte aktiv", t.Device)
-	}
-	return w.write(&t, req.Value)
-}
 
 // ---- worker ----
 
@@ -118,7 +33,8 @@ type block struct {
 	tags  []*model.Tag
 }
 
-type worker struct {
+// Worker polls one Modbus device.
+type Worker struct {
 	dev     model.Device
 	tags    []model.Tag
 	blocks  []block
@@ -132,8 +48,9 @@ type worker struct {
 	client *modbus.ModbusClient
 }
 
-func newWorker(d model.Device, tags []model.Tag, hub *realtime.Hub) *worker {
-	w := &worker{dev: d, tags: tags, hub: hub, trigger: make(chan struct{}, 1), done: make(chan struct{}), byID: map[string]*model.Tag{}}
+// NewWorker builds a Modbus worker for a device and its tags.
+func NewWorker(d model.Device, tags []model.Tag, hub *realtime.Hub) *Worker {
+	w := &Worker{dev: d, tags: tags, hub: hub, trigger: make(chan struct{}, 1), done: make(chan struct{}), byID: map[string]*model.Tag{}}
 	for i := range w.tags {
 		w.byID[w.tags[i].ID] = &w.tags[i]
 	}
@@ -182,12 +99,20 @@ func buildBlocks(tags []model.Tag) []block {
 	return out
 }
 
-func (w *worker) stop() {
+// Start begins polling in the background.
+func (w *Worker) Start(parent context.Context) {
+	ctx, cancel := context.WithCancel(parent)
+	w.cancel = cancel
+	go w.run(ctx)
+}
+
+// Stop stops polling and waits for the worker to finish.
+func (w *Worker) Stop() {
 	w.cancel()
 	<-w.done
 }
 
-func (w *worker) run(ctx context.Context) {
+func (w *Worker) run(ctx context.Context) {
 	defer close(w.done)
 	defer w.disconnect()
 
@@ -206,7 +131,7 @@ func (w *worker) run(ctx context.Context) {
 	}
 }
 
-func (w *worker) connectLocked() error {
+func (w *Worker) connectLocked() error {
 	if w.client != nil {
 		return nil
 	}
@@ -227,13 +152,13 @@ func (w *worker) connectLocked() error {
 	return nil
 }
 
-func (w *worker) disconnect() {
+func (w *Worker) disconnect() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	w.disconnectLocked()
 }
 
-func (w *worker) disconnectLocked() {
+func (w *Worker) disconnectLocked() {
 	if w.client != nil {
 		_ = w.client.Close()
 		w.client = nil
@@ -256,7 +181,7 @@ func isException(err error) bool {
 	return false
 }
 
-func (w *worker) poll() {
+func (w *Worker) poll() {
 	now := time.Now()
 	vals := make([]model.Value, 0, len(w.tags))
 
@@ -323,7 +248,7 @@ func stateText(t *model.Tag, v float64) string {
 	return s
 }
 
-func (w *worker) readBlock(b block, now time.Time) ([]model.Value, error) {
+func (w *Worker) readBlock(b block, now time.Time) ([]model.Value, error) {
 	out := make([]model.Value, 0, len(b.tags))
 	switch b.area {
 	case model.AreaCoil, model.AreaDiscrete:
@@ -361,7 +286,7 @@ func (w *worker) readBlock(b block, now time.Time) ([]model.Value, error) {
 	return out, nil
 }
 
-func (w *worker) write(t *model.Tag, v float64) error {
+func (w *Worker) Write(t *model.Tag, v float64) error {
 	w.mu.Lock()
 	err := w.writeLocked(t, v)
 	if err != nil && !isException(err) {
@@ -376,7 +301,7 @@ func (w *worker) write(t *model.Tag, v float64) error {
 	return err
 }
 
-func (w *worker) writeLocked(t *model.Tag, v float64) error {
+func (w *Worker) writeLocked(t *model.Tag, v float64) error {
 	if err := w.connectLocked(); err != nil {
 		return fmt.Errorf("ingen förbindelse med %s: %w", w.dev.Name, err)
 	}

@@ -18,7 +18,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"blueot/scada/internal/mbus"
+	"blueot/scada/internal/comm"
 	"blueot/scada/internal/model"
 	"blueot/scada/internal/realtime"
 	"blueot/scada/internal/store"
@@ -27,10 +27,10 @@ import (
 
 // Server bundles the dependencies of the HTTP handlers.
 type Server struct {
-	Store   *store.Store
-	Hub     *realtime.Hub
-	Modbus  *mbus.Manager
-	Web     fs.FS // built HMI served for all non-API paths (optional)
+	Store *store.Store
+	Hub   *realtime.Hub
+	Comm  *comm.Manager
+	Web   fs.FS // built HMI served for all non-API paths (optional)
 }
 
 // Handler builds the HTTP router.
@@ -134,7 +134,7 @@ func (s *Server) saveDevice(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, err)
 		return
 	}
-	s.Modbus.Reload()
+	s.Comm.Reload()
 	s.Hub.AddEvent("system", "info", "Konfiguration", "Enhet sparad: "+d.ID, "")
 	writeJSON(w, http.StatusOK, d)
 }
@@ -145,7 +145,7 @@ func (s *Server) deleteDevice(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, err)
 		return
 	}
-	s.Modbus.Reload()
+	s.Comm.Reload()
 	s.Hub.AddEvent("system", "info", "Konfiguration", "Enhet borttagen: "+id, "")
 	w.WriteHeader(http.StatusNoContent)
 }
@@ -165,7 +165,7 @@ func (s *Server) saveTag(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, err)
 		return
 	}
-	s.Modbus.Reload()
+	s.Comm.Reload()
 	writeJSON(w, http.StatusOK, t)
 }
 
@@ -174,7 +174,7 @@ func (s *Server) deleteTag(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, err)
 		return
 	}
-	s.Modbus.Reload()
+	s.Comm.Reload()
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -216,7 +216,7 @@ func (s *Server) postCommand(w http.ResponseWriter, r *http.Request) {
 		text = "Skriv " + strconv.FormatFloat(req.Value, 'f', -1, 64)
 	}
 	s.Hub.AddEvent("command", "info", src, "Manöver begärd: "+text, req.User)
-	if err := s.Modbus.Write(req); err != nil {
+	if err := s.Comm.Write(req); err != nil {
 		s.Hub.AddEvent("command", "alarm", src, "Manöver misslyckades: "+text+" ("+err.Error()+")", req.User)
 		writeJSON(w, http.StatusBadGateway, map[string]any{"ok": false, "error": err.Error()})
 		return

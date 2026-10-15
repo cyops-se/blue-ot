@@ -32,21 +32,32 @@ const (
 	QualityBad  = "bad"
 )
 
-// Device is a Modbus TCP server (RTU, PLC, IED ...) that the backend polls.
+// Protocols the backend can poll a device with.
+const (
+	ProtoModbus = "modbus"
+	ProtoIEC104 = "iec104"
+)
+
+// Device is a field device the backend polls, over Modbus TCP or IEC 104.
 type Device struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// Protocol is "modbus" (default) or "iec104".
+	Protocol  string `json:"protocol,omitempty"`
 	Host      string `json:"host"`
 	Port      int    `json:"port"`
-	UnitID    int    `json:"unitId"`
-	PollMs    int    `json:"pollMs"`
+	UnitID    int    `json:"unitId"`       // Modbus unit id
+	CA        int    `json:"ca,omitempty"` // IEC 104 common address of ASDU
+	PollMs    int    `json:"pollMs"`       // Modbus poll period; IEC 104 re-interrogation period
 	TimeoutMs int    `json:"timeoutMs"`
 	Enabled   bool   `json:"enabled"`
-	// IEC holds the IEC 60870-5-104 endpoint of the same device, when it also
-	// speaks IEC 104. The backend polls over Modbus and ignores this; the
-	// opctl tool uses it to send commands over IEC 104.
+	// IEC holds a secondary IEC 60870-5-104 endpoint of a Modbus device, used by
+	// the opctl tool and the blue-proxy proxy. It is not used for polling.
 	IEC *IEC104 `json:"iec104,omitempty"`
 }
+
+// IsIEC reports whether the device is polled over IEC 104.
+func (d *Device) IsIEC() bool { return d.Protocol == ProtoIEC104 }
 
 // IEC104 is the IEC 60870-5-104 endpoint of a device.
 type IEC104 struct {

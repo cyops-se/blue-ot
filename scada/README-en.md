@@ -2,7 +2,7 @@
 
 # Blue OT SCADA
 
-The SCADA part of [Blue OT](../README-en.md) consists of a Go backend that polls Modbus TCP devices and a web-based HMI built with Vue 3 and Vuetify 3. The HMI is embedded in the backend executable, so the same program serves the REST API, the WebSocket and the web interface. The project also includes **modsim**, a small Modbus simulator for testing the system without other equipment.
+The SCADA part of [Blue OT](../README-en.md) consists of a Go backend that polls field devices over **Modbus TCP or IEC 60870-5-104** and a web-based HMI built with Vue 3 and Vuetify 3. The HMI is embedded in the backend executable, so the same program serves the REST API, the WebSocket and the web interface. The project also includes **modsim**, a small Modbus simulator for testing the system without other equipment.
 
 What it includes:
 
@@ -95,8 +95,9 @@ The `scada` executable only needs the `data/` directory. Build the HMI before `g
 - **Measurements (`/values`):** all tags with value, quality and time of last change. Click a row to see the trend. Writable tags have a button for writing a value.
 - **Events (`/events`):** filtered by operations, position changes, communication and system. Position changes are logged for tags with "Logga ändringar" (log changes) and are shown with the tag's state texts, e.g. "Till → Från".
 - **Configuration (`/config`):**
-  - **Devices:** IP address and port, unit id, poll interval, timeout and enabled/disabled.
-  - **Tags:** area (coil, discrete, input, holding), address (0-based), data type (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), word and byte swap, scale and offset, bit in register, writable, event logging and state texts.
+  - **Devices:** protocol (Modbus TCP or IEC 60870-5-104), IP address and port, then unit id (Modbus) or common address CA (IEC 104), poll interval, timeout and enabled/disabled.
+  - **Modbus tags:** area (coil, discrete, input, holding), address (0-based), data type (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), word and byte swap, scale and offset, bit in register, writable, event logging and state texts.
+  - **IEC 104 tags:** monitoring IOA, data type (`bool` for M_SP/M_DP, numeric for M_ME/M_ST), control IOA and command type (`C_DC` breaker, `C_SC` switch, `C_RC` step, `C_SE_NC` setpoint) for operable tags, scale, offset, unit, decimals, event logging and state texts. A tag becomes writable when it has a control IOA.
   - Changes are saved to `data/config.json`, and the poller restarts immediately.
 
 ## Included devices and views
@@ -235,4 +236,4 @@ Values have the form `{"tag": "...", "v": 10.5, "q": "good" | "bad", "ts": "..."
 - There is no login or access control, and all operations are logged as "operatör" (operator). Add authentication before the system is used with real equipment.
 - History is kept in memory only, 1 hour per tag at 1 s polling. Longer storage requires a time-series database.
 - There is no alarm handling with acknowledgement. Limits on measurement symbols only change the colour.
-- Only Modbus TCP is supported as a client protocol. The simulators also offer IEC 60870-5-104, but SCADA does not use it.
+- Modbus TCP and IEC 60870-5-104 are both supported as client protocols (per device). The IEC 104 poller performs STARTDT and a general interrogation on connect, receives spontaneous changes and reconnects automatically. Monitoring types M_SP, M_DP, M_ST and M_ME (normalized, scaled and short float, with and without time tag) are decoded; commands are sent as C_SC, C_DC, C_RC or C_SE_NC with direct execute.
