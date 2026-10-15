@@ -28,16 +28,23 @@ def tag(id, name, area, addr, dt="bool", unit="", dec=0, writable=False, log=Fal
     if state:
         t["stateText"] = state
     tags.append(t)
+    return t
+
+
+def set_iec(t, p, cmd):
+    if p.get("ctrlIoa"):
+        t["ctrlIoa"] = p["ctrlIoa"]
+        t["cmd"] = cmd
 
 
 for p in points:
     k, a, g = p["kind"], p["modbus"], p["group"]
     texts = {"0": p["offText"].capitalize(), "1": p["onText"].capitalize()}
     if k == "breaker":
-        tag(p["id"], p["desc"], "discrete", a, log=True, state={"0": "Från", "1": "Till"}, group=g)
+        set_iec(tag(p["id"], p["desc"], "discrete", a, log=True, state={"0": "Från", "1": "Till"}, group=g), p, "C_DC")
         tag(p["id"] + ".Cmd", p["desc"] + " – manöver", "coil", a, writable=True, group=g)
     elif k == "switch":
-        tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g)
+        set_iec(tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g), p, "C_SC")
         tag(p["id"] + ".Cmd", p["desc"] + " – manöver", "coil", a, writable=True, group=g)
     elif k == "pulse":
         tag(p["id"], p["desc"], "coil", a, writable=True, group=g)
@@ -48,10 +55,17 @@ for p in points:
     elif k == "setpoint":
         tag(p["id"], p["desc"], "holding", a, "float32", p["unit"], DEC.get(p["unit"], 1), writable=True, group=g)
 
+_mon = {p["id"]: p.get("ioa", 0) for p in points}
+for _t in tags:
+    _pid = _t["id"][len(PREFIX):] if _t["id"].startswith(PREFIX) else _t["id"]
+    _ioa = _mon.get(_pid, 0)
+    if _ioa and not _t["id"].endswith(".Cmd"):
+        _t["ioa"] = _ioa
+
 cfg = json.load(open("data/config.json", encoding="utf-8"))
 cfg["devices"] = [d for d in cfg["devices"] if d["id"] != DEV] + [dict(
     id=DEV, name="Blue CHP kraftvärmeverk", host="127.0.0.1", port=1502, unitId=1,
-    pollMs=1000, timeoutMs=2000, enabled=True)]
+    pollMs=1000, timeoutMs=2000, enabled=True, iec104=dict(port=2405, ca=2))]
 cfg["tags"] = [t for t in cfg["tags"] if t["device"] != DEV] + tags
 json.dump(cfg, open("data/config.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 

@@ -25,7 +25,7 @@ En enkel transformatorstation skriven i Go (bara standardbiblioteket). Stationen
 ```sh
 go run ./cmd/blue-station                  # Modbus :502, IEC 104 :2404, webb :8080
 go run ./cmd/blue-station -timescale 60    # dygnsprofilen går 60 gånger snabbare
-go run ./cmd/blue-station -points          # skriv ut signallistan
+go run ./cmd/blue-station -points          # skriv ut signallistan (Markdown; -points-json ger JSON)
 go test ./...
 ```
 

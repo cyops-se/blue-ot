@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Proxy</title>
+<style>
+  :root { --bg:#0f141a; --card:#18202a; --line:#2a3542; --fg:#dde6ef; --dim:#8494a6;
+          --accent:#4a90d9; --held:#e0a020; --diff:#d64545; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:14px; padding:12px 16px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0; }
+  header .dim { color:var(--dim); }
+  .bar { display:flex; gap:8px; align-items:center; padding:8px 16px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .bar select, .bar button, .bar input { background:#24303d; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:4px 8px; font:inherit; }
+  .bar button { cursor:pointer; }
+  .bar button:hover { border-color:var(--accent); }
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:left; padding:6px 10px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; }
+  th { color:var(--dim); font-weight:600; position:sticky; top:0; background:var(--bg); cursor:pointer; }
+  td.num { text-align:right; }
+  tr.held { background:rgba(224,160,32,0.08); }
+  tr.blocked td:first-child { box-shadow: inset 3px 0 0 var(--diff); }
+  .tag { color:var(--dim); font-size:12px; }
+  .pill { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; border:1px solid var(--line); }
+  .pill.iec104 { color:#b388ff; } .pill.modbus { color:#4ad6c0; }
+  .held-badge { color:var(--held); font-weight:600; }
+  .diff { color:var(--diff); font-weight:600; }
+  .toggle { cursor:pointer; user-select:none; border:1px solid var(--line); border-radius:4px; padding:2px 10px; background:#24303d; display:inline-block; }
+  .toggle.hold.on { background:var(--held); color:#1a1a1a; border-color:var(--held); }
+  .toggle.block.on { background:var(--diff); color:#fff; border-color:var(--diff); }
+  input#filter { min-width:180px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Blue Proxy</h1>
+  <span class="dim" id="subtitle"></span>
+  <span class="dim" id="clock" style="margin-left:auto"></span>
+</header>
+<div class="bar">
+  <span>Grupp:</span>
+  <select id="cat"></select>
+  <button onclick="setCat('hold',true)">Frys</button>
+  <button onclick="setCat('hold',false)">Släpp</button>
+  <button onclick="setCat('block',true)">Blockera manöver</button>
+  <button onclick="setCat('block',false)">Tillåt manöver</button>
+  <span style="margin-left:16px">Filter:</span>
+  <input id="filter" placeholder="tagg, namn, typ…" oninput="render()">
+  <label style="margin-left:12px"><input type="checkbox" id="onlyHeld" onchange="render()"> bara frysta</label>
+  <label style="margin-left:8px"><input type="checkbox" id="onlyBlocked" onchange="render()"> bara blockerade</label>
+</div>
+<table>
+  <thead><tr>
+    <th data-k="name">Punkt</th>
+    <th data-k="category">Typ</th>
+    <th>Prot</th>
+    <th class="num">Insamlat (källa)</th>
+    <th class="num">Rapporterat (ut)</th>
+    <th>Senaste manöver</th>
+    <th>Rapportering</th>
+    <th>Manöver</th>
+  </tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script>
+let data = { points: [], categories: {} };
+let sortKey = 'name';
+
+function el(t, a, ...k){ const e=document.createElement(t); Object.assign(e,a||{}); for(const c of k) e.append(c); return e; }
+
+async function load(){
+  try {
+    data = await (await fetch('api/state')).json();
+    document.getElementById('subtitle').textContent = data.title || '';
+    document.getElementById('clock').textContent = new Date(data.time).toLocaleString('sv-SE');
+    buildCats();
+    render();
+  } catch(e){ /* keep last */ }
+}
+
+function buildCats(){
+  const sel = document.getElementById('cat');
+  if (sel.dataset.built) return;
+  sel.dataset.built = '1';
+  sel.append(el('option',{value:'all',textContent:'alla punkter'}));
+  for (const c of Object.keys(data.categories).sort())
+    sel.append(el('option',{value:c,textContent:`${c} (${data.categories[c]})`}));
+}
+
+async function post(endpoint, body){
+  await fetch('api/'+endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  load();
+}
+const ep = m => m==='hold' ? 'hold' : 'block';
+function setCat(mode,on){ post(ep(mode), {category: document.getElementById('cat').value, on}); }
+function setOne(mode,key,on){ post(ep(mode), {key, on}); }
+
+function render(){
+  const f = document.getElementById('filter').value.toLowerCase();
+  const onlyHeld = document.getElementById('onlyHeld').checked;
+  const onlyBlocked = document.getElementById('onlyBlocked').checked;
+  let pts = data.points.filter(p =>
+    (!onlyHeld || p.held) && (!onlyBlocked || p.blocked) &&
+    (!f || (p.key+' '+p.name+' '+p.category).toLowerCase().includes(f)));
+  pts.sort((a,b)=> String(a[sortKey]).localeCompare(String(b[sortKey]),'sv'));
+  const tb = document.getElementById('rows');
+  tb.replaceChildren(...pts.map(p => {
+    const cls = (p.held?'held ':'') + (p.blocked?'blocked':'');
+    const tr = el('tr', cls.trim() ? {className:cls.trim()} : {});
+    tr.append(
+      el('td', {}, el('div',{textContent:p.name}), el('div',{className:'tag',textContent:p.key})),
+      el('td', {}, p.category),
+      el('td', {}, el('span',{className:'pill '+p.proto, textContent:p.proto})),
+      el('td', {className:'num', textContent: p.collectedTxt || '–'}),
+      el('td', {className:'num'+(p.diff?' diff':''), textContent: p.reportedTxt || '–'}),
+      el('td', {className:'tag'+(p.lastCmdBad?' diff':''), textContent: p.lastCmd || ''}),
+      el('td', {}, el('span', {className:'toggle hold'+(p.held?' on':''), textContent: p.held?'FRYST':'transp.',
+        onclick: ()=>setOne('hold', p.key, !p.held)})),
+      el('td', {}, el('span', {className:'toggle block'+(p.blocked?' on':''), textContent: p.blocked?'BLOCKERAD':'tillåten',
+        onclick: ()=>setOne('block', p.key, !p.blocked)})),
+    );
+    return tr;
+  }));
+}
+
+document.querySelectorAll('th[data-k]').forEach(th =>
+  th.onclick = () => { sortKey = th.dataset.k; render(); });
+
+setInterval(load, 1000);
+load();
+</script>
+</body>
+</html>

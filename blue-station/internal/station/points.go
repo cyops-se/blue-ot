@@ -1,6 +1,7 @@
 package station
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"math"
@@ -154,6 +155,29 @@ func (p *Point) IECControlRef() string {
 		return fmt.Sprintf("C_SE_NC %d", p.CtrlIOA)
 	}
 	return "–"
+}
+
+// WritePointJSON writes the signal list as JSON, for generating SCADA configuration.
+func WritePointJSON(w io.Writer, pts []*Point) error {
+	type jp struct {
+		ID      string `json:"id"`
+		Group   string `json:"group"`
+		Desc    string `json:"desc"`
+		Unit    string `json:"unit"`
+		Kind    string `json:"kind"`
+		OnText  string `json:"onText"`
+		OffText string `json:"offText"`
+		Modbus  int    `json:"modbus"`
+		IOA     uint32 `json:"ioa,omitempty"`
+		CtrlIOA uint32 `json:"ctrlIoa,omitempty"`
+	}
+	out := make([]jp, 0, len(pts))
+	for _, p := range pts {
+		out = append(out, jp{p.ID, p.Group, p.Desc, p.Unit, p.Kind.String(), p.OnText, p.OffText, p.Modbus, p.IOA, p.CtrlIOA})
+	}
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	return enc.Encode(out)
 }
 
 // WritePointTable writes the signal list as a Markdown table.

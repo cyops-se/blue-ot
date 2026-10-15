@@ -25,7 +25,7 @@ A simple transformer substation written in Go (standard library only). The subst
 ```sh
 go run ./cmd/blue-station                  # Modbus :502, IEC 104 :2404, web :8080
 go run ./cmd/blue-station -timescale 60    # the daily profile runs 60 times faster
-go run ./cmd/blue-station -points          # print the signal list
+go run ./cmd/blue-station -points          # print the signal list (Markdown; -points-json gives JSON)
 go test ./...
 ```
 

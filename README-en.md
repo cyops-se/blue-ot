@@ -12,6 +12,7 @@ Blue OT is a lab environment for OT (operational technology and industrial contr
 | **modsim** | A small Modbus TCP simulator included in the SCADA project. It simulates a 10 kV switchgear with four bays, breakers, interlocked disconnectors and measurements. It is meant for testing SCADA quickly without anything else. | Modbus TCP server | [scada/README-en.md](scada/README-en.md#modsim) |
 | **blue-station** | Simulator of a 220/20 kV transformer substation. It has a transmission grid infeed, two transformers with on-load tap changers and voltage control, a sectionalised 20 kV busbar, four feeders with daily load profiles and overcurrent protection, and bay G1 where the CHP plant is connected. | Modbus TCP, IEC 60870-5-104, web interface with JSON API | [blue-station/README-en.md](blue-station/README-en.md) |
 | **blue-chp** | Simulator of a combined heat and power plant with two boilers, a steam header with bypass, a back-pressure turbine with generator, and a district heating network with pumps and a heat accumulator. The generator feeds electricity into blue-station. | Modbus TCP, IEC 60870-5-104, web interface with JSON API, link to blue-station | [blue-chp/README-en.md](blue-chp/README-en.md) |
+| **blue-proxy** | Transparent Modbus TCP / IEC 104 proxy between SCADA and a device. It remembers collected states and the last commands and can, per tag or type, freeze the reported value and block commands. A web interface shows collected vs reported and controls the modes. | Modbus TCP, IEC 60870-5-104 (proxy), web interface | [blue-proxy/README-en.md](blue-proxy/README-en.md) |
 
 ## How the parts fit together
 
@@ -65,18 +66,24 @@ blue-station also uses port 8080 for its web interface by default. When SCADA ru
 | blue-station | 502 | 2404 (CA 1) | 8080 by default, 8090 in the example above |
 | blue-chp | 1502 | 2405 (CA 2) | 8082 (web and link to blue-station) |
 
+### Tools and proxy
+
+- **opctl** (`scada/backend/cmd/opctl`): operates breakers, disconnectors and pumps from the command line over Modbus TCP or IEC 104, with addressing from the SCADA configuration. See [scada/README-en.md](scada/README-en.md#opctl).
+- **blue-proxy**: sits between SCADA and a device to freeze reported values and block commands. See [blue-proxy/README-en.md](blue-proxy/README-en.md).
+
 ## Directory layout
 
 ```
 blue-ot/
 ├── scada/
-│   ├── backend/        Go: SCADA server (cmd/scada), modsim (cmd/modsim), data/ with configuration and views, tools/ with generator scripts
+│   ├── backend/        Go: SCADA server (cmd/scada), modsim (cmd/modsim), opctl (cmd/opctl), data/ with configuration and views, tools/ with generator scripts
 │   └── frontend/       Vue 3 + Vuetify 3: HMI, embedded in the backend executable
 ├── blue-station/       Go: 220/20 kV transformer substation simulator
-└── blue-chp/           Go: CHP plant simulator with district heating
+├── blue-chp/           Go: CHP plant simulator with district heating
+└── blue-proxy/         Go: transparent Modbus TCP / IEC 104 proxy with freezing and command blocking
 ```
 
-Each Go directory (`scada/backend`, `blue-station` and `blue-chp`) is a separate module. Run the tests with `go test ./...` in each directory. The simulators use only the Go standard library.
+Each Go directory (`scada/backend`, `blue-station`, `blue-chp` and `blue-proxy`) is a separate module. Run the tests with `go test ./...` in each directory. The simulators and the proxy use only the Go standard library.
 
 ## Security
 

@@ -4,3 +4,4 @@ scada/backend/internal/web/dist/*
 !scada/backend/internal/web/dist/.gitkeep
 *.tmp
 *.exe
+/blue-proxy/blue-proxy

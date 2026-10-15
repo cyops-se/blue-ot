@@ -3,8 +3,8 @@
     {
       "id": "sim",
       "name": "Station Simulator",
-      "host": "127.0.0.1",
-      "port": 5020,
+      "host": "172.16.47.68",
+      "port": 1502,
       "unitId": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
@@ -13,8 +13,8 @@
     {
       "id": "blue-station",
       "name": "Blue Station 220/20 kV",
-      "host": "127.0.0.1",
-      "port": 502,
+      "host": "172.16.47.230",
+      "port": 1502,
       "unitId": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
@@ -23,7 +23,7 @@
     {
       "id": "blue-chp",
       "name": "Blue CHP kraftvärmeverk",
-      "host": "127.0.0.1",
+      "host": "172.16.47.123",
       "port": 1502,
       "unitId": 1,
       "pollMs": 1000,
@@ -40,7 +40,10 @@
       "address": 100,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -50,10 +53,7 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "Q1_CMD",
@@ -63,14 +63,14 @@
       "address": 200,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "QS1_POS",
@@ -80,7 +80,10 @@
       "address": 0,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -88,10 +91,7 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "QS1_CMD",
@@ -101,14 +101,14 @@
       "address": 0,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J1_U",
@@ -118,14 +118,14 @@
       "address": 0,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "kV",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J1_I",
@@ -135,14 +135,14 @@
       "address": 2,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "A",
       "decimals": 1,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J1_P",
@@ -152,14 +152,14 @@
       "address": 4,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "MW",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "Q2_POS",
@@ -169,7 +169,10 @@
       "address": 101,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -179,10 +182,7 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "Q2_CMD",
@@ -192,14 +192,14 @@
       "address": 201,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "QS2_POS",
@@ -209,7 +209,10 @@
       "address": 1,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -217,10 +220,7 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "QS2_CMD",
@@ -230,14 +230,14 @@
       "address": 1,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J2_U",
@@ -247,14 +247,14 @@
       "address": 6,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "kV",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J2_I",
@@ -264,14 +264,14 @@
       "address": 8,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "A",
       "decimals": 1,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J2_P",
@@ -281,14 +281,14 @@
       "address": 10,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "MW",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "Q3_POS",
@@ -298,7 +298,10 @@
       "address": 102,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -308,10 +311,7 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "Q3_CMD",
@@ -321,14 +321,14 @@
       "address": 202,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "QS3_POS",
@@ -338,7 +338,10 @@
       "address": 2,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -346,10 +349,7 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "QS3_CMD",
@@ -359,14 +359,14 @@
       "address": 2,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J3_U",
@@ -376,14 +376,14 @@
       "address": 12,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "kV",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J3_I",
@@ -393,14 +393,14 @@
       "address": 14,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "A",
       "decimals": 1,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J3_P",
@@ -410,14 +410,14 @@
       "address": 16,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "MW",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "Q4_POS",
@@ -427,7 +427,10 @@
       "address": 103,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -437,10 +440,7 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "Q4_CMD",
@@ -450,14 +450,14 @@
       "address": 203,
       "dataType": "uint16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "QS4_POS",
@@ -467,7 +467,10 @@
       "address": 3,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": false,
@@ -475,10 +478,7 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
-      },
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      }
     },
     {
       "id": "QS4_CMD",
@@ -488,14 +488,14 @@
       "address": 3,
       "dataType": "bool",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "",
       "decimals": 0,
       "writable": true,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J4_U",
@@ -505,14 +505,14 @@
       "address": 18,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "kV",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J4_I",
@@ -522,14 +522,14 @@
       "address": 20,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "A",
       "decimals": 1,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "J4_P",
@@ -539,14 +539,14 @@
       "address": 22,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "MW",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "F",
@@ -556,14 +556,14 @@
       "address": 30,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "Hz",
       "decimals": 3,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "UB",
@@ -573,14 +573,14 @@
       "address": 32,
       "dataType": "float32",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 1,
+      "offset": 0,
       "unit": "kV",
       "decimals": 2,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "T1_TEMP",
@@ -590,14 +590,14 @@
       "address": 40,
       "dataType": "int16",
       "bit": -1,
+      "wordSwap": false,
+      "byteSwap": false,
       "scale": 0.1,
+      "offset": 0,
       "unit": "°C",
       "decimals": 1,
       "writable": false,
-      "logEvents": false,
-      "offset": 0,
-      "wordSwap": false,
-      "byteSwap": false
+      "logEvents": false
     },
     {
       "id": "Grid.Available",
@@ -1722,7 +1722,7 @@
     },
     {
       "id": "F1.OC.Pickup",
-      "name": "F1 inställning I>",
+      "name": "F1 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 0,
@@ -1904,7 +1904,7 @@
     },
     {
       "id": "F2.OC.Pickup",
-      "name": "F2 inställning I>",
+      "name": "F2 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 2,
@@ -2086,7 +2086,7 @@
     },
     {
       "id": "F3.OC.Pickup",
-      "name": "F3 inställning I>",
+      "name": "F3 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 4,
@@ -2268,7 +2268,7 @@
     },
     {
       "id": "F4.OC.Pickup",
-      "name": "F4 inställning I>",
+      "name": "F4 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 6,
@@ -3244,7 +3244,7 @@
     },
     {
       "id": "CHP.Steam.HighPressure",
-      "name": "Högt ångtryck (>97 bar)",
+      "name": "Högt ångtryck (\u003e97 bar)",
       "description": "Ångsamlare och bypass",
       "device": "blue-chp",
       "area": "discrete",
@@ -4008,7 +4008,7 @@
     },
     {
       "id": "CHP.DH.LowDP",
-      "name": "Lågt differenstryck i nätet (<0,6 bar)",
+      "name": "Lågt differenstryck i nätet (\u003c0,6 bar)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",
@@ -4030,7 +4030,7 @@
     },
     {
       "id": "CHP.DH.SupplyLow",
-      "name": "Låg framledningstemperatur (>8 °C under börvärde)",
+      "name": "Låg framledningstemperatur (\u003e8 °C under börvärde)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",
@@ -4052,7 +4052,7 @@
     },
     {
       "id": "CHP.DH.SupplyHigh",
-      "name": "Hög framledningstemperatur (>120 °C)",
+      "name": "Hög framledningstemperatur (\u003e120 °C)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",

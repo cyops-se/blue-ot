@@ -5,8 +5,27 @@ in blue-station/README.md (repository root). Run from scada/backend:
 """
 import datetime
 import json
+import os
+import subprocess
 
 DEV = "blue-station"
+STATION_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "..", "blue-station")
+
+# IEC 104 control addresses, read straight from the simulator's signal list.
+_points = json.loads(subprocess.run(
+    ["go", "run", "./cmd/blue-station", "-points-json"], cwd=STATION_DIR,
+    check=True, capture_output=True, text=True, encoding="utf-8").stdout)
+IEC_IOA = {p["id"]: p.get("ctrlIoa", 0) for p in _points}
+MON_IOA = {p["id"]: p.get("ioa", 0) for p in _points}
+
+
+def set_iec(t, cmd):
+    """Attach the IEC 104 control address and command type to a status tag."""
+    ioa = IEC_IOA.get(t["id"], 0)
+    if ioa:
+        t["ctrlIoa"] = ioa
+        t["cmd"] = cmd
+
 
 # ---------------------------------------------------------------- tags
 tags = []
@@ -19,6 +38,7 @@ def tag(id, name, area, addr, dt="bool", unit="", dec=0, writable=False, log=Fal
     if state:
         t["stateText"] = state
     tags.append(t)
+    return t
 
 
 CB = {"0": "Från", "1": "Till"}
@@ -38,12 +58,12 @@ def setpoint(id, name, hr, unit):
 
 def breaker(id, name, n):
     # status in discrete input n, command in coil n (1 = TILL)
-    tag(id, name, "discrete", n, log=True, state=CB)
+    set_iec(tag(id, name, "discrete", n, log=True, state=CB), "C_DC")
     tag(id + ".Cmd", name + " – manöver", "coil", n, writable=True)
 
 
 def switch(id, name, n):
-    tag(id, name, "discrete", n, log=True, state=ONOFF)
+    set_iec(tag(id, name, "discrete", n, log=True, state=ONOFF), "C_SC")
     tag(id + ".Cmd", name + " – manöver", "coil", n, writable=True)
 
 
@@ -123,10 +143,15 @@ tag("G1.GenOnline", "G1 generator i kraftvärmeverket inkopplad", "discrete", 11
 tag("G1.Link", "G1 förbindelse med kraftvärmeverket", "discrete", 115, log=True, state={"0": "Avbrott", "1": "Länk"})
 
 # merge into config.json (replacing earlier blue-station entries)
+for _t in tags:
+    _ioa = MON_IOA.get(_t["id"], 0)
+    if _ioa:
+        _t["ioa"] = _ioa
+
 cfg = json.load(open("data/config.json", encoding="utf-8"))
 cfg["devices"] = [d for d in cfg["devices"] if d["id"] != DEV] + [dict(
     id=DEV, name="Blue Station 220/20 kV", host="127.0.0.1", port=502, unitId=1,
-    pollMs=1000, timeoutMs=2000, enabled=True)]
+    pollMs=1000, timeoutMs=2000, enabled=True, iec104=dict(port=2404, ca=1))]
 cfg["tags"] = [t for t in cfg["tags"] if t["device"] != DEV] + tags
 json.dump(cfg, open("data/config.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 

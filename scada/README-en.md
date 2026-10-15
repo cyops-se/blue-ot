@@ -27,6 +27,7 @@ The user interface is in Swedish.
 |---|---|
 | `backend/cmd/scada` | Main program: starts the poller, the HTTP server and the embedded HMI |
 | `backend/cmd/modsim` | Modbus TCP simulator (see [modsim](#modsim)) |
+| `backend/cmd/opctl` | Command-line tool to operate breakers and disconnectors (see [opctl](#opctl)) |
 | `backend/internal/mbus` | One poller per device. It merges nearby addresses into few reads, decodes data types, reconnects on errors and writes for operations |
 | `backend/internal/realtime` | Process image, in-memory history (3600 values per tag), event list (last 1000) and fan-out to WebSocket clients |
 | `backend/internal/store` | JSON storage of devices, tags, views and uploaded images |
@@ -45,7 +46,7 @@ npm install
 npm run build                    # writes to backend/internal/web/dist
 
 cd ../backend
-go build -o bin/ ./cmd/scada ./cmd/modsim
+go build -o bin/ ./cmd/scada ./cmd/modsim ./cmd/opctl
 ./bin/modsim                     # Modbus simulator on :5020
 ./bin/scada -data data           # HMI and API on http://localhost:8080
 ```
@@ -146,6 +147,67 @@ go run ./cmd/modsim -addr :1503 -delay 3s   # other port, breaker operating time
 | Input | 40 | Oil temperature T1 (int16, scale 0.1 °C) |
 
 The unit id is ignored. The **Station Norra** view and the `sim` device in `data/config.json` are configured for modsim.
+
+## opctl
+
+`opctl` operates a breaker or disconnector from the command line. The tag and the desired state are given as arguments, and everything else (host, port, Modbus address or IEC 104 control IOA) is read from the SCADA configuration file. Both **Modbus TCP** and **IEC 60870-5-104** are supported.
+
+```bash
+opctl [flags] <tag> <open|close>
+opctl -list [brytare|frånskiljare|pump]
+```
+
+- **Tag:** the position tag (`G1.CB`, `Q1_POS`) or the command tag (`G1.CB.Cmd`, `Q1_CMD`). The tool finds the other of the two and the device from the configuration.
+- **State:** `open`/`close`, `från`/`till` (open/close), `öppna`/`slut`, `0`/`1`. For pumps, `close` = start (running) and `open` = stop.
+
+```bash
+cd backend
+opctl -list                            # list all breakers, disconnectors and pumps
+opctl -list pump                       # pumps only
+opctl G1.CB close                      # Modbus TCP, reads data/config.json
+opctl -protocol iec104 Q0.CB open      # IEC 104
+opctl -data ../other/data QS1_POS open # other data directory
+```
+
+With `-list` the tool prints a table of the known breakers, disconnectors and pumps, which device each belongs to, which protocols can operate it and its command tag. The type is guessed from the tag id and name (the configuration has no explicit type). An optional filter (`brytare`, `frånskiljare` or `pump`) narrows the list.
+
+| Flag | Default | Description |
+|---|---|---|
+| `-list` | `false` | List breakers, disconnectors and pumps (optional filter as argument) |
+| `-proxy` | – | Address of a blue-proxy for freeze/block actions (see below) |
+| `-category` | – | With `-proxy`: apply the action to a whole type (must precede the action) |
+| `-protocol` | `modbus` | `modbus` or `iec104` |
+| `-data` | `data` | Data directory or path directly to `config.json` |
+| `-timeout` | `5s` | Timeout per call |
+| `-host` | – | Override the IP address/hostname from the configuration |
+| `-port` | – | Override the port from the configuration (Modbus or IEC 104 depending on `-protocol`) |
+| `-open-value` / `-close-value` | – | Override the Modbus value written (default: coil 0/1, holding 1/2) |
+| `-unit` | – | Override the unit id from the configuration |
+| `-verify` | `true` | Read the position tag back after the operation (Modbus) and wait until the position is reached |
+| `-dry-run` | `false` | Show what would be done without connecting |
+
+**Where the information comes from:**
+
+- **Modbus:** the device's `host`/`port`/`unitId` and the command tag's area and address. A breaker or disconnector has a position tag and a command tag (`…​.Cmd` or `…_CMD`); the tool writes to the command tag. The defaults follow the simulators' conventions: coil 0 = open, 1 = close; holding register 1 = open, 2 = close. After the operation the position tag is read until the position is reached.
+- **IEC 104:** the device's `iec104` block (`port`, `ca`) and the position tag's `ctrlIoa` and `cmd` (`C_DC` for breakers, `C_SC` for switches). The tool connects, performs STARTDT, sends the command with direct execute and waits for ACTCON and ACTTERM.
+
+`iec104`, `ctrlIoa` and `cmd` in `config.json` are filled in by the generator scripts for blue-station and blue-chp (see above). The backend only polls over Modbus and ignores the fields. modsim has no IEC 104 interface, so the `sim` tags can only be operated over Modbus.
+
+### Driving a blue-proxy
+
+With `-proxy <url>` opctl instead uses the HTTP API of a [blue-proxy](../blue-proxy/README-en.md) to freeze reported values and block commands, just like the proxy's web interface.
+
+```bash
+opctl -proxy http://127.0.0.1:8083 status                 # show all points, mode and last command
+opctl -proxy http://127.0.0.1:8083 freeze Grid.U          # freeze a tag
+opctl -proxy http://127.0.0.1:8083 unfreeze Grid.U        # release
+opctl -proxy http://127.0.0.1:8083 block Q0.CB            # block commands to a tag
+opctl -proxy http://127.0.0.1:8083 unblock Q0.CB          # allow again
+opctl -proxy http://127.0.0.1:8083 block type:brytare     # a whole type
+opctl -proxy http://127.0.0.1:8083 unfreeze all           # every point
+```
+
+Actions: `freeze`, `unfreeze`, `block`, `unblock` and `status`. The target is a tag, `all` or `type:<type>` (e.g. `type:mätvärde`). Alternatively give `-category <type>` before the action.
 
 ## REST API and WebSocket
 

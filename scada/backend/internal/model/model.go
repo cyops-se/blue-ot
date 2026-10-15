@@ -42,17 +42,27 @@ type Device struct {
 	PollMs    int    `json:"pollMs"`
 	TimeoutMs int    `json:"timeoutMs"`
 	Enabled   bool   `json:"enabled"`
+	// IEC holds the IEC 60870-5-104 endpoint of the same device, when it also
+	// speaks IEC 104. The backend polls over Modbus and ignores this; the
+	// opctl tool uses it to send commands over IEC 104.
+	IEC *IEC104 `json:"iec104,omitempty"`
+}
+
+// IEC104 is the IEC 60870-5-104 endpoint of a device.
+type IEC104 struct {
+	Port int `json:"port"` // control station TCP port (host is Device.Host)
+	CA   int `json:"ca"`   // common address of ASDU
 }
 
 // Tag is a single telemetry point mapped to a Modbus address.
 type Tag struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description,omitempty"`
-	Device      string  `json:"device"`
-	Area        string  `json:"area"`
-	Address     int     `json:"address"`
-	DataType    string  `json:"dataType"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	Device      string `json:"device"`
+	Area        string `json:"area"`
+	Address     int    `json:"address"`
+	DataType    string `json:"dataType"`
 	// Bit extracts a single bit (0-15) from a register when DataType is bool.
 	// -1 (or omitted for bit areas) means "whole register != 0".
 	Bit int `json:"bit"`
@@ -70,6 +80,13 @@ type Tag struct {
 	LogEvents bool `json:"logEvents"`
 	// StateText maps raw values to texts used in events, e.g. {"1":"Öppen","2":"Sluten"}.
 	StateText map[string]string `json:"stateText,omitempty"`
+	// IOA is the IEC 60870-5-104 monitoring information object address of this
+	// point. CtrlIOA is its control address, and Cmd its command type ("C_DC"
+	// for breakers, "C_SC" for switches). Set by the generator scripts; used by
+	// the opctl tool and the blue-proxy proxy, ignored by the backend.
+	IOA     uint32 `json:"ioa,omitempty"`
+	CtrlIOA uint32 `json:"ctrlIoa,omitempty"`
+	Cmd     string `json:"cmd,omitempty"`
 }
 
 // RegisterCount returns how many 16-bit registers the tag occupies.

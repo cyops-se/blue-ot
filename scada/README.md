@@ -25,6 +25,7 @@ Detta ingår:
 |---|---|
 | `backend/cmd/scada` | Huvudprogram: startar pollern, HTTP-servern och det inbäddade HMI:t |
 | `backend/cmd/modsim` | Modbus TCP-simulator (se [modsim](#modsim)) |
+| `backend/cmd/opctl` | Kommandoradsverktyg för att manövrera brytare och frånskiljare (se [opctl](#opctl)) |
 | `backend/internal/mbus` | En poller per enhet. Den slår ihop närliggande adresser till få läsningar, avkodar datatyper, återansluter vid fel och skriver vid manöver |
 | `backend/internal/realtime` | Processbild, historik i minnet (3600 värden per tagg), händelselista (1000 senaste) och utskick till WebSocket-klienter |
 | `backend/internal/store` | JSON-lagring av enheter, taggar, vyer och uppladdade bilder |
@@ -43,7 +44,7 @@ npm install
 npm run build                    # skriver till backend/internal/web/dist
 
 cd ../backend
-go build -o bin/ ./cmd/scada ./cmd/modsim
+go build -o bin/ ./cmd/scada ./cmd/modsim ./cmd/opctl
 ./bin/modsim                     # Modbus-simulator på :5020
 ./bin/scada -data data           # HMI och API på http://localhost:8080
 ```
@@ -144,6 +145,67 @@ go run ./cmd/modsim -addr :1503 -delay 3s   # annan port, brytarens manövertid 
 | Input | 40 | Oljetemperatur T1 (int16, skala 0,1 °C) |
 
 Unit id ignoreras. Vyn **Station Norra** och enheten `sim` i `data/config.json` är konfigurerade för modsim.
+
+## opctl
+
+`opctl` manövrerar en brytare eller frånskiljare från kommandoraden. Taggen och det önskade tillståndet anges som argument, och allt annat (värd, port, Modbus-adress eller IEC 104-styr-IOA) läses från SCADA:s konfigurationsfil. Både **Modbus TCP** och **IEC 60870-5-104** stöds.
+
+```bash
+opctl [flaggor] <tagg> <open|close>
+opctl -list [brytare|frånskiljare|pump]
+```
+
+- **Tagg:** lägestaggen (`G1.CB`, `Q1_POS`) eller manövertaggen (`G1.CB.Cmd`, `Q1_CMD`). Verktyget hittar den andra av de två och enheten utifrån konfigurationen.
+- **Tillstånd:** `open`/`close`, `från`/`till`, `öppna`/`slut`, `0`/`1`. För pumpar betyder `close` = starta (drift) och `open` = stoppa.
+
+```bash
+cd backend
+opctl -list                            # lista alla brytare, frånskiljare och pumpar
+opctl -list pump                       # bara pumpar
+opctl G1.CB close                      # Modbus TCP, läser data/config.json
+opctl -protocol iec104 Q0.CB open      # IEC 104
+opctl -data ../annan/data QS1_POS open # annan datakatalog
+```
+
+Med `-list` skrivs en tabell över kända brytare, frånskiljare och pumpar, vilken enhet de hör till, vilka protokoll de kan manövreras med och deras manövertagg. Typen gissas från taggens id och namn (konfigurationen har ingen uttrycklig typ). Ett valfritt filter (`brytare`, `frånskiljare` eller `pump`) begränsar listan.
+
+| Flagga | Standard | Beskrivning |
+|---|---|---|
+| `-list` | `false` | Lista brytare, frånskiljare och pumpar (valfritt filter som argument) |
+| `-proxy` | – | Adress till en blue-proxy för frys/block-åtgärder (se nedan) |
+| `-category` | – | Med `-proxy`: tillämpa åtgärden på en hel typ (måste stå före åtgärden) |
+| `-protocol` | `modbus` | `modbus` eller `iec104` |
+| `-data` | `data` | Datakatalog eller sökväg direkt till `config.json` |
+| `-timeout` | `5s` | Tidsgräns per anrop |
+| `-host` | – | Överskrid IP-adressen/värdnamnet från konfigurationen |
+| `-port` | – | Överskrid porten från konfigurationen (Modbus eller IEC 104 beroende på `-protocol`) |
+| `-open-value` / `-close-value` | – | Överskrid Modbus-värdet som skrivs (standard: coil 0/1, holding 1/2) |
+| `-unit` | – | Överskrid unit id från konfigurationen |
+| `-verify` | `true` | Läs tillbaka lägestaggen efter manövern (Modbus) och vänta tills läget nåtts |
+| `-dry-run` | `false` | Visa vad som skulle göras utan att ansluta |
+
+**Hur informationen hämtas:**
+
+- **Modbus:** enhetens `host`/`port`/`unitId` och manövertaggens område och adress. En brytare eller frånskiljare har en lägestagg och en manövertagg (`…​.Cmd` eller `…_CMD`); verktyget skriver till manövertaggen. Standardvärden följer simulatorernas konventioner: coil 0 = öppna, 1 = slut; holdingregister 1 = frånslag, 2 = tillslag. Efter manövern läses lägestaggen tills läget har nåtts.
+- **IEC 104:** enhetens `iec104`-block (`port`, `ca`) och lägestaggens `ctrlIoa` och `cmd` (`C_DC` för brytare, `C_SC` för omkopplare). Verktyget ansluter, gör STARTDT, skickar kommandot med direct execute och väntar på ACTCON och ACTTERM.
+
+`iec104`, `ctrlIoa` och `cmd` i `config.json` fylls i av generatorskripten för blue-station och blue-chp (se ovan). Backenden pollar bara över Modbus och bryr sig inte om fälten. modsim har inget IEC 104-gränssnitt, så `sim`-taggarna kan bara manövreras över Modbus.
+
+### Styra en blue-proxy
+
+Med `-proxy <url>` använder opctl i stället HTTP-API:et hos en [blue-proxy](../blue-proxy/README.md) för att frysa rapporterade värden och blockera manövrar, på samma sätt som proxyns webbgränssnitt.
+
+```bash
+opctl -proxy http://127.0.0.1:8083 status                 # visa alla punkter, läge och senaste manöver
+opctl -proxy http://127.0.0.1:8083 freeze Grid.U          # frys en tagg
+opctl -proxy http://127.0.0.1:8083 unfreeze Grid.U        # släpp
+opctl -proxy http://127.0.0.1:8083 block Q0.CB            # blockera manövrar mot en tagg
+opctl -proxy http://127.0.0.1:8083 unblock Q0.CB          # tillåt igen
+opctl -proxy http://127.0.0.1:8083 block type:brytare     # hela typen
+opctl -proxy http://127.0.0.1:8083 unfreeze all           # alla punkter
+```
+
+Åtgärder: `freeze`, `unfreeze`, `block`, `unblock` och `status`. Målet är en tagg, `all` eller `type:<typ>` (t.ex. `type:mätvärde`). Alternativt anges `-category <typ>` före åtgärden.
 
 ## REST-API och WebSocket
 
