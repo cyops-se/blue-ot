@@ -6,8 +6,8 @@ SCADA-delen av [Blue OT](../README.md) består av en Go-backend som pollar fält
 
 Detta ingår:
 
-- **Driftbilder** med statisk grafik och dynamiska symboler: brytare, frånskiljare, omkopplare, mätvärden, staplar, indikeringar, knappar och vy-länkar. Värdena uppdateras i realtid över WebSocket.
-- **Manöver** av brytare, frånskiljare, omkopplare och börvärden. Varje manöver kräver ett val och sedan en bekräftelse (select-before-operate), och dialogen visar när läget har ändrats.
+- **Driftbilder** med statisk grafik och dynamiska symboler: brytare, frånskiljare, omkopplare, pumpar, ventiler, mätvärden, staplar, indikeringar, knappar och vy-länkar. Värdena uppdateras i realtid över WebSocket.
+- **Manöver** av brytare, frånskiljare, omkopplare, pumpar, ventiler och börvärden. Varje manöver kräver ett val och sedan en bekräftelse (select-before-operate), och dialogen visar när läget har ändrats.
 - **Vy-editor** i webbläsaren. Där ritar du bilder och kopplar varje symbol till de taggar och värden den ska visa.
 - **Mätvärdestabell** med flyttal, kvalitet och tidsstämpel, trend per tagg och direkt skrivning till skrivbara taggar.
 - **Händelselista** med manövrar, lägesändringar, kommunikationsstatus och konfigurationsändringar.
@@ -31,7 +31,7 @@ Detta ingår:
 | `backend/internal/store` | JSON-lagring av enheter, taggar, vyer och uppladdade bilder |
 | `backend/internal/api` | REST-API och WebSocket |
 | `backend/internal/web` | Inbäddat HMI (`go:embed` av `dist/`, som skrivs av frontend-bygget) |
-| `backend/tools` | Skript som genererar enheter, taggar och vyer för blue-station och blue-chp |
+| `backend/tools` | Skript som genererar enheter, taggar och vyer för blue-station, blue-chp, blue-water och blue-wwtp |
 | `frontend/` | HMI i Vue 3, Vuetify 3, Pinia och Vite |
 
 ## Bygga och köra
@@ -63,7 +63,7 @@ Exe-filen `scada` behöver bara katalogen `data/`. Bygg HMI:t före `go build`, 
 
 ### Driftbild (`/views/:id`)
 
-- **Brytare, frånskiljare och omkopplare:** klicka för att öppna manöverdialogen. Välj *Frånslag/Tillslag* (eller *Öppna/Slut*, *PÅ/AV*) och bekräfta med *Utför*. Dialogen väntar på att läget ändras och stängs då. Om enheten avvisar manövern, t.ex. vid förregling eller blockering, visas felet i dialogen.
+- **Brytare, frånskiljare, omkopplare, pumpar och ventiler:** klicka för att öppna manöverdialogen. Välj *Frånslag/Tillslag* (eller *Öppna/Slut*, *PÅ/AV*, *START/STOPP*, *ÖPPNA/STÄNG*) och bekräfta med *Utför*. Dialogen väntar på att läget ändras och stängs då. Om enheten avvisar manövern, t.ex. vid förregling eller blockering, visas felet i dialogen.
 - **Kommandoknappar:** skriver ett fast värde, eller frågar efter ett värde (börvärde).
 - **Mätvärden och staplar:** klicka för att se en trend över de senaste 5–60 minuterna.
 - **Kvalitet:** värden från en enhet utan kommunikation visas lila med `???`, och symboler visas med `?`.
@@ -82,6 +82,7 @@ Exe-filen `scada` behöver bara katalogen `data/`. Bygg HMI:t före `go build`, 
 | Bild, jord | Statisk grafik |
 | Brytare, frånskiljare | Lägestagg och värden för öppen och sluten, manövertagg och värden för frånslag och tillslag, färger |
 | Omkopplare | Som brytare, men med egna texter för PÅ och AV (t.ex. AUTO/MAN, FEL/AV) |
+| Pump, ventil | Som omkopplare, men ritas som en pump eller en ventil i lägets färg (i drift/stoppad, öppen/stängd) |
 | Mätvärde | Tagg, etikett, enhet och decimaler (som standard från taggen), gränsvärden med larmfärg |
 | Indikering | Tagg, aktivt värde, färger, blinkning |
 | Stapel | Tagg, min och max. Fylls vågrätt om stapeln är bredare än hög |
@@ -105,15 +106,19 @@ Exe-filen `scada` behöver bara katalogen `data/`. Bygg HMI:t före `go build`, 
 | Station Norra | `sim` | 127.0.0.1:5020 | 31 | 10 kV-ställverk med fyra fack (modsim) |
 | Blue Station | `blue-station` | 127.0.0.1:502 | 107 | Transformatorstation 220/20 kV med fack G1 för kraftvärme, se [blue-station](../blue-station/README.md) |
 | Blue CHP | `blue-chp` | 127.0.0.1:1502 | 87 (prefix `CHP.`) | Kraftvärmeverk med fjärrvärme, se [blue-chp](../blue-chp/README.md) |
+| Blue Water | `blue-water` | 127.0.0.1:1503 | 90 (prefix `WTR.`) | Dricksvattenverk, se [blue-water](../blue-water/README.md) |
+| Blue WWTP | `blue-wwtp` | 127.0.0.1:1504 | 91 (prefix `WWT.`) | Avloppsreningsverk, se [blue-wwtp](../blue-wwtp/README.md) |
 
-Taggar och vyer för blue-station och blue-chp genereras av skript i `backend/tools/`. Skripten körs i `backend/`:
+Taggar och vyer för simulatorerna genereras av skript i `backend/tools/`. Skripten körs i `backend/`:
 
 ```bash
 python tools/gen_blue_station.py   # enheten blue-station, taggar och vyn Blue Station
 python tools/gen_blue_chp.py       # enheten blue-chp, taggar och vyn Blue CHP (läser signallistan via go run … -points-json)
+python tools/gen_blue_water.py     # enheten blue-water, taggar och vyn Blue Water
+python tools/gen_blue_wwtp.py      # enheten blue-wwtp, taggar och vyn Blue WWTP
 ```
 
-Skripten ersätter respektive enhets taggar i `config.json` och skriver över vyfilen. Ändringar du gjort i de vyerna i editorn försvinner alltså om du kör skriptet igen.
+Skripten ersätter respektive enhets taggar i `config.json` och skriver över vyfilen. Ändringar du gjort i de vyerna i editorn försvinner alltså om du kör skriptet igen. gen_blue_water.py och gen_blue_wwtp.py behåller en befintlig enhetspost, t.ex. ändrad värd eller port, och delar hjälpfunktionerna för taggar och ritning i `tools/scadagen.py`.
 
 Taggkonventioner för simulatorerna:
 
@@ -190,7 +195,7 @@ Med `-list` skrivs en tabell över kända brytare, frånskiljare och pumpar, vil
 - **Modbus:** enhetens `host`/`port`/`unitId` och manövertaggens område och adress. En brytare eller frånskiljare har en lägestagg och en manövertagg (`…​.Cmd` eller `…_CMD`); verktyget skriver till manövertaggen. Standardvärden följer simulatorernas konventioner: coil 0 = öppna, 1 = slut; holdingregister 1 = frånslag, 2 = tillslag. Efter manövern läses lägestaggen tills läget har nåtts.
 - **IEC 104:** enhetens `iec104`-block (`port`, `ca`) och lägestaggens `ctrlIoa` och `cmd` (`C_DC` för brytare, `C_SC` för omkopplare). Verktyget ansluter, gör STARTDT, skickar kommandot med direct execute och väntar på ACTCON och ACTTERM.
 
-`iec104`, `ctrlIoa` och `cmd` i `config.json` fylls i av generatorskripten för blue-station och blue-chp (se ovan). Backenden pollar bara över Modbus och bryr sig inte om fälten. modsim har inget IEC 104-gränssnitt, så `sim`-taggarna kan bara manövreras över Modbus.
+`iec104`, `ctrlIoa` och `cmd` i `config.json` fylls i av generatorskripten för simulatorerna (se ovan). Backenden pollar bara över Modbus och bryr sig inte om fälten. modsim har inget IEC 104-gränssnitt, så `sim`-taggarna kan bara manövreras över Modbus.
 
 ### Styra en blue-proxy
 

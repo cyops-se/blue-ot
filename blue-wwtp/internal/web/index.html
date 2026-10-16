@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue WWTP</title>
+<style>
+  :root { --bg:#0f141a; --card:#18202a; --line:#2a3542; --fg:#dde6ef; --dim:#8494a6;
+          --closed:#d64545; --open:#2f9e5b; --alarm:#e0a020; --accent:#4a90d9; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:12px 16px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0; }
+  header .dim { color:var(--dim); }
+  main { display:grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap:12px; padding:12px 16px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  section h2 { font-size:14px; margin:0 0 6px; color:var(--accent); }
+  .row { display:grid; grid-template-columns: 1fr auto auto; gap:8px; align-items:center; padding:4px 0; border-top:1px solid var(--line); }
+  .row:first-of-type { border-top:none; }
+  .lbl small { display:block; color:var(--dim); font-size:11px; }
+  .val { font-variant-numeric: tabular-nums; text-align:right; white-space:nowrap; }
+  .val.on { color:var(--alarm); font-weight:600; }
+  .val.closed { color:var(--closed); font-weight:600; }
+  .val.open { color:var(--open); font-weight:600; }
+  button { background:#24303d; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 8px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--accent); }
+  input { width:70px; background:#0f141a; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 4px; font:inherit; }
+  #events { grid-column: 1 / -1; }
+  #events ol { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; font-family:ui-monospace, monospace; font-size:12px; }
+  #events li { padding:2px 0; border-top:1px solid var(--line); }
+  #toast { position:fixed; bottom:16px; right:16px; background:#5a1f1f; padding:8px 12px; border-radius:6px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Blue WWTP</h1>
+  <span class="dim">Avloppsverk · inloppspumpstation · aktivslam · kemisk fällning · biogas · Modbus TCP · IEC 60870-5-104</span>
+  <span class="dim" id="clock"></span>
+</header>
+<main id="main"></main>
+<div id="toast"></div>
+<script>
+const main = document.getElementById('main');
+let built = false;
+
+function el(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  Object.assign(e, attrs || {});
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.style.display = 'none', 4000);
+}
+
+async function send(id, body) {
+  const r = await fetch('api/control', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(Object.assign({ id }, body)) });
+  if (!r.ok) toast(id + ': ' + ((await r.json()).error || r.statusText));
+  load();
+}
+
+function build(points) {
+  const groups = new Map();
+  for (const p of points) {
+    if (!groups.has(p.group)) groups.set(p.group, []);
+    groups.get(p.group).push(p);
+  }
+  for (const [name, pts] of groups) {
+    const sec = el('section', {}, el('h2', { textContent: name }));
+    for (const p of pts) {
+      const refs = [p.modbus, p.iec !== '–' ? p.iec : '', p.iecCtrl !== '–' ? p.iecCtrl : ''].filter(Boolean).join(' · ');
+      const ctl = el('div');
+      if (p.ctrl) {
+        switch (p.kind) {
+          case 'breaker':
+            ctl.append(el('button', { textContent: 'Till', onclick: () => send(p.id, { on: true }) }), ' ',
+                       el('button', { textContent: 'Från', onclick: () => send(p.id, { on: false }) }));
+            break;
+          case 'switch':
+            ctl.append(el('button', { textContent: 'Växla', onclick: () => send(p.id, { on: !current[p.id].value }) }));
+            break;
+          case 'pulse':
+            ctl.append(el('button', { textContent: 'Utför', onclick: () => send(p.id, { on: true }) }));
+            break;
+          case 'step':
+            ctl.append(el('button', { textContent: '▲', onclick: () => send(p.id, { on: true }) }), ' ',
+                       el('button', { textContent: '▼', onclick: () => send(p.id, { on: false }) }));
+            break;
+          case 'setpoint': {
+            const inp = el('input', { type: 'number', step: 'any', value: p.value });
+            ctl.append(inp, ' ', el('button', { textContent: 'Sätt', onclick: () => send(p.id, { value: parseFloat(inp.value) }) }));
+            break;
+          }
+        }
+      }
+      sec.append(el('div', { className: 'row' },
+        el('div', { className: 'lbl' }, p.desc, el('small', { textContent: p.id + ' — ' + refs })),
+        el('div', { className: 'val', id: 'v-' + p.id }),
+        ctl));
+    }
+    main.append(sec);
+  }
+  main.append(el('section', { id: 'events' }, el('h2', { textContent: 'Händelser' }), el('ol', { id: 'evlist' })));
+  built = true;
+}
+
+const ALARM = ['LARM', 'UTLÖST', 'SPÄNNINGSLÖS', 'FEL', 'BORTFALL'];
+const current = {};
+
+function update(state) {
+  for (const p of state.points) {
+    current[p.id] = p;
+    const v = document.getElementById('v-' + p.id);
+    if (!v) continue;
+    v.textContent = p.text;
+    v.className = 'val';
+    if (p.kind === 'breaker') v.classList.add(p.value ? 'closed' : 'open');
+    else if (ALARM.includes(p.text)) v.classList.add('on');
+  }
+  const list = document.getElementById('evlist');
+  list.replaceChildren(...state.events.slice().reverse().map(e =>
+    el('li', { textContent: new Date(e.time).toLocaleTimeString('sv-SE') + '  ' + e.text })));
+  document.getElementById('clock').textContent = new Date(state.time).toLocaleString('sv-SE');
+}
+
+async function load() {
+  try {
+    const s = await (await fetch('api/state')).json();
+    if (!built) build(s.points);
+    update(s);
+  } catch (e) { toast('Ingen kontakt med simulatorn'); }
+}
+setInterval(load, 1000);
+load();
+</script>
+</body>
+</html>

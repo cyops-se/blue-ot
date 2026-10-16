@@ -55,6 +55,8 @@ function activate(el) {
     case 'breaker':
     case 'disconnector':
     case 'toggle':
+    case 'pump':
+    case 'valve':
     case 'button':
       commandEl.value = el
       break

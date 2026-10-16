@@ -69,6 +69,20 @@
       <text :x="el.w - 32" :y="el.h / 2" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#ffffff">{{ toggleText }}</text>
     </g>
 
+    <g v-else-if="el.type === 'pump'">
+      <circle :cx="el.w / 2" :cy="el.h / 2" :r="Math.min(el.w, el.h) / 2 - 2" :fill="sw === 'closed' ? swColor : '#161b22'" :stroke="swColor" stroke-width="2.5" />
+      <polygon :points="`${el.w * 0.36},${el.h * 0.28} ${el.w * 0.36},${el.h * 0.72} ${el.w * 0.76},${el.h / 2}`" :fill="sw === 'closed' ? '#0d1117' : swColor" />
+      <text v-if="sw === 'bad' || sw === 'unknown'" :x="el.w / 2" :y="-6" text-anchor="middle" :fill="swColor" font-size="13" font-weight="700">?</text>
+      <text v-if="p.showLabel" :x="el.w / 2" :y="el.h + 13" text-anchor="middle" fill="#c9d1d9" font-size="12">{{ p.label }}</text>
+    </g>
+
+    <g v-else-if="el.type === 'valve'">
+      <polygon :points="`2,2 ${el.w / 2},${el.h / 2} 2,${el.h - 2}`" :fill="sw === 'closed' ? swColor : '#161b22'" :stroke="swColor" stroke-width="2" stroke-linejoin="round" />
+      <polygon :points="`${el.w - 2},2 ${el.w / 2},${el.h / 2} ${el.w - 2},${el.h - 2}`" :fill="sw === 'closed' ? swColor : '#161b22'" :stroke="swColor" stroke-width="2" stroke-linejoin="round" />
+      <text v-if="sw === 'bad' || sw === 'unknown'" :x="el.w / 2" :y="-6" text-anchor="middle" :fill="swColor" font-size="13" font-weight="700">?</text>
+      <text v-if="p.showLabel" :x="el.w / 2" :y="el.h + 13" text-anchor="middle" fill="#c9d1d9" font-size="12">{{ p.label }}</text>
+    </g>
+
     <g v-else-if="el.type === 'measurement'">
       <rect :width="el.w" :height="el.h" rx="3" :fill="p.background" :stroke="inAlarm ? p.alarmColor : p.border" :stroke-width="inAlarm ? 2 : 1" />
       <text v-if="p.label" x="8" :y="el.h / 2" dominant-baseline="central" :font-size="p.fontSize * 0.8" fill="#8b949e">{{ p.label }}</text>

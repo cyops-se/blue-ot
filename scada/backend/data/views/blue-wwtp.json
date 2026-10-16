@@ -1,0 +1,2902 @@
+{
+  "id": "blue-wwtp",
+  "name": "Blue WWTP",
+  "width": 1800,
+  "height": 1080,
+  "background": "#0d1117",
+  "grid": 10,
+  "elements": [
+    {
+      "id": "wwt-text-1",
+      "type": "text",
+      "x": 30,
+      "y": 18,
+      "w": 900,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "text": "Blue WWTP – avloppsreningsverk",
+        "fontSize": 26,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-link-2",
+      "type": "link",
+      "x": 1470,
+      "y": 22,
+      "w": 140,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "text": "Blue Water ›",
+        "view": "blue-water",
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-link-3",
+      "type": "link",
+      "x": 1620,
+      "y": 22,
+      "w": 150,
+      "h": 32,
+      "rot": 0,
+      "props": {
+        "text": "Blue Station ›",
+        "view": "blue-station",
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-text-4",
+      "type": "text",
+      "x": 30,
+      "y": 112,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Inkommande",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-5",
+      "type": "measurement",
+      "x": 30,
+      "y": 140,
+      "w": 120,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Inflow.Flow",
+        "label": "Flöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-6",
+      "type": "line",
+      "x": 150,
+      "y": 195,
+      "w": 30,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Inflow.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-rect-7",
+      "type": "rect",
+      "x": 180,
+      "y": 120,
+      "w": 70,
+      "h": 150,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#a9845c",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-8",
+      "type": "text",
+      "x": 180,
+      "y": 124,
+      "w": 70,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Brunn",
+        "fontSize": 13,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-bar-9",
+      "type": "bar",
+      "x": 200,
+      "y": 150,
+      "w": 30,
+      "h": 110,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Well.Level",
+        "min": 0,
+        "max": 4,
+        "color": "#a9845c",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "wwt-line-10",
+      "type": "line",
+      "x": 250,
+      "y": 195,
+      "w": 20,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Pumped.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-11",
+      "type": "line",
+      "x": 270,
+      "y": 135,
+      "w": 0,
+      "h": 120,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Pumped.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-12",
+      "type": "line",
+      "x": 350,
+      "y": 135,
+      "w": 0,
+      "h": 120,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Pumped.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-13",
+      "type": "line",
+      "x": 270,
+      "y": 135,
+      "w": 15,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP1.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-pump-14",
+      "type": "pump",
+      "x": 285,
+      "y": 115,
+      "w": 36,
+      "h": 36,
+      "rot": 0,
+      "props": {
+        "label": "IP1",
+        "showLabel": true,
+        "statusTag": "WWT.IP1.Running",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP1.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#5c6b7a"
+      }
+    },
+    {
+      "id": "wwt-line-15",
+      "type": "line",
+      "x": 321,
+      "y": 135,
+      "w": 29,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP1.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-16",
+      "type": "line",
+      "x": 270,
+      "y": 195,
+      "w": 15,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP2.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-pump-17",
+      "type": "pump",
+      "x": 285,
+      "y": 175,
+      "w": 36,
+      "h": 36,
+      "rot": 0,
+      "props": {
+        "label": "IP2",
+        "showLabel": true,
+        "statusTag": "WWT.IP2.Running",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP2.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#5c6b7a"
+      }
+    },
+    {
+      "id": "wwt-line-18",
+      "type": "line",
+      "x": 321,
+      "y": 195,
+      "w": 29,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP2.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-19",
+      "type": "line",
+      "x": 270,
+      "y": 255,
+      "w": 15,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP3.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-pump-20",
+      "type": "pump",
+      "x": 285,
+      "y": 235,
+      "w": 36,
+      "h": 36,
+      "rot": 0,
+      "props": {
+        "label": "IP3",
+        "showLabel": true,
+        "statusTag": "WWT.IP3.Running",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP3.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#5c6b7a"
+      }
+    },
+    {
+      "id": "wwt-line-21",
+      "type": "line",
+      "x": 321,
+      "y": 255,
+      "w": 29,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.IP3.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-22",
+      "type": "line",
+      "x": 215,
+      "y": 270,
+      "w": 0,
+      "h": 70,
+      "rot": 0,
+      "props": {
+        "stroke": "#ff4d4d",
+        "strokeWidth": 3,
+        "dash": "6 4",
+        "dynTag": "WWT.Overflow.Active",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#ff4d4d"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-text-23",
+      "type": "text",
+      "x": 225,
+      "y": 280,
+      "w": 160,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Bräddning",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-24",
+      "type": "measurement",
+      "x": 225,
+      "y": 304,
+      "w": 170,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Overflow.Flow",
+        "label": "Bräddflöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 0.5,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-25",
+      "type": "line",
+      "x": 350,
+      "y": 195,
+      "w": 40,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Pumped.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-rect-26",
+      "type": "rect",
+      "x": 390,
+      "y": 150,
+      "w": 90,
+      "h": 90,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#a9845c",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "WWT.Screen.Blocked",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#ff4d4d"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#a9845c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-text-27",
+      "type": "text",
+      "x": 390,
+      "y": 156,
+      "w": 90,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Galler",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-indicator-28",
+      "type": "indicator",
+      "x": 402,
+      "y": 200,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Screen.Running",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "Drift",
+        "blink": false
+      }
+    },
+    {
+      "id": "wwt-line-29",
+      "type": "line",
+      "x": 480,
+      "y": 195,
+      "w": 60,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Bio.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-rect-30",
+      "type": "rect",
+      "x": 540,
+      "y": 130,
+      "w": 260,
+      "h": 130,
+      "rot": 0,
+      "props": {
+        "fill": "#1b2416",
+        "stroke": "#8bc34a",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-31",
+      "type": "text",
+      "x": 540,
+      "y": 136,
+      "w": 260,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Biologisk rening (luftning)",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-32",
+      "type": "measurement",
+      "x": 556,
+      "y": 166,
+      "w": 228,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Bio.DO",
+        "label": "Syre",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 1.0,
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-33",
+      "type": "measurement",
+      "x": 556,
+      "y": 200,
+      "w": 228,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Air.Flow",
+        "label": "Luft",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-34",
+      "type": "line",
+      "x": 668,
+      "y": 260,
+      "w": 0,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "stroke": "#c5d6e8",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.Air.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#c5d6e8"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-35",
+      "type": "line",
+      "x": 618,
+      "y": 300,
+      "w": 100,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#c5d6e8",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.Air.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#c5d6e8"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-line-36",
+      "type": "line",
+      "x": 618,
+      "y": 300,
+      "w": 0,
+      "h": 10,
+      "rot": 0,
+      "props": {
+        "stroke": "#c5d6e8",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.B1.Air",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#c5d6e8"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-pump-37",
+      "type": "pump",
+      "x": 600,
+      "y": 310,
+      "w": 36,
+      "h": 36,
+      "rot": 0,
+      "props": {
+        "label": "B1",
+        "showLabel": true,
+        "statusTag": "WWT.B1.Running",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.B1.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#5c6b7a"
+      }
+    },
+    {
+      "id": "wwt-line-38",
+      "type": "line",
+      "x": 718,
+      "y": 300,
+      "w": 0,
+      "h": 10,
+      "rot": 0,
+      "props": {
+        "stroke": "#c5d6e8",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.B2.Air",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 10,
+            "color": "#c5d6e8"
+          },
+          {
+            "op": "<=",
+            "value": 10,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-pump-39",
+      "type": "pump",
+      "x": 700,
+      "y": 310,
+      "w": 36,
+      "h": 36,
+      "rot": 0,
+      "props": {
+        "label": "B2",
+        "showLabel": true,
+        "statusTag": "WWT.B2.Running",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.B2.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "START",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#5c6b7a"
+      }
+    },
+    {
+      "id": "wwt-line-40",
+      "type": "line",
+      "x": 800,
+      "y": 195,
+      "w": 120,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Bio.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#a9845c"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-measurement-41",
+      "type": "measurement",
+      "x": 810,
+      "y": 110,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Prec.Dose",
+        "label": "Fällning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-42",
+      "type": "line",
+      "x": 870,
+      "y": 140,
+      "w": 0,
+      "h": 50,
+      "rot": 0,
+      "props": {
+        "stroke": "#ffd43b",
+        "strokeWidth": 2,
+        "dash": "4 3",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-rect-43",
+      "type": "rect",
+      "x": 920,
+      "y": 140,
+      "w": 160,
+      "h": 110,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#4dabf7",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-44",
+      "type": "text",
+      "x": 920,
+      "y": 146,
+      "w": 160,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Eftersedimentering",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-45",
+      "type": "measurement",
+      "x": 932,
+      "y": 190,
+      "w": 136,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.BOD7",
+        "label": "BOD7",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-46",
+      "type": "line",
+      "x": 1080,
+      "y": 195,
+      "w": 120,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#e6edf3",
+        "strokeWidth": 4,
+        "dash": "",
+        "dynTag": "WWT.Eff.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#4dabf7"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-rect-47",
+      "type": "rect",
+      "x": 1200,
+      "y": 120,
+      "w": 170,
+      "h": 150,
+      "rot": 0,
+      "props": {
+        "fill": "#10283d",
+        "stroke": "#4dabf7",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-48",
+      "type": "text",
+      "x": 1200,
+      "y": 126,
+      "w": 170,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Recipient",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-49",
+      "type": "measurement",
+      "x": 1210,
+      "y": 160,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.NH4",
+        "label": "NH4-N",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 5,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-50",
+      "type": "measurement",
+      "x": 1210,
+      "y": 194,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.Ptot",
+        "label": "Ptot",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 0.3,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-51",
+      "type": "measurement",
+      "x": 1210,
+      "y": 228,
+      "w": 150,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.Flow",
+        "label": "Flöde",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-line-52",
+      "type": "line",
+      "x": 1000,
+      "y": 250,
+      "w": 0,
+      "h": 160,
+      "rot": 0,
+      "props": {
+        "stroke": "#a9845c",
+        "strokeWidth": 3,
+        "dash": "6 4",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-line-53",
+      "type": "line",
+      "x": 1000,
+      "y": 410,
+      "w": 60,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#a9845c",
+        "strokeWidth": 3,
+        "dash": "6 4",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-54",
+      "type": "text",
+      "x": 1006,
+      "y": 380,
+      "w": 120,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Slam",
+        "fontSize": 12,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-rect-55",
+      "type": "rect",
+      "x": 1060,
+      "y": 360,
+      "w": 150,
+      "h": 110,
+      "rot": 0,
+      "props": {
+        "fill": "#241a10",
+        "stroke": "#a9845c",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-56",
+      "type": "text",
+      "x": 1060,
+      "y": 366,
+      "w": 150,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Rötkammare",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-57",
+      "type": "measurement",
+      "x": 1070,
+      "y": 396,
+      "w": 130,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Digester.Temp",
+        "label": "Temp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 34,
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-58",
+      "type": "indicator",
+      "x": 1072,
+      "y": 436,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Boiler.Run",
+        "onValue": 1,
+        "onColor": "#2ecc71",
+        "offColor": "#3a4450",
+        "label": "Panna",
+        "blink": false
+      }
+    },
+    {
+      "id": "wwt-line-59",
+      "type": "line",
+      "x": 1210,
+      "y": 410,
+      "w": 60,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#ffd43b",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.Biogas.Flow",
+        "dynRules": [
+          {
+            "op": ">",
+            "value": 1,
+            "color": "#ffd43b"
+          },
+          {
+            "op": "<=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-rect-60",
+      "type": "rect",
+      "x": 1270,
+      "y": 350,
+      "w": 90,
+      "h": 120,
+      "rot": 0,
+      "props": {
+        "fill": "#161b22",
+        "stroke": "#ffd43b",
+        "strokeWidth": 2,
+        "radius": 4,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-61",
+      "type": "text",
+      "x": 1270,
+      "y": 356,
+      "w": 90,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Gasklocka",
+        "fontSize": 13,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "middle",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-bar-62",
+      "type": "bar",
+      "x": 1300,
+      "y": 380,
+      "w": 30,
+      "h": 80,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Gasholder.Level",
+        "min": 0,
+        "max": 100,
+        "color": "#ffd43b",
+        "background": "#0d1117",
+        "showValue": false
+      }
+    },
+    {
+      "id": "wwt-line-63",
+      "type": "line",
+      "x": 1360,
+      "y": 410,
+      "w": 50,
+      "h": 0,
+      "rot": 0,
+      "props": {
+        "stroke": "#ffd43b",
+        "strokeWidth": 3,
+        "dash": "",
+        "dynTag": "WWT.Gas.Flaring",
+        "dynRules": [
+          {
+            "op": "==",
+            "value": 1,
+            "color": "#ff4d4d"
+          },
+          {
+            "op": "!=",
+            "value": 1,
+            "color": "#5c6b7a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wwt-indicator-64",
+      "type": "indicator",
+      "x": 1412,
+      "y": 401,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Gas.Flaring",
+        "onValue": 1,
+        "onColor": "#ff922b",
+        "offColor": "#3a4450",
+        "label": "Fackling",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-text-65",
+      "type": "text",
+      "x": 1540,
+      "y": 112,
+      "w": 200,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Elmatning",
+        "fontSize": 13,
+        "color": "#8b949e",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-breaker-66",
+      "type": "breaker",
+      "x": 1560,
+      "y": 140,
+      "w": 40,
+      "h": 40,
+      "rot": 0,
+      "props": {
+        "label": "Supply.CB",
+        "showLabel": true,
+        "statusTag": "WWT.Supply.CB",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Supply.CB.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#2ecc71"
+      }
+    },
+    {
+      "id": "wwt-indicator-67",
+      "type": "indicator",
+      "x": 1540,
+      "y": 200,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Power.Lost",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Spänningslöst",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-68",
+      "type": "toggle",
+      "x": 42,
+      "y": 536,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Pumpar",
+        "showLabel": true,
+        "statusTag": "WWT.Inlet.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Inlet.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-69",
+      "type": "measurement",
+      "x": 42,
+      "y": 568,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Well.Level",
+        "label": "Nivå brunn",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 3.5,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-70",
+      "type": "indicator",
+      "x": 44,
+      "y": 605,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Well.High",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Hög nivå brunn",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-measurement-71",
+      "type": "measurement",
+      "x": 42,
+      "y": 632,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Pumped.Flow",
+        "label": "Pumpat",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-72",
+      "type": "measurement",
+      "x": 42,
+      "y": 664,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Overflow.Volume",
+        "label": "Bräddat",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-73",
+      "type": "indicator",
+      "x": 44,
+      "y": 701,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Overflow.Active",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Bräddning pågår",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-measurement-74",
+      "type": "measurement",
+      "x": 42,
+      "y": 728,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP1.Power",
+        "label": "IP1 effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-75",
+      "type": "indicator",
+      "x": 44,
+      "y": 765,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP1.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "IP1 motorskydd",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-76",
+      "type": "toggle",
+      "x": 42,
+      "y": 792,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "IP1 motorfel",
+        "showLabel": true,
+        "statusTag": "WWT.IP1.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP1.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-77",
+      "type": "measurement",
+      "x": 42,
+      "y": 824,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP2.Power",
+        "label": "IP2 effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-78",
+      "type": "indicator",
+      "x": 44,
+      "y": 861,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP2.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "IP2 motorskydd",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-79",
+      "type": "toggle",
+      "x": 42,
+      "y": 888,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "IP2 motorfel",
+        "showLabel": true,
+        "statusTag": "WWT.IP2.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP2.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-80",
+      "type": "measurement",
+      "x": 42,
+      "y": 920,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP3.Power",
+        "label": "IP3 effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-81",
+      "type": "indicator",
+      "x": 44,
+      "y": 957,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.IP3.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "IP3 motorskydd",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-82",
+      "type": "toggle",
+      "x": 42,
+      "y": 984,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "IP3 motorfel",
+        "showLabel": true,
+        "statusTag": "WWT.IP3.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.IP3.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-rect-83",
+      "type": "rect",
+      "x": 30,
+      "y": 500,
+      "w": 260,
+      "h": 532,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-84",
+      "type": "text",
+      "x": 42,
+      "y": 506,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Inloppspumpstation",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-toggle-85",
+      "type": "toggle",
+      "x": 314,
+      "y": 536,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Blåsmaskiner",
+        "showLabel": true,
+        "statusTag": "WWT.Blower.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Blower.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-86",
+      "type": "measurement",
+      "x": 314,
+      "y": 568,
+      "w": 168,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Bio.DOSet",
+        "label": "Syre bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-button-87",
+      "type": "button",
+      "x": 488,
+      "y": 568,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "WWT.Bio.DOSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-measurement-88",
+      "type": "measurement",
+      "x": 314,
+      "y": 600,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Bio.DO",
+        "label": "Syrehalt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 1.0,
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-89",
+      "type": "indicator",
+      "x": 316,
+      "y": 637,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Bio.DOLow",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Låg syrehalt",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-measurement-90",
+      "type": "measurement",
+      "x": 314,
+      "y": 664,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B1.Air",
+        "label": "B1 luft",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-91",
+      "type": "measurement",
+      "x": 314,
+      "y": 696,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B1.Power",
+        "label": "B1 effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-92",
+      "type": "indicator",
+      "x": 316,
+      "y": 733,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B1.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "B1 motorskydd",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-93",
+      "type": "toggle",
+      "x": 314,
+      "y": 760,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "B1 motorfel",
+        "showLabel": true,
+        "statusTag": "WWT.B1.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.B1.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-94",
+      "type": "measurement",
+      "x": 314,
+      "y": 792,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B2.Air",
+        "label": "B2 luft",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-95",
+      "type": "measurement",
+      "x": 314,
+      "y": 824,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B2.Power",
+        "label": "B2 effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-96",
+      "type": "indicator",
+      "x": 316,
+      "y": 861,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.B2.Trip",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "B2 motorskydd",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-97",
+      "type": "toggle",
+      "x": 314,
+      "y": 888,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "B2 motorfel",
+        "showLabel": true,
+        "statusTag": "WWT.B2.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.B2.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-indicator-98",
+      "type": "indicator",
+      "x": 316,
+      "y": 925,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Screen.Blocked",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Galler igensatt",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-toggle-99",
+      "type": "toggle",
+      "x": 314,
+      "y": 952,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Gallerfel",
+        "showLabel": true,
+        "statusTag": "WWT.Screen.FaultSim",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Screen.FaultSim.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "AV",
+        "onText": "FEL",
+        "colorClosed": "#c62828",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-rect-100",
+      "type": "rect",
+      "x": 302,
+      "y": 500,
+      "w": 260,
+      "h": 500,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-101",
+      "type": "text",
+      "x": 314,
+      "y": 506,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Biologi och galler",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-toggle-102",
+      "type": "toggle",
+      "x": 586,
+      "y": 536,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Dosering",
+        "showLabel": true,
+        "statusTag": "WWT.Prec.Auto",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Prec.Auto.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "MAN",
+        "onText": "AUTO",
+        "colorClosed": "#3d8bfd",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-103",
+      "type": "measurement",
+      "x": 586,
+      "y": 568,
+      "w": 168,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Prec.DoseSet",
+        "label": "Dos bv",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-button-104",
+      "type": "button",
+      "x": 760,
+      "y": 568,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "WWT.Prec.DoseSet",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-measurement-105",
+      "type": "measurement",
+      "x": 586,
+      "y": 600,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Prec.Dose",
+        "label": "Dos",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-rect-106",
+      "type": "rect",
+      "x": 574,
+      "y": 500,
+      "w": 260,
+      "h": 148,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-107",
+      "type": "text",
+      "x": 586,
+      "y": 506,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Kemisk fällning",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-108",
+      "type": "measurement",
+      "x": 586,
+      "y": 696,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.In.NH4",
+        "label": "NH4-N in",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-109",
+      "type": "measurement",
+      "x": 586,
+      "y": 728,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.In.Ptot",
+        "label": "Ptot in",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-110",
+      "type": "measurement",
+      "x": 586,
+      "y": 760,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.NH4",
+        "label": "NH4-N ut",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 5,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-111",
+      "type": "measurement",
+      "x": 586,
+      "y": 792,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.Ptot",
+        "label": "Ptot ut",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 0.3,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-112",
+      "type": "indicator",
+      "x": 588,
+      "y": 829,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.NH4High",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "NH4-N över gräns",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-indicator-113",
+      "type": "indicator",
+      "x": 588,
+      "y": 861,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Eff.PtotHigh",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Ptot över gräns",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-rect-114",
+      "type": "rect",
+      "x": 574,
+      "y": 660,
+      "w": 260,
+      "h": 340,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-115",
+      "type": "text",
+      "x": 586,
+      "y": 666,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Utgående vatten",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-toggle-116",
+      "type": "toggle",
+      "x": 858,
+      "y": 536,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Panna",
+        "showLabel": true,
+        "statusTag": "WWT.Boiler.Run",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Boiler.Run.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "STOPP",
+        "onText": "DRIFT",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-measurement-117",
+      "type": "measurement",
+      "x": 858,
+      "y": 568,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Digester.Temp",
+        "label": "Temp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": 34,
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-118",
+      "type": "indicator",
+      "x": 860,
+      "y": 605,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Digester.TempLow",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Låg rötkammartemp",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-measurement-119",
+      "type": "measurement",
+      "x": 858,
+      "y": 632,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Biogas.Flow",
+        "label": "Biogas",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-120",
+      "type": "measurement",
+      "x": 858,
+      "y": 664,
+      "w": 236,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Gasholder.Level",
+        "label": "Gasklocka",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": 95,
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-indicator-121",
+      "type": "indicator",
+      "x": 860,
+      "y": 701,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Gas.Flaring",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Fackling",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-rect-122",
+      "type": "rect",
+      "x": 846,
+      "y": 500,
+      "w": 260,
+      "h": 240,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-123",
+      "type": "text",
+      "x": 858,
+      "y": 506,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Rötning",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-measurement-124",
+      "type": "measurement",
+      "x": 1130,
+      "y": 536,
+      "w": 276,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Power.Total",
+        "label": "Effekt",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-measurement-125",
+      "type": "measurement",
+      "x": 1130,
+      "y": 568,
+      "w": 276,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Power.Energy",
+        "label": "Energi",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-toggle-126",
+      "type": "toggle",
+      "x": 1130,
+      "y": 600,
+      "w": 276,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "label": "Extern matning",
+        "showLabel": true,
+        "statusTag": "WWT.Power.Available",
+        "openValue": 0,
+        "closedValue": 1,
+        "controlTag": "WWT.Power.Available.Cmd",
+        "openCmd": 0,
+        "closeCmd": 1,
+        "offText": "BORTA",
+        "onText": "PÅ",
+        "colorClosed": "#2ecc71",
+        "colorOpen": "#3a4450"
+      }
+    },
+    {
+      "id": "wwt-rect-127",
+      "type": "rect",
+      "x": 1118,
+      "y": 500,
+      "w": 300,
+      "h": 148,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-128",
+      "type": "text",
+      "x": 1130,
+      "y": 506,
+      "w": 276,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Elmatning",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-rect-129",
+      "type": "rect",
+      "x": 1118,
+      "y": 660,
+      "w": 300,
+      "h": 180,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-130",
+      "type": "text",
+      "x": 1130,
+      "y": 666,
+      "w": 276,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Verk och simulering",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-indicator-131",
+      "type": "indicator",
+      "x": 1132,
+      "y": 701,
+      "w": 18,
+      "h": 18,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Plant.CommonAlarm",
+        "onValue": 1,
+        "onColor": "#ff4d4d",
+        "offColor": "#3a4450",
+        "label": "Summalarm",
+        "blink": true
+      }
+    },
+    {
+      "id": "wwt-button-132",
+      "type": "button",
+      "x": 1264,
+      "y": 696,
+      "w": 142,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Återställ",
+        "controlTag": "WWT.Plant.Reset",
+        "value": 1,
+        "askValue": false,
+        "color": "#7a4b00",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-measurement-133",
+      "type": "measurement",
+      "x": 1130,
+      "y": 728,
+      "w": 208,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Rain.Intensity",
+        "label": "Regn",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-button-134",
+      "type": "button",
+      "x": 1344,
+      "y": 728,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "WWT.Rain.Intensity",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-measurement-135",
+      "type": "measurement",
+      "x": 1130,
+      "y": 760,
+      "w": 208,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Load.Scale",
+        "label": "Belastning",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-button-136",
+      "type": "button",
+      "x": 1344,
+      "y": 760,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "WWT.Load.Scale",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-measurement-137",
+      "type": "measurement",
+      "x": 1130,
+      "y": 792,
+      "w": 208,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "tag": "WWT.Water.Temp",
+        "label": "Vattentemp",
+        "unit": "",
+        "decimals": "",
+        "fontSize": 15,
+        "color": "#e6edf3",
+        "background": "#0d1117",
+        "border": "#30363d",
+        "lowLimit": "",
+        "highLimit": "",
+        "alarmColor": "#ff4d4d"
+      }
+    },
+    {
+      "id": "wwt-button-138",
+      "type": "button",
+      "x": 1344,
+      "y": 792,
+      "w": 62,
+      "h": 28,
+      "rot": 0,
+      "props": {
+        "text": "Ändra",
+        "controlTag": "WWT.Water.Temp",
+        "value": 1,
+        "askValue": true,
+        "color": "#30363d",
+        "textColor": "#e6edf3"
+      }
+    },
+    {
+      "id": "wwt-text-139",
+      "type": "text",
+      "x": 30,
+      "y": 1054,
+      "w": 1600,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Klicka på pumpar, blåsmaskiner, brytare och knappar för manöver och på mätvärden för trend. Grön = i drift. Röd streckad linje = bräddning. Lila = osäkert värde.",
+        "fontSize": 12,
+        "color": "#5c6b7a",
+        "bold": false,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    }
+  ],
+  "updated": "2026-10-16T15:53:14.213142+02:00"
+}

@@ -12,6 +12,8 @@ Blue OT is a lab environment for OT (operational technology and industrial contr
 | **modsim** | A small Modbus TCP simulator included in the SCADA project. It simulates a 10 kV switchgear with four bays, breakers, interlocked disconnectors and measurements. It is meant for testing SCADA quickly without anything else. | Modbus TCP server | [scada/README-en.md](scada/README-en.md#modsim) |
 | **blue-station** | Simulator of a 220/20 kV transformer substation. It has a transmission grid infeed, two transformers with on-load tap changers and voltage control, a sectionalised 20 kV busbar, four feeders with daily load profiles and overcurrent protection, and bay G1 where the CHP plant is connected. | Modbus TCP, IEC 60870-5-104, web interface with JSON API | [blue-station/README-en.md](blue-station/README-en.md) |
 | **blue-chp** | Simulator of a combined heat and power plant with two boilers, a steam header with bypass, a back-pressure turbine with generator, and a district heating network with pumps and a heat accumulator. The generator feeds electricity into blue-station. | Modbus TCP, IEC 60870-5-104, web interface with JSON API, link to blue-station | [blue-chp/README-en.md](blue-chp/README-en.md) |
+| **blue-water** | Simulator of a drinking water treatment plant with raw water pumps, coagulation, settling, sand filters with backwashing, chlorine disinfection, a clear water reservoir and high-lift pumps feeding a distribution network. | Modbus TCP, IEC 60870-5-104, web interface with JSON API | [blue-water/README-en.md](blue-water/README-en.md) |
+| **blue-wwtp** | Simulator of a wastewater treatment plant with a level-controlled inlet pumping station and overflow, a screen, activated sludge with oxygen-controlled blowers, chemical precipitation and a digester with biogas. | Modbus TCP, IEC 60870-5-104, web interface with JSON API | [blue-wwtp/README-en.md](blue-wwtp/README-en.md) |
 | **blue-proxy** | Transparent Modbus TCP / IEC 104 proxy between SCADA and a device. It remembers collected states and the last commands and can, per tag or type, freeze the reported value and block commands. A web interface shows collected vs reported and controls the modes. | Modbus TCP, IEC 60870-5-104 (proxy), web interface | [blue-proxy/README-en.md](blue-proxy/README-en.md) |
 
 ## How the parts fit together
@@ -33,7 +35,7 @@ Blue OT is a lab environment for OT (operational technology and industrial contr
                                      ← generator P and Q
 ```
 
-- **SCADA ↔ simulators:** SCADA is a Modbus client and polls each simulator as a separate device. The tag and view configuration for blue-station and blue-chp is included in `scada/backend/data` and can be regenerated from the simulators' signal lists.
+- **SCADA ↔ simulators:** SCADA is a Modbus client and polls each simulator as a separate device. The tag and view configuration for blue-station, blue-chp, blue-water and blue-wwtp is included in `scada/backend/data` and can be regenerated from the simulators' signal lists.
 - **blue-station ↔ blue-chp:** the link represents the 20 kV cable between the plant and the substation. It is not SCADA communication. Every second the substation sends the state of the connection point to the plant and receives the generator output, which is fed into busbar section B. If the bay is opened or the busbar loses voltage, the generator's loss-of-mains protection trips. Both simulators also work on their own.
 
 ## Quick start
@@ -46,6 +48,8 @@ Start each part in its own terminal:
 # Simulators
 cd blue-chp     && go run ./cmd/blue-chp                     # Modbus :1502, IEC 104 :2405, web :8082
 cd blue-station && go run ./cmd/blue-station -http :8090     # Modbus :502,  IEC 104 :2404, web :8090
+cd blue-water   && go run ./cmd/blue-water                   # Modbus :1503, IEC 104 :2406, web :8085
+cd blue-wwtp    && go run ./cmd/blue-wwtp                    # Modbus :1504, IEC 104 :2407, web :8086
 cd scada/backend && go run ./cmd/modsim                      # Modbus :5020
 
 # SCADA – build the HMI once, then start the backend
@@ -53,7 +57,7 @@ cd scada/frontend && npm install && npm run build
 cd scada/backend  && go run ./cmd/scada -data data           # http://localhost:8080
 ```
 
-Open http://localhost:8080 and pick one of the views **Station Norra** (modsim), **Blue Station** or **Blue CHP**. The simulators' own web interfaces, with all signals and an event log, are at http://localhost:8090 (blue-station) and http://localhost:8082 (blue-chp).
+Open http://localhost:8080 and pick one of the views **Station Norra** (modsim), **Blue Station**, **Blue CHP**, **Blue Water** or **Blue WWTP**. The simulators' own web interfaces, with all signals and an event log, are at http://localhost:8090 (blue-station), http://localhost:8082 (blue-chp), http://localhost:8085 (blue-water) and http://localhost:8086 (blue-wwtp).
 
 blue-station also uses port 8080 for its web interface by default. When SCADA runs on the same machine, the substation's web interface must therefore be moved with `-http`, as in the example above. On Linux, port 502 for Modbus requires root or `CAP_NET_BIND_SERVICE`. Otherwise use e.g. `-modbus :5021` and change the port of the `blue-station` device in SCADA.
 
@@ -65,6 +69,8 @@ blue-station also uses port 8080 for its web interface by default. When SCADA ru
 | modsim | 5020 | – | – |
 | blue-station | 502 | 2404 (CA 1) | 8080 by default, 8090 in the example above |
 | blue-chp | 1502 | 2405 (CA 2) | 8082 (web and link to blue-station) |
+| blue-water | 1503 | 2406 (CA 3) | 8085 |
+| blue-wwtp | 1504 | 2407 (CA 4) | 8086 |
 
 ### Tools and proxy
 
@@ -80,10 +86,12 @@ blue-ot/
 │   └── frontend/       Vue 3 + Vuetify 3: HMI, embedded in the backend executable
 ├── blue-station/       Go: 220/20 kV transformer substation simulator
 ├── blue-chp/           Go: CHP plant simulator with district heating
+├── blue-water/         Go: drinking water treatment plant simulator
+├── blue-wwtp/          Go: wastewater treatment plant simulator
 └── blue-proxy/         Go: transparent Modbus TCP / IEC 104 proxy with freezing and command blocking
 ```
 
-Each Go directory (`scada/backend`, `blue-station`, `blue-chp` and `blue-proxy`) is a separate module. Run the tests with `go test ./...` in each directory. The simulators and the proxy use only the Go standard library.
+Each Go directory (`scada/backend`, `blue-station`, `blue-chp`, `blue-water`, `blue-wwtp` and `blue-proxy`) is a separate module. Run the tests with `go test ./...` in each directory. The simulators and the proxy use only the Go standard library.
 
 ## Security
 

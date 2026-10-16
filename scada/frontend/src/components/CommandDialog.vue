@@ -98,17 +98,22 @@ const waitText = ref('')
 const error = ref('')
 let timeout = null
 
-const isSwitch = computed(() => props.el && ['breaker', 'disconnector', 'toggle'].includes(props.el.type))
+const isSwitch = computed(() => props.el && ['breaker', 'disconnector', 'toggle', 'pump', 'valve'].includes(props.el.type))
 // button texts for the two operations
 const opText = computed(() => {
   const el = props.el
   if (!el) return {}
   if (el.type === 'breaker') return { open: 'Frånslag', close: 'Tillslag' }
-  if (el.type === 'toggle') return { open: el.props.offText || 'AV', close: el.props.onText || 'PÅ' }
+  if (['toggle', 'pump', 'valve'].includes(el.type)) return { open: el.props.offText || 'AV', close: el.props.onText || 'PÅ' }
   return { open: 'Öppna', close: 'Slut' }
 })
 const stateLabel = computed(() => {
-  if (props.el && props.el.type === 'toggle' && (state.value === 'open' || state.value === 'closed')) return state.value === 'open' ? opText.value.open : opText.value.close
+  const on = state.value === 'closed'
+  if (props.el && (state.value === 'open' || on)) {
+    if (props.el.type === 'pump') return on ? 'I drift' : 'Stoppad'
+    if (props.el.type === 'valve') return on ? 'Öppen' : 'Stängd'
+    if (props.el.type === 'toggle') return on ? opText.value.close : opText.value.open
+  }
   return stateText[state.value]
 })
 const title = computed(() => {
