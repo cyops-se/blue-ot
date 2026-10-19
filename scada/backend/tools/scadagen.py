@@ -133,6 +133,7 @@ class View:
         ("sp", tag, label), ("t", tag, label, on, off[, color]),
         ("i", tag, label) or ("b", label, tag)."""
         cy = y + 36
+        at = len(self.els)  # the panel goes below its contents, see below
         for kind, *a in items:
             if kind == "m":
                 self.m(x + 12, cy, a[0], a[1], w - 24, *a[2:])
@@ -146,6 +147,8 @@ class View:
                 self.button(x + 12, cy, w - 24, *a)
             cy += row
         self.panel(x, y, w, h or (cy - y + 8), title)
+        # move the frame and title first so they don't cover the controls
+        self.els[at:] = self.els[-2:] + self.els[at:-2]
         return cy
 
     # ---- symbols ----

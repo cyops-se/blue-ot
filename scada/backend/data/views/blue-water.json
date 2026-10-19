@@ -1372,6 +1372,42 @@
       }
     },
     {
+      "id": "wtr-rect-73",
+      "type": "rect",
+      "x": 30,
+      "y": 320,
+      "w": 250,
+      "h": 420,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wtr-text-74",
+      "type": "text",
+      "x": 42,
+      "y": 326,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Råvattenintag",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
       "id": "wtr-toggle-61",
       "type": "toggle",
       "x": 42,
@@ -1624,9 +1660,9 @@
       }
     },
     {
-      "id": "wtr-rect-73",
+      "id": "wtr-rect-87",
       "type": "rect",
-      "x": 30,
+      "x": 292,
       "y": 320,
       "w": 250,
       "h": 420,
@@ -1642,15 +1678,15 @@
       }
     },
     {
-      "id": "wtr-text-74",
+      "id": "wtr-text-88",
       "type": "text",
-      "x": 42,
+      "x": 304,
       "y": 326,
       "w": 226,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Råvattenintag",
+        "text": "Beredning",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -1895,12 +1931,12 @@
       }
     },
     {
-      "id": "wtr-rect-87",
+      "id": "wtr-rect-97",
       "type": "rect",
-      "x": 292,
+      "x": 554,
       "y": 320,
       "w": 250,
-      "h": 420,
+      "h": 228,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -1913,15 +1949,15 @@
       }
     },
     {
-      "id": "wtr-text-88",
+      "id": "wtr-text-98",
       "type": "text",
-      "x": 304,
+      "x": 566,
       "y": 326,
       "w": 226,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Beredning",
+        "text": "Desinfektion",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2088,42 +2124,6 @@
       }
     },
     {
-      "id": "wtr-rect-97",
-      "type": "rect",
-      "x": 554,
-      "y": 320,
-      "w": 250,
-      "h": 228,
-      "rot": 0,
-      "props": {
-        "fill": "#00000000",
-        "stroke": "#30363d",
-        "strokeWidth": 1,
-        "radius": 6,
-        "dash": "",
-        "dynTag": "",
-        "dynRules": []
-      }
-    },
-    {
-      "id": "wtr-text-98",
-      "type": "text",
-      "x": 566,
-      "y": 326,
-      "w": 226,
-      "h": 24,
-      "rot": 0,
-      "props": {
-        "text": "Desinfektion",
-        "fontSize": 14,
-        "color": "#e6edf3",
-        "bold": true,
-        "align": "start",
-        "dynTag": "",
-        "dynRules": []
-      }
-    },
-    {
       "id": "wtr-rect-99",
       "type": "rect",
       "x": 554,
@@ -2235,6 +2235,42 @@
         "offColor": "#3a4450",
         "label": "Hög nivå (bräddning)",
         "blink": true
+      }
+    },
+    {
+      "id": "wtr-rect-117",
+      "type": "rect",
+      "x": 816,
+      "y": 320,
+      "w": 250,
+      "h": 420,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wtr-text-118",
+      "type": "text",
+      "x": 828,
+      "y": 326,
+      "w": 226,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Distribution",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
       }
     },
     {
@@ -2484,12 +2520,12 @@
       }
     },
     {
-      "id": "wtr-rect-117",
+      "id": "wtr-rect-122",
       "type": "rect",
-      "x": 816,
+      "x": 1078,
       "y": 320,
-      "w": 250,
-      "h": 420,
+      "w": 330,
+      "h": 148,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -2502,15 +2538,15 @@
       }
     },
     {
-      "id": "wtr-text-118",
+      "id": "wtr-text-123",
       "type": "text",
-      "x": 828,
+      "x": 1090,
       "y": 326,
-      "w": 226,
+      "w": 306,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Distribution",
+        "text": "Elmatning",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2584,42 +2620,6 @@
         "onText": "PÅ",
         "colorClosed": "#2ecc71",
         "colorOpen": "#3a4450"
-      }
-    },
-    {
-      "id": "wtr-rect-122",
-      "type": "rect",
-      "x": 1078,
-      "y": 320,
-      "w": 330,
-      "h": 148,
-      "rot": 0,
-      "props": {
-        "fill": "#00000000",
-        "stroke": "#30363d",
-        "strokeWidth": 1,
-        "radius": 6,
-        "dash": "",
-        "dynTag": "",
-        "dynRules": []
-      }
-    },
-    {
-      "id": "wtr-text-123",
-      "type": "text",
-      "x": 1090,
-      "y": 326,
-      "w": 306,
-      "h": 24,
-      "rot": 0,
-      "props": {
-        "text": "Elmatning",
-        "fontSize": 14,
-        "color": "#e6edf3",
-        "bold": true,
-        "align": "start",
-        "dynTag": "",
-        "dynRules": []
       }
     },
     {
@@ -2789,5 +2789,5 @@
       }
     }
   ],
-  "updated": "2026-10-16T17:43:36.636268+02:00"
+  "updated": "2026-10-16T20:58:17.994559+02:00"
 }

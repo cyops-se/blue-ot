@@ -1463,6 +1463,42 @@
       }
     },
     {
+      "id": "wwt-rect-83",
+      "type": "rect",
+      "x": 30,
+      "y": 500,
+      "w": 260,
+      "h": 532,
+      "rot": 0,
+      "props": {
+        "fill": "#00000000",
+        "stroke": "#30363d",
+        "strokeWidth": 1,
+        "radius": 6,
+        "dash": "",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
+      "id": "wwt-text-84",
+      "type": "text",
+      "x": 42,
+      "y": 506,
+      "w": 236,
+      "h": 24,
+      "rot": 0,
+      "props": {
+        "text": "Inloppspumpstation",
+        "fontSize": 14,
+        "color": "#e6edf3",
+        "bold": true,
+        "align": "start",
+        "dynTag": "",
+        "dynRules": []
+      }
+    },
+    {
       "id": "wwt-toggle-68",
       "type": "toggle",
       "x": 42,
@@ -1772,12 +1808,12 @@
       }
     },
     {
-      "id": "wwt-rect-83",
+      "id": "wwt-rect-100",
       "type": "rect",
-      "x": 30,
+      "x": 302,
       "y": 500,
       "w": 260,
-      "h": 532,
+      "h": 500,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -1790,15 +1826,15 @@
       }
     },
     {
-      "id": "wwt-text-84",
+      "id": "wwt-text-101",
       "type": "text",
-      "x": 42,
+      "x": 314,
       "y": 506,
       "w": 236,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Inloppspumpstation",
+        "text": "Biologi och galler",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2117,12 +2153,12 @@
       }
     },
     {
-      "id": "wwt-rect-100",
+      "id": "wwt-rect-106",
       "type": "rect",
-      "x": 302,
+      "x": 574,
       "y": 500,
       "w": 260,
-      "h": 500,
+      "h": 148,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -2135,15 +2171,15 @@
       }
     },
     {
-      "id": "wwt-text-101",
+      "id": "wwt-text-107",
       "type": "text",
-      "x": 314,
+      "x": 586,
       "y": 506,
       "w": 236,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Biologi och galler",
+        "text": "Kemisk fällning",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2237,12 +2273,12 @@
       }
     },
     {
-      "id": "wwt-rect-106",
+      "id": "wwt-rect-114",
       "type": "rect",
       "x": 574,
-      "y": 500,
+      "y": 660,
       "w": 260,
-      "h": 148,
+      "h": 340,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -2255,15 +2291,15 @@
       }
     },
     {
-      "id": "wwt-text-107",
+      "id": "wwt-text-115",
       "type": "text",
       "x": 586,
-      "y": 506,
+      "y": 666,
       "w": 236,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Kemisk fällning",
+        "text": "Utgående vatten",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2395,12 +2431,12 @@
       }
     },
     {
-      "id": "wwt-rect-114",
+      "id": "wwt-rect-122",
       "type": "rect",
-      "x": 574,
-      "y": 660,
+      "x": 846,
+      "y": 500,
       "w": 260,
-      "h": 340,
+      "h": 240,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -2413,15 +2449,15 @@
       }
     },
     {
-      "id": "wwt-text-115",
+      "id": "wwt-text-123",
       "type": "text",
-      "x": 586,
-      "y": 666,
+      "x": 858,
+      "y": 506,
       "w": 236,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Utgående vatten",
+        "text": "Rötning",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2554,12 +2590,12 @@
       }
     },
     {
-      "id": "wwt-rect-122",
+      "id": "wwt-rect-127",
       "type": "rect",
-      "x": 846,
+      "x": 1118,
       "y": 500,
-      "w": 260,
-      "h": 240,
+      "w": 300,
+      "h": 148,
       "rot": 0,
       "props": {
         "fill": "#00000000",
@@ -2572,15 +2608,15 @@
       }
     },
     {
-      "id": "wwt-text-123",
+      "id": "wwt-text-128",
       "type": "text",
-      "x": 858,
+      "x": 1130,
       "y": 506,
-      "w": 236,
+      "w": 276,
       "h": 24,
       "rot": 0,
       "props": {
-        "text": "Rötning",
+        "text": "Elmatning",
         "fontSize": 14,
         "color": "#e6edf3",
         "bold": true,
@@ -2654,42 +2690,6 @@
         "onText": "PÅ",
         "colorClosed": "#2ecc71",
         "colorOpen": "#3a4450"
-      }
-    },
-    {
-      "id": "wwt-rect-127",
-      "type": "rect",
-      "x": 1118,
-      "y": 500,
-      "w": 300,
-      "h": 148,
-      "rot": 0,
-      "props": {
-        "fill": "#00000000",
-        "stroke": "#30363d",
-        "strokeWidth": 1,
-        "radius": 6,
-        "dash": "",
-        "dynTag": "",
-        "dynRules": []
-      }
-    },
-    {
-      "id": "wwt-text-128",
-      "type": "text",
-      "x": 1130,
-      "y": 506,
-      "w": 276,
-      "h": 24,
-      "rot": 0,
-      "props": {
-        "text": "Elmatning",
-        "fontSize": 14,
-        "color": "#e6edf3",
-        "bold": true,
-        "align": "start",
-        "dynTag": "",
-        "dynRules": []
       }
     },
     {
@@ -2898,5 +2898,5 @@
       }
     }
   ],
-  "updated": "2026-10-16T15:53:14.213142+02:00"
+  "updated": "2026-10-16T20:58:19.343066+02:00"
 }

@@ -1,5 +1,6 @@
 <template>
-  <g :class="{ 'hmi-clickable': clickable }" @click="onClick">
+  <!-- at runtime, passive elements let clicks through to controls beneath them -->
+  <g :class="{ 'hmi-clickable': clickable }" :pointer-events="runtime && !clickable ? 'none' : null" @click="onClick">
     <!-- invisible hit area so thin shapes are easy to click/drag -->
     <rect v-if="!def.line" class="hmi-hover" :x="-2" :y="-2" :width="el.w + 4" :height="el.h + 4" fill="transparent" stroke="none" />
 
