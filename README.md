@@ -61,6 +61,19 @@ cd scada/backend  && go run ./cmd/scada -data data           # http://localhost:
 
 blue-station använder också port 8080 för sitt webbgränssnitt som standard. Om SCADA körs på samma dator måste stationens webb därför flyttas med `-http`, som i exemplet ovan. På Linux krävs root eller `CAP_NET_BIND_SERVICE` för Modbus-porten 502. Använd annars t.ex. `-modbus :5021` och ändra porten för enheten `blue-station` i SCADA.
 
+### Bygga allt
+
+`build.ps1` (Windows) och `build.sh` (Linux, macOS) bygger HMI och alla program till `bin/`: scada, modsim, opctl, blue-station, blue-chp, blue-water, blue-wwtp och blue-proxy. Första gången kopieras även `scada/backend/data` till `bin/data`. Den kopian skrivs aldrig över.
+
+```bash
+./build.sh                        # Linux/macOS, för den här datorn
+./build.sh --os windows           # korskompilera, även --arch arm64
+.\build.ps1                       # Windows (eller build.cmd om PowerShell-skript är spärrade)
+.\build.ps1 -OS linux -Test       # kör go test i alla moduler och bygg för Linux
+```
+
+Med `--skip-frontend` / `-SkipFrontend` återanvänds det HMI som redan är byggt. Starta sedan t.ex. `bin/scada -data bin/data`.
+
 ### Portar
 
 | Komponent | Modbus TCP | IEC 60870-5-104 | HTTP |

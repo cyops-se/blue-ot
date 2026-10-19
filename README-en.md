@@ -61,6 +61,19 @@ Open http://localhost:8080 and pick one of the views **Station Norra** (modsim),
 
 blue-station also uses port 8080 for its web interface by default. When SCADA runs on the same machine, the substation's web interface must therefore be moved with `-http`, as in the example above. On Linux, port 502 for Modbus requires root or `CAP_NET_BIND_SERVICE`. Otherwise use e.g. `-modbus :5021` and change the port of the `blue-station` device in SCADA.
 
+### Building everything
+
+`build.ps1` (Windows) and `build.sh` (Linux, macOS) build the HMI and all programs into `bin/`: scada, modsim, opctl, blue-station, blue-chp, blue-water, blue-wwtp and blue-proxy. The first time, `scada/backend/data` is also copied to `bin/data`. That copy is never overwritten.
+
+```bash
+./build.sh                        # Linux/macOS, for this machine
+./build.sh --os windows           # cross-compile, also --arch arm64
+.\build.ps1                       # Windows (or build.cmd if PowerShell scripts are blocked)
+.\build.ps1 -OS linux -Test       # run go test in all modules and build for Linux
+```
+
+With `--skip-frontend` / `-SkipFrontend` the HMI that is already built is reused. Then start e.g. `bin/scada -data bin/data`.
+
 ### Ports
 
 | Component | Modbus TCP | IEC 60870-5-104 | HTTP |

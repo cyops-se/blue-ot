@@ -5,3 +5,4 @@ scada/backend/internal/web/dist/*
 *.tmp
 *.exe
 /blue-proxy/blue-proxy
+/bin/
