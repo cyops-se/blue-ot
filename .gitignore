@@ -6,3 +6,6 @@ scada/backend/internal/web/dist/*
 *.exe
 /blue-proxy/blue-proxy
 /bin/
+bin
+obj
+publish
