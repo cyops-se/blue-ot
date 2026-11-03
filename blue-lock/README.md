@@ -51,6 +51,38 @@ BlueLock.exe --restore-policies    # återställ policys manuellt om något gåt
 
 Fel loggas till `%LOCALAPPDATA%\BlueLock\kiosk.log`.
 
+## Tillståndslogg
+
+Varje steg i kioskens livscykel skrivs som en rad till `%ProgramData%\BlueLock\state.log`. Filen är gemensam för alla konton, så rader från kioskanvändaren, SSH-kontot och administratören hamnar i samma fil. Raderna har formatet tidpunkt, tillstånd, konto, session och PID, och sist detaljer:
+
+```
+2026-11-02 09:00:12 +01:00  INSTALLERAD          KIOSK\admin, session 0, PID 4120  aktivitet "BlueLock" för KIOSK\visning, C:\BlueLock\BlueLock.exe, autostart
+2026-11-02 09:01:03 +01:00  STARTBEGÄRAN         KIOSK\admin, session 0, PID 5532  via SSH
+2026-11-02 09:01:04 +01:00  AKTIVERAD            KIOSK\visning, session 1, PID 6012  1 skärm(ar), policys satta, 12 bild(er) i C:\BlueLock\Images
+2026-11-02 17:30:41 +01:00  STOPPBEGÄRAN         KIOSK\admin, session 0, PID 7210  via SSH
+2026-11-02 17:30:41 +01:00  DEAKTIVERAD          KIOSK\visning, session 1, PID 6012  orsak: stoppsignal (--stop), aktiv i 0.08:29:37
+```
+
+| Tillstånd | När |
+|---|---|
+| `INSTALLERAD` / `AVINSTALLERAD` | `--register-task` / `--unregister-task` |
+| `AUTOSTART-PÅ` / `AUTOSTART-AV` | `--install-autostart` / `--remove-autostart` |
+| `STARTBEGÄRAN`, `START-MISSLYCKAD` | `--start` och varför starten misslyckades, med slutkod |
+| `AKTIVERAD` | Kiosken visas och låsningen är på |
+| `STOPPBEGÄRAN` | `--stop` |
+| `DEAKTIVERAD` | Kiosken stängdes. Orsak: tangentsekvens, stoppsignal eller att Windows avslutas/utloggning |
+| `KRASCH`, `POLICYS-ÅTERSTÄLLDA` | Ohanterat fel, och återställning av policys efter krasch eller med `--restore-policies` |
+| `FEL` | Felaktig konfiguration, misslyckad registrering, uteblivet svar på stoppsignalen eller policys som en dödad körning lämnat kvar |
+
+Följ loggen live, lokalt eller via SSH:
+
+```powershell
+Get-Content C:\ProgramData\BlueLock\state.log -Wait -Tail 20 -Encoding UTF8
+ssh kiosk@kioskdator "C:\BlueLock\BlueLock.exe --state-log"   # skriver ut hela loggen
+```
+
+Om processen dödas (t.ex. med Aktivitetshanteraren eller `taskkill /F`) hinner ingen `DEAKTIVERAD`-rad skrivas. Det syns som en `AKTIVERAD` utan efterföljande `DEAKTIVERAD`, och vid nästa start som en `FEL`-rad om kvarlämnade policys.
+
 ## Styra kiosken via SSH
 
 Program som startas från Windows OpenSSH körs i SSH-inloggningens egen, osynliga session och kan inte visa fönster. BlueLock startar därför kiosken via en schemalagd aktivitet, `BlueLock`, som körs i aktivitetens användares session. Det gäller både en session vid den fysiska skärmen och en session via fjärrskrivbord (RDP).

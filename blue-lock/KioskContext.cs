@@ -61,20 +61,24 @@ internal sealed class KioskContext : ApplicationContext
         _guardTimer.Tick += (_, _) =>
         {
             if (RemoteControl.IsStopRequested(_startedUtc))
-                Shutdown();
+                Shutdown("stoppsignal (--stop)");
             else
                 KeepInFront();
         };
         _guardTimer.Start();
 
         ShowNext();
+
+        StateLog.Write(StateLog.Activated,
+            $"{_forms.Count} skärm(ar), policys {(settings.ApplyPolicies ? "satta" : "avstängda")}, " +
+            $"{_files.Count} bild(er) i {settings.ImageFolderPath}");
     }
 
     private void OnKeyPressed(Keys key)
     {
         // Runs inside the hook callback: defer the actual work so the callback returns quickly.
         if (_exitDetector.Feed(key))
-            _sync.Post(_ => Shutdown(), null);
+            _sync.Post(_ => Shutdown("tangentsekvens"), null);
     }
 
     private void CreateForms()
@@ -218,7 +222,7 @@ internal sealed class KioskContext : ApplicationContext
         return bitmap;
     }
 
-    private void Shutdown()
+    private void Shutdown(string reason)
     {
         if (_shuttingDown)
             return;
@@ -238,6 +242,8 @@ internal sealed class KioskContext : ApplicationContext
             form.AllowClose = true;
             form.Close();
         }
+
+        StateLog.Write(StateLog.Deactivated, $"orsak: {reason}, aktiv i {DateTime.UtcNow - _startedUtc:d\\.hh\\:mm\\:ss}");
         ExitThread();
     }
 
@@ -246,7 +252,7 @@ internal sealed class KioskContext : ApplicationContext
         if (disposing)
         {
             // Also covers Windows shutdown, where the forms close without the exit sequence.
-            Shutdown();
+            Shutdown("Windows avslutas eller utloggning");
             _slideTimer.Dispose();
             _guardTimer.Dispose();
             _current?.Dispose();

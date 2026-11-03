@@ -31,7 +31,10 @@ internal sealed class LockdownPolicies : IDisposable
     public void Apply()
     {
         // An existing backup means the previous run never restored; keep those true original values.
-        _original = ReadBackup() ?? Policies.ToDictionary(p => p.Id, p => p.Read());
+        var leftover = ReadBackup();
+        if (leftover is not null)
+            StateLog.Write(StateLog.Error, "föregående körning återställde aldrig sina policys (kraschad eller dödad)");
+        _original = leftover ?? Policies.ToDictionary(p => p.Id, p => p.Read());
         Directory.CreateDirectory(Program.DataDirectory);
         File.WriteAllText(BackupPath, JsonSerializer.Serialize(_original));
 
@@ -51,11 +54,13 @@ internal sealed class LockdownPolicies : IDisposable
         _original = null;
     }
 
-    /// <summary>Restores policies left behind by a run that crashed or was killed.</summary>
-    public static void RestoreLeftovers()
+    /// <summary>Restores policies left behind by a run that crashed or was killed. Returns true if any were found.</summary>
+    public static bool RestoreLeftovers()
     {
-        if (ReadBackup() is { } backup)
-            new LockdownPolicies { _original = backup }.Dispose();
+        if (ReadBackup() is not { } backup)
+            return false;
+        new LockdownPolicies { _original = backup }.Dispose();
+        return true;
     }
 
     private static Dictionary<string, int?>? ReadBackup()

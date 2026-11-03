@@ -21,7 +21,7 @@ internal static class RemoteControl
     private static readonly TimeSpan StartTimeout = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan StopTimeout = TimeSpan.FromSeconds(10);
 
-    private static string ControlDirectory { get; } =
+    public static string ControlDirectory { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "BlueLock");
 
     private static string StopSignalPath => Path.Combine(ControlDirectory, "stop.signal");
@@ -101,12 +101,15 @@ internal static class RemoteControl
             if (exitCode == 0)
             {
                 Console.WriteLine($"Aktiviteten \"{TaskName}\" är registrerad för {user}.");
+                StateLog.Write(StateLog.Installed, $"aktivitet \"{TaskName}\" för {user}, {exe}{(autostart ? ", autostart" : "")}");
                 if (autostart)
                     Console.WriteLine("Kiosken startar automatiskt vid inloggning och vid anslutning via skärmen eller fjärrskrivbord.");
             }
-            else if (autostart)
+            else
             {
-                Console.Error.WriteLine("Inloggnings- och anslutningsutlösare kan kräva administratörsbehörighet.");
+                StateLog.Write(StateLog.Error, $"registrering av aktiviteten misslyckades (slutkod {exitCode})");
+                if (autostart)
+                    Console.Error.WriteLine("Inloggnings- och anslutningsutlösare kan kräva administratörsbehörighet.");
             }
             return exitCode;
         }
@@ -116,7 +119,13 @@ internal static class RemoteControl
         }
     }
 
-    public static int UnregisterTask() => Schtasks("/Delete", "/TN", TaskName, "/F").ExitCode;
+    public static int UnregisterTask()
+    {
+        int exitCode = Schtasks("/Delete", "/TN", TaskName, "/F").ExitCode;
+        if (exitCode == 0)
+            StateLog.Write(StateLog.Uninstalled, $"aktivitet \"{TaskName}\" borttagen");
+        return exitCode;
+    }
 
     public static int Start()
     {
@@ -126,9 +135,12 @@ internal static class RemoteControl
             return 0;
         }
 
+        StateLog.Write(StateLog.StartRequested, IsSshSession ? "via SSH" : null);
+
         if (GetTaskUser() is not { } taskUser)
         {
             Console.Error.WriteLine("Aktiviteten saknas. Registrera den först med: BlueLock.exe --register-task");
+            StateLog.Write(StateLog.StartFailed, "aktiviteten saknas (slutkod 5)");
             return 5;
         }
 
@@ -136,6 +148,7 @@ internal static class RemoteControl
         if (sessions.Count == 0)
         {
             Console.Error.WriteLine($"{taskUser} är inte inloggad, varken vid skärmen eller via fjärrskrivbord. Kiosken kan bara starta i en inloggad session.");
+            StateLog.Write(StateLog.StartFailed, $"{taskUser} är inte inloggad (slutkod 2)");
             return 2;
         }
         if (!sessions.Any(s => s.IsActive))
@@ -143,7 +156,10 @@ internal static class RemoteControl
 
         var (exitCode, _) = Schtasks("/Run", "/TN", TaskName);
         if (exitCode != 0)
+        {
+            StateLog.Write(StateLog.StartFailed, $"aktiviteten kunde inte köras (slutkod {exitCode})");
             return exitCode;
+        }
 
         // Wait briefly so we can report whether, and where, the kiosk actually came up.
         var deadline = DateTime.UtcNow + StartTimeout;
@@ -158,6 +174,7 @@ internal static class RemoteControl
         }
 
         Console.Error.WriteLine($"Aktiviteten startades men kiosken syns inte i {taskUser}s session.");
+        StateLog.Write(StateLog.StartFailed, $"kiosken syns inte i {taskUser}s session (slutkod 3)");
         return 3;
     }
 
@@ -169,6 +186,7 @@ internal static class RemoteControl
             return 0;
         }
 
+        StateLog.Write(StateLog.StopRequested, IsSshSession ? "via SSH" : null);
         EnsureControlDirectory();
         File.WriteAllText(StopSignalPath, DateTime.UtcNow.ToString("O"));
 
@@ -185,6 +203,7 @@ internal static class RemoteControl
         }
 
         Console.Error.WriteLine("Kiosken svarade inte på stoppsignalen.");
+        StateLog.Write(StateLog.Error, "kiosken svarade inte på stoppsignalen (slutkod 4)");
         return 4;
     }
 
@@ -232,7 +251,7 @@ internal static class RemoteControl
         return true;
     }
 
-    private static void EnsureControlDirectory()
+    public static void EnsureControlDirectory()
     {
         var directory = Directory.CreateDirectory(ControlDirectory);
         try

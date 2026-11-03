@@ -44,15 +44,24 @@ internal static class Program
             case "--install-autostart":
                 using (var key = Registry.CurrentUser.CreateSubKey(RunKey))
                     key.SetValue(AppName, $"\"{Environment.ProcessPath}\"");
+                StateLog.Write(StateLog.AutostartOn, @"HKCU\...\Run");
                 return 0;
 
             case "--remove-autostart":
                 using (var key = Registry.CurrentUser.CreateSubKey(RunKey))
                     key.DeleteValue(AppName, throwOnMissingValue: false);
+                StateLog.Write(StateLog.AutostartOff, @"HKCU\...\Run");
                 return 0;
 
             case "--restore-policies":
-                LockdownPolicies.RestoreLeftovers();
+                if (LockdownPolicies.RestoreLeftovers())
+                    StateLog.Write(StateLog.PoliciesRestored, "manuellt (--restore-policies)");
+                return 0;
+
+            case "--state-log":
+                Console.WriteLine(StateLog.FilePath);
+                if (File.Exists(StateLog.FilePath))
+                    Console.Write(File.ReadAllText(StateLog.FilePath));
                 return 0;
 
             case not null:
@@ -73,6 +82,7 @@ internal static class Program
         }
         catch (Exception ex)
         {
+            StateLog.Write(StateLog.Error, $"felaktig konfiguration i appsettings.json: {ex.Message}");
             MessageBox.Show($"Felaktig konfiguration i appsettings.json:\n\n{ex.Message}", AppName,
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             return 1;
@@ -84,7 +94,9 @@ internal static class Program
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             Log(e.ExceptionObject.ToString() ?? "Okänt fel");
-            LockdownPolicies.RestoreLeftovers();
+            StateLog.Write(StateLog.Crashed, (e.ExceptionObject as Exception)?.Message);
+            if (LockdownPolicies.RestoreLeftovers())
+                StateLog.Write(StateLog.PoliciesRestored, "efter krasch");
         };
 
         using var context = new KioskContext(settings);
