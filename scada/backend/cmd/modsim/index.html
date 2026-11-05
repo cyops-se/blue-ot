@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Modsim</title>
+<style>
+  :root { --bg:#0f141a; --card:#18202a; --line:#2a3542; --fg:#dde6ef; --dim:#8494a6;
+          --closed:#d64545; --open:#2f9e5b; --alarm:#e0a020; --accent:#4a90d9; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui, sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:12px 16px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0; }
+  header .dim { color:var(--dim); }
+  main { display:grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap:12px; padding:12px 16px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  section h2 { font-size:14px; margin:0 0 6px; color:var(--accent); }
+  .row { display:grid; grid-template-columns: 1fr auto auto; gap:8px; align-items:center; padding:4px 0; border-top:1px solid var(--line); }
+  .row:first-of-type { border-top:none; }
+  .lbl small { display:block; color:var(--dim); font-size:11px; }
+  .val { font-variant-numeric: tabular-nums; text-align:right; white-space:nowrap; }
+  .val.on { color:var(--alarm); font-weight:600; }
+  .val.closed { color:var(--open); font-weight:600; }
+  .val.open { color:var(--closed); font-weight:600; }
+  button { background:#24303d; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 8px; cursor:pointer; font:inherit; }
+  button:hover { border-color:var(--accent); }
+  input { width:70px; background:#0f141a; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 4px; font:inherit; }
+  /* single-line schematic */
+  .sch { margin:12px 16px 0; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .sch h2 { font-size:14px; margin:0 0 6px; color:var(--accent); }
+  .sch svg { width:100%; height:auto; display:block; max-height:360px; }
+  .sch .wire { stroke:#5a6b7d; stroke-width:2.5; fill:none; }
+  .sch .wire.dead { stroke:#39434f; }
+  .sch .bus { stroke:#aeb9c6; stroke-width:5; stroke-linecap:round; }
+  .sch .bus.dead { stroke:#44505d; }
+  .sch .sym { fill:var(--card); stroke:#8494a6; stroke-width:2.5; }
+  .sch .sym.sclosed { fill:var(--open); stroke:var(--open); }
+  .sch .sym.sopen { fill:var(--card); stroke:var(--open); }
+  /* disconnector drawn as a knife switch, like the SCADA view */
+  .sch .disc { stroke:var(--open); stroke-width:3; stroke-linecap:round; fill:none; }
+  .sch .disc .pivot { fill:var(--open); stroke:none; }
+  .sch .disc .blade-closed, .sch .disc .blade-open { display:none; }
+  .sch .disc.dclosed .blade-closed { display:inline; }
+  .sch .disc.dopen .blade-open { display:inline; }
+  .sch text { fill:var(--fg); font:12px system-ui, sans-serif; }
+  .sch .lbl { fill:var(--dim); font-size:11px; }
+  .sch .meas { fill:var(--fg); font-variant-numeric:tabular-nums; font-size:12px; }
+  .sch .ind { fill:#39434f; }
+  .sch .ind.salarm { fill:var(--alarm); }
+  #events { grid-column: 1 / -1; }
+  #events ol { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; font-family:ui-monospace, monospace; font-size:12px; }
+  #events li { padding:2px 0; border-top:1px solid var(--line); }
+  #toast { position:fixed; bottom:16px; right:16px; background:#5a1f1f; padding:8px 12px; border-radius:6px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Blue Modsim</h1>
+  <span class="dim">Modbus-simulator · ställverk med fyra fack · Modbus TCP</span>
+  <span class="dim" id="clock"></span>
+</header>
+
+<section class="sch">
+  <h2>Översikt</h2>
+  <svg viewBox="0 0 680 300" role="img" aria-label="Enlinjeschema">
+    <!-- busbar -->
+    <line class="bus" x1="60" y1="64" x2="620" y2="64"></line>
+    <text class="lbl" x="60" y="52">Samlingsskena 10 kV</text>
+    <text class="meas" x="620" y="28" text-anchor="end" data-meas="UB" data-prefix="Skena ">–</text>
+    <text class="meas" x="620" y="44" text-anchor="end" data-meas="F" data-prefix="f ">–</text>
+    <g>
+      <circle class="ind" cx="636" cy="54" r="5" data-alarm="T1_TEMP"></circle>
+      <text class="meas" x="620" y="58" text-anchor="end" data-meas="T1_TEMP" data-prefix="T1 ">–</text>
+    </g>
+    <!-- feeders -->
+    <g id="feeders"></g>
+  </svg>
+</section>
+
+<main id="main"></main>
+<div id="toast"></div>
+<script>
+const main = document.getElementById('main');
+let built = false;
+
+function el(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  Object.assign(e, attrs || {});
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+function svg(tag, attrs, ...kids) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const k in (attrs || {})) e.setAttribute(k, attrs[k]);
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.style.display = 'none', 4000);
+}
+
+async function send(id, body) {
+  const r = await fetch('api/control', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(Object.assign({ id }, body)) });
+  if (!r.ok) toast(id + ': ' + ((await r.json()).error || r.statusText));
+  load();
+}
+
+// Draw the four feeder bays into the schematic.
+function buildSchematic() {
+  const g = document.getElementById('feeders');
+  const xs = [130, 290, 450, 610];
+  xs.forEach((x, i) => {
+    const n = i + 1;
+    g.append(
+      svg('line', { class: 'wire', x1: x, y1: 64, x2: x, y2: 88 }),
+      // disconnector QSn as a knife switch (same symbol as the SCADA view)
+      svg('g', { class: 'disc', 'data-disc': 'QS' + n },
+        svg('line', { x1: x, y1: 88, x2: x, y2: 96 }),
+        svg('line', { x1: x - 7, y1: 96, x2: x + 7, y2: 96 }),
+        svg('line', { x1: x, y1: 112, x2: x, y2: 120 }),
+        svg('line', { class: 'blade-closed', x1: x, y1: 112, x2: x, y2: 96 }),
+        svg('line', { class: 'blade-open', x1: x, y1: 112, x2: x - 11, y2: 99 }),
+        svg('circle', { class: 'pivot', cx: x, cy: 112, r: 3 }),
+      ),
+      svg('text', { class: 'lbl', x: x + 16, y: 108 }, 'QS' + n),
+      svg('line', { class: 'wire', x1: x, y1: 120, x2: x, y2: 140 }),
+      svg('rect', { class: 'sym', 'data-sw': 'Q' + n, x: x - 12, y: 140, width: 24, height: 24, rx: 2 }),
+      svg('text', { class: 'lbl', x: x + 18, y: 156 }, 'Q' + n),
+      svg('line', { class: 'wire', 'data-live': 'QS' + n + ',Q' + n, x1: x, y1: 164, x2: x, y2: 196 }),
+      svg('path', { class: 'wire', 'data-live': 'QS' + n + ',Q' + n, d: `M ${x-9} 196 L ${x} 208 L ${x+9} 196 Z`, fill: 'none' }),
+      svg('text', { class: 'lbl', x: x, y: 230, 'text-anchor': 'middle' }, 'Fack J' + n),
+      svg('text', { class: 'meas', x: x, y: 248, 'text-anchor': 'middle', 'data-meas': 'J' + n + '_U', 'data-prefix': 'U ' }, '–'),
+      svg('text', { class: 'meas', x: x, y: 264, 'text-anchor': 'middle', 'data-meas': 'J' + n + '_I', 'data-prefix': 'I ' }, '–'),
+      svg('text', { class: 'meas', x: x, y: 280, 'text-anchor': 'middle', 'data-meas': 'J' + n + '_P', 'data-prefix': 'P ' }, '–'),
+    );
+  });
+}
+
+// Paint the schematic from the latest point values.
+function paintSchematic() {
+  for (const e of document.querySelectorAll('[data-sw]')) {
+    const p = current[e.dataset.sw];
+    if (!p) continue;
+    const closed = p.value === true;
+    e.classList.toggle('sclosed', closed);
+    e.classList.toggle('sopen', !closed);
+  }
+  for (const e of document.querySelectorAll('[data-disc]')) {
+    const p = current[e.dataset.disc];
+    if (!p) continue;
+    const closed = p.value === true;
+    e.classList.toggle('dclosed', closed);
+    e.classList.toggle('dopen', !closed);
+  }
+  for (const e of document.querySelectorAll('[data-meas]')) {
+    const p = current[e.dataset.meas];
+    if (p) e.textContent = (e.dataset.prefix || '') + p.text;
+  }
+  for (const e of document.querySelectorAll('[data-live]')) {
+    const live = e.dataset.live.split(',').every(id => current[id] && current[id].value === true);
+    e.classList.toggle('dead', !live);
+  }
+  for (const e of document.querySelectorAll('[data-alarm]')) {
+    const p = current[e.dataset.alarm];
+    e.classList.toggle('salarm', !!p && ALARM.includes(p.text));
+  }
+}
+
+function build(points) {
+  const groups = new Map();
+  for (const p of points) {
+    if (!groups.has(p.group)) groups.set(p.group, []);
+    groups.get(p.group).push(p);
+  }
+  for (const [name, pts] of groups) {
+    const sec = el('section', {}, el('h2', { textContent: name }));
+    for (const p of pts) {
+      const refs = [p.modbus, p.iec !== '–' ? p.iec : '', p.iecCtrl !== '–' ? p.iecCtrl : ''].filter(Boolean).join(' · ');
+      const ctl = el('div');
+      if (p.ctrl) {
+        switch (p.kind) {
+          case 'breaker':
+            ctl.append(el('button', { textContent: 'Till', onclick: () => send(p.id, { on: true }) }), ' ',
+                       el('button', { textContent: 'Från', onclick: () => send(p.id, { on: false }) }));
+            break;
+          case 'switch':
+            ctl.append(el('button', { textContent: 'Växla', onclick: () => send(p.id, { on: !current[p.id].value }) }));
+            break;
+        }
+      }
+      sec.append(el('div', { className: 'row' },
+        el('div', { className: 'lbl' }, p.desc, el('small', { textContent: p.id + ' — ' + refs })),
+        el('div', { className: 'val', id: 'v-' + p.id }),
+        ctl));
+    }
+    main.append(sec);
+  }
+  main.append(el('section', { id: 'events' }, el('h2', { textContent: 'Händelser' }), el('ol', { id: 'evlist' })));
+  buildSchematic();
+  built = true;
+}
+
+const ALARM = ['LARM', 'UTLÖST', 'SPÄNNINGSLÖS', 'FEL', 'BORTFALL'];
+const current = {};
+
+function update(state) {
+  for (const p of state.points) {
+    current[p.id] = p;
+    const v = document.getElementById('v-' + p.id);
+    if (!v) continue;
+    v.textContent = p.text;
+    v.className = 'val';
+    if (p.kind === 'breaker') v.classList.add(p.value ? 'closed' : 'open');
+    else if (ALARM.includes(p.text)) v.classList.add('on');
+  }
+  paintSchematic();
+  const list = document.getElementById('evlist');
+  list.replaceChildren(...state.events.slice().reverse().map(e =>
+    el('li', { textContent: new Date(e.time).toLocaleTimeString('sv-SE') + '  ' + e.text })));
+  document.getElementById('clock').textContent = new Date(state.time).toLocaleString('sv-SE');
+}
+
+async function load() {
+  try {
+    const s = await (await fetch('api/state')).json();
+    if (!built) build(s.points);
+    update(s);
+  } catch (e) { toast('Ingen kontakt med simulatorn'); }
+}
+setInterval(load, 1000);
+load();
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ import (
 	"log"
 	"sync"
 
+	"blueot/scada/internal/alarm"
 	"blueot/scada/internal/iec"
 	"blueot/scada/internal/mbus"
 	"blueot/scada/internal/model"
@@ -70,6 +71,7 @@ func (m *Manager) Reload() {
 		keep[t.ID] = true
 	}
 	m.hub.Forget(keep)
+	m.hub.PruneAlarms(alarm.Keep(cfg))
 
 	var modbus, ieccount int
 	for _, d := range cfg.Devices {

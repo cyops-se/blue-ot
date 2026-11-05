@@ -13,6 +13,7 @@ import (
 	"os/signal"
 	"time"
 
+	"blueot/scada/internal/alarm"
 	"blueot/scada/internal/api"
 	"blueot/scada/internal/comm"
 	"blueot/scada/internal/realtime"
@@ -31,6 +32,7 @@ func main() {
 		log.Fatalf("store: %v", err)
 	}
 	hub := realtime.New()
+	alarms := alarm.New(st, hub)
 	mgr := comm.NewManager(st, hub)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -52,7 +54,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              *addr,
-		Handler:           (&api.Server{Store: st, Hub: hub, Comm: mgr, Web: hmi}).Handler(),
+		Handler:           (&api.Server{Store: st, Hub: hub, Comm: mgr, Alarms: alarms, Web: hmi}).Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	go func() {

@@ -10,6 +10,7 @@ What it includes:
 - **Operation** of breakers, disconnectors, switches, pumps, valves and setpoints. Each operation requires a selection and then a confirmation (select-before-operate), and the dialog shows when the position has changed.
 - **View editor** in the browser. There you draw displays and bind each symbol to the tags and values it should show.
 - **Measurement table** with floating-point values, quality and timestamp, a trend per tag, and direct writes to writable tags.
+- **Alarms** with acknowledgement: alarms for breakers that open without an operation from the HMI, for alarm signals (protection tripped, overload etc.) and for communication failures. The latest alarms are shown at the top of every page.
 - **Event list** with operations, position changes, communication status and configuration changes.
 - **Configuration** of devices and tags in the HMI. Tags can use any Modbus area, several data types, any word and byte order, and scale and offset.
 
@@ -29,7 +30,8 @@ The user interface is in Swedish.
 | `backend/cmd/modsim` | Modbus TCP simulator (see [modsim](#modsim)) |
 | `backend/cmd/opctl` | Command-line tool to operate breakers and disconnectors (see [opctl](#opctl)) |
 | `backend/internal/mbus` | One poller per device. It merges nearby addresses into few reads, decodes data types, reconnects on errors and writes for operations |
-| `backend/internal/realtime` | Process image, in-memory history (3600 values per tag), event list (last 1000) and fan-out to WebSocket clients |
+| `backend/internal/realtime` | Process image, in-memory history (3600 values per tag), event list (last 1000), alarm list and fan-out to WebSocket clients |
+| `backend/internal/alarm` | Alarm engine: raises and clears alarms from tag values, operations and communication status |
 | `backend/internal/store` | JSON storage of devices, tags, views and uploaded images |
 | `backend/internal/api` | REST API and WebSocket |
 | `backend/internal/web` | Embedded HMI (`go:embed` of `dist/`, written by the frontend build) |
@@ -91,13 +93,32 @@ The `scada` executable only needs the `data/` directory. Build the HMI before `g
 | Command button | Writable tag and value. With "Fråga efter värde" (ask for value) it works as a setpoint input |
 | View link | Navigation to another view |
 
+### Alarms
+
+The alarm list contains every alarm that is active or not yet acknowledged:
+
+| State | Display |
+|---|---|
+| Active, unacknowledged | Red text, blinking bell |
+| Active, acknowledged | Dark yellow text, steady dark yellow bell. Stays until the fault has gone |
+| Returned, unacknowledged | White text, blinking grey bell. Stays until acknowledged |
+| Returned, acknowledged | Leaves the list |
+
+- **Alarm banner:** the top of every page shows the three latest unacknowledged alarms. When all are acknowledged, it shows the three latest standing alarms instead. Alarms are acknowledged one at a time or with *Kvittera alla* (acknowledge all). Each alarm shows which station it comes from, and clicking it opens the view that shows the object.
+- **Alarm list (`/alarms`):** all alarms with time, type, station, object, state and who acknowledged them. The station is a link to the view, and clicking the row opens it.
+- **Alarm sources:**
+  - **Tags with an alarm:** the alarm is active while the raw value is one of the tag's alarm values, e.g. `1` for "Utlöst" (tripped).
+  - **Uncommanded position change:** for tags with *Bara utan manöver* (only without operation), the alarm is raised only when the tag changes to an alarm value without the same value having been operated from the HMI in the last 30 seconds. This is used for breakers: an operator opening a breaker raises no alarm, but a breaker that trips, or is operated by someone else (e.g. with `opctl` or by an attacker talking directly to the device), does. The alarm stands until the breaker is closed again. The command tag is `<id>.Cmd`, `<id>_CMD` or, for `<x>_POS`, `<x>_CMD`, unless another one is set.
+  - **Communication failure:** one alarm per device while it does not respond.
+- Alarms, returns to normal and acknowledgements are logged in the event list.
+
 ### Measurements, events and configuration
 
 - **Measurements (`/values`):** all tags with value, quality and time of last change. Click a row to see the trend. Writable tags have a button for writing a value.
-- **Events (`/events`):** filtered by operations, position changes, communication and system. Position changes are logged for tags with "Logga ändringar" (log changes) and are shown with the tag's state texts, e.g. "Till → Från".
+- **Events (`/events`):** filtered by alarms, operations, position changes, communication and system. Position changes are logged for tags with "Logga ändringar" (log changes) and are shown with the tag's state texts, e.g. "Till → Från".
 - **Configuration (`/config`):**
   - **Devices:** protocol (Modbus TCP or IEC 60870-5-104), IP address and port, then unit id (Modbus) or common address CA (IEC 104), poll interval, timeout and enabled/disabled.
-  - **Modbus tags:** area (coil, discrete, input, holding), address (0-based), data type (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), word and byte swap, scale and offset, bit in register, writable, event logging and state texts.
+  - **Modbus tags:** area (coil, discrete, input, holding), address (0-based), data type (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), word and byte swap, scale and offset, bit in register, writable, event logging, state texts and alarm (alarm values, only without operation, alarm text and command tag).
   - **IEC 104 tags:** monitoring IOA, data type (`bool` for M_SP/M_DP, numeric for M_ME/M_ST), control IOA and command type (`C_DC` breaker, `C_SC` switch, `C_RC` step, `C_SE_NC` setpoint) for operable tags, scale, offset, unit, decimals, event logging and state texts. A tag becomes writable when it has a control IOA.
   - Changes are saved to `data/config.json`, and the poller restarts immediately.
 
@@ -137,9 +158,12 @@ Tag conventions for the simulators:
 
 The disconnectors are interlocked: they can only be operated when the bay's breaker is open. Otherwise the simulator replies with the exception *illegal data value*.
 
+Like blue-station and blue-chp, modsim has a local **web interface** (`-http`, default `0.0.0.0:8081`). It shows every point per bay with controls and an event log, and at the top a **single-line diagram** of the busbar and the four bays: each bay has its disconnector QS and breaker Q with U/I/P. Closed breakers are drawn as a filled green symbol and open ones as a green outline, the disconnectors as knife switches — the same symbols as in the SCADA view — and bays with an open breaker dim. The interface drives the simulator directly (so a breaker can be opened or closed without going through the SCADA), which is handy for provoking alarms in the HMI, e.g. an uncommanded breaker opening. The interface and its texts are in Swedish.
+
 ```bash
-go run ./cmd/modsim                         # listens on 0.0.0.0:5020
+go run ./cmd/modsim                         # Modbus on 0.0.0.0:5020, web on :8081
 go run ./cmd/modsim -addr :1503 -delay 3s   # other port, breaker operating time 3 s
+go run ./cmd/modsim -http ""                # without the web interface
 ```
 
 | Area | Address | Contents |
@@ -160,11 +184,15 @@ The unit id is ignored. The **Station Norra** view and the `sim` device in `data
 
 ```bash
 opctl [flags] <tag> <open|close>
+opctl [flags] <all|type:TYP> <open|close>
+opctl [flags] -category <TYP> <open|close>
 opctl -list [brytare|frånskiljare|pump]
 ```
 
 - **Tag:** the position tag (`G1.CB`, `Q1_POS`) or the command tag (`G1.CB.Cmd`, `Q1_CMD`). The tool finds the other of the two and the device from the configuration.
 - **State:** `open`/`close`, `från`/`till` (open/close), `öppna`/`slut`, `0`/`1`. For pumps, `close` = start (running) and `open` = stop.
+- **Whole types:** instead of a tag you can give `all`, `type:<type>` or `-category <type>`, which operates every operable point of the type (`brytare`, `frånskiljare`, `pump`) over the chosen protocol, the same way `-proxy` freezes and blocks per type. Each point is operated as a single manoeuvre, and a count of how many succeeded, failed and were skipped is printed at the end. If any point cannot be operated, the command exits with an error.
+- **Connection failure per device:** if a point fails to connect to a device (`host:port`), the remaining points on that same device are skipped straight away, with a clear message, instead of waiting out the timeout again; the manoeuvre continues with the next device. A single point that does reach the device but is rejected (e.g. an interlock) does not skip the rest.
 
 ```bash
 cd backend
@@ -173,15 +201,19 @@ opctl -list pump                       # pumps only
 opctl G1.CB close                      # Modbus TCP, reads data/config.json
 opctl -protocol iec104 Q0.CB open      # IEC 104
 opctl -data ../other/data QS1_POS open # other data directory
+opctl type:brytare open                # open every breaker
+opctl -category frånskiljare close     # close every disconnector
+opctl all open                         # every operable point
+opctl -dry-run type:brytare open       # show what would be done
 ```
 
-With `-list` the tool prints a table of the known breakers, disconnectors and pumps, which device each belongs to, which protocols can operate it and its command tag. The type is guessed from the tag id and name (the configuration has no explicit type). An optional filter (`brytare`, `frånskiljare` or `pump`) narrows the list.
+With `-list` the tool prints a table of the known breakers, disconnectors and pumps, which device each belongs to, which protocols can operate it and its command tag. The type is guessed from the tag id and name (the configuration has no explicit type). An optional filter (`brytare`, `frånskiljare` or `pump`) narrows the list. The same types apply to the per-type manoeuvre. When operating per type, any `-host`/`-port`/`-unit` overrides apply to every point, so use them only against a single device.
 
 | Flag | Default | Description |
 |---|---|---|
 | `-list` | `false` | List breakers, disconnectors and pumps (optional filter as argument) |
 | `-proxy` | – | Address of a blue-proxy for freeze/block actions (see below) |
-| `-category` | – | With `-proxy`: apply the action to a whole type (must precede the action) |
+| `-category` | – | Apply the action to a whole type, both when operating and with `-proxy` (must precede the state/action) |
 | `-protocol` | `modbus` | `modbus` or `iec104` |
 | `-data` | `data` | Data directory or path directly to `config.json` |
 | `-timeout` | `5s` | Timeout per call |
@@ -228,11 +260,13 @@ Actions: `freeze`, `unfreeze`, `block`, `unblock` and `status`. The target is a 
 | GET | `/api/status` | Communication status per device |
 | GET | `/api/history/{tag}?minutes=10` | History `[{t, v}]` |
 | GET | `/api/events` | Event list, newest first |
+| GET | `/api/alarms` | Alarm list, newest first |
+| POST | `/api/alarms/ack` | Acknowledge alarms: `{"ids":["F1.CB"],"user":"operatör"}`. Without `ids`, all are acknowledged |
 | POST | `/api/commands` | Operation: `{"tag":"Q1_CMD","value":1,"source":"Q1","text":"Frånslag"}` |
 | GET/POST | `/api/views` | List or create views |
 | GET/PUT/DELETE | `/api/views/{id}` | Read, save or delete a view |
 | GET/POST | `/api/images` | List or upload images (multipart, field `file`) |
-| WS | `/ws` | First a `snapshot` with all values and devices, then `values`, `device` and `event` on changes |
+| WS | `/ws` | First a `snapshot` with all values and devices, and alarms, then `values`, `device`, `event` and `alarms` (the whole alarm list) on changes |
 
 Values have the form `{"tag": "...", "v": 10.5, "q": "good" | "bad", "ts": "..."}`. Booleans are sent as 0 and 1.
 
@@ -240,5 +274,5 @@ Values have the form `{"tag": "...", "v": 10.5, "q": "good" | "bad", "ts": "..."
 
 - There is no login or access control, and all operations are logged as "operatör" (operator). Add authentication before the system is used with real equipment.
 - History is kept in memory only, 1 hour per tag at 1 s polling. Longer storage requires a time-series database.
-- There is no alarm handling with acknowledgement. Limits on measurement symbols only change the colour.
+- The alarm list is kept in memory only and is emptied when the server restarts. Limits on measurement symbols only change the colour and raise no alarms.
 - Modbus TCP and IEC 60870-5-104 are both supported as client protocols (per device). The IEC 104 poller performs STARTDT and a general interrogation on connect, receives spontaneous changes and reconnects automatically. Monitoring types M_SP, M_DP, M_ST and M_ME (normalized, scaled and short float, with and without time tag) are decoded; commands are sent as C_SC, C_DC, C_RC or C_SE_NC with direct execute.

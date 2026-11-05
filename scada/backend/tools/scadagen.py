@@ -22,7 +22,9 @@ def load_points(sim):
 
 def build_tags(points, dev, prefix):
     """SCADA tags for all points. Breakers and switches get a position tag
-    (discrete input) and a command tag (coil, suffix .Cmd)."""
+    (discrete input) and a command tag (coil, suffix .Cmd). Breakers alarm
+    when they open without an HMI command, status points when their active
+    text is "Larm" or "Utlöst"."""
     tags = []
 
     def tag(id, name, area, addr, dt="bool", unit="", dec=0, writable=False, log=False, state=None, group="", ioa=0):
@@ -42,13 +44,17 @@ def build_tags(points, dev, prefix):
         if k in ("breaker", "switch"):
             state = {"0": "Från", "1": "Till"} if k == "breaker" else texts
             t = tag(p["id"], p["desc"], "discrete", a, log=True, state=state, group=g, ioa=ioa)
+            if k == "breaker":
+                t["alarm"] = {"values": [0], "uncommanded": True}  # opened without an HMI command
             if p.get("ctrlIoa"):
                 t["ctrlIoa"], t["cmd"] = p["ctrlIoa"], "C_DC" if k == "breaker" else "C_SC"
             tag(p["id"] + ".Cmd", p["desc"] + " – manöver", "coil", a, writable=True, group=g)
         elif k == "pulse":
             tag(p["id"], p["desc"], "coil", a, writable=True, group=g)
         elif k == "status":
-            tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g, ioa=ioa)
+            t = tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g, ioa=ioa)
+            if texts["1"] in ("Larm", "Utlöst"):
+                t["alarm"] = {"values": [1]}
         elif k in ("measurement", "step"):
             tag(p["id"], p["desc"], "input", a, "float32", p["unit"], DEC.get(p["unit"], 1), group=g, ioa=ioa)
         elif k == "setpoint":

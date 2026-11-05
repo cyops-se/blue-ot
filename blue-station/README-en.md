@@ -102,7 +102,7 @@ On Linux, port 502 requires root or `CAP_NET_BIND_SERVICE`. Otherwise use e.g. `
 
 ## Web interface and API
 
-`http://localhost:8080` shows all signals grouped by bay, with controls and an event log. The interface and the event texts are in Swedish.
+`http://localhost:8080` shows all signals grouped by bay, with controls and an event log. The interface and the event texts are in Swedish. At the top a **single-line diagram** draws the grid, line breaker Q0, the two transformers, the two 20 kV busbar sections A and B with the bus coupler, and feeders F1–F4 and bay G1. Closed breakers are shown as a filled green symbol and open ones as a green outline, as in the SCADA views, and de-energized parts dim. It refreshes every second from the same data as the cards.
 
 - `GET /api/state` returns all points and events.
 - `POST /api/control` accepts `{"id": "F1.CB", "on": false}` or `{"id": "AVR.USet", "value": 20.8}`.

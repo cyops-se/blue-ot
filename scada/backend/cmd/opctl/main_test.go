@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 
 	"blueot/scada/internal/model"
@@ -137,6 +139,123 @@ func TestMatchFilter(t *testing.T) {
 	}
 	if _, valid := matchFilter("nope"); valid {
 		t.Error("matchFilter(nope) should be invalid")
+	}
+}
+
+func TestOperateTarget(t *testing.T) {
+	cases := []struct {
+		category  string
+		args      []string
+		wantWant  string
+		wantState string
+		wantBulk  bool
+		wantErr   bool
+	}{
+		{"", []string{"Q1_POS", "open"}, "", "", false, false}, // single tag
+		{"", []string{"all", "open"}, "", "open", true, false}, // all points
+		{"", []string{"type:brytare", "close"}, "brytare", "close", true, false},
+		{"", []string{"type:pump", "open"}, "pump", "open", true, false},
+		{"brytare", []string{"open"}, "brytare", "open", true, false}, // -category
+		{"disconnector", []string{"close"}, "frånskiljare", "close", true, false},
+		{"", []string{"type:nope", "open"}, "", "", true, true}, // bad type
+		{"nope", []string{"open"}, "", "", true, true},          // bad -category
+		{"brytare", []string{}, "", "", true, true},             // missing state
+		{"brytare", []string{"a", "b"}, "", "", true, true},     // too many args
+	}
+	for _, c := range cases {
+		want, state, bulk, err := operateTarget(c.category, c.args)
+		if (err != nil) != c.wantErr {
+			t.Errorf("operateTarget(%q,%v) err = %v, wantErr %v", c.category, c.args, err, c.wantErr)
+			continue
+		}
+		if c.wantErr {
+			continue
+		}
+		if want != c.wantWant || state != c.wantState || bulk != c.wantBulk {
+			t.Errorf("operateTarget(%q,%v) = (%q,%q,%v); want (%q,%q,%v)",
+				c.category, c.args, want, state, bulk, c.wantWant, c.wantState, c.wantBulk)
+		}
+	}
+}
+
+func TestOperability(t *testing.T) {
+	cfg := testConfig()
+	byID := indexByID(cfg)
+	get := func(id string) *model.Tag { return byID[id] }
+	cases := []struct {
+		id    string
+		proto []string
+		cmd   string
+	}{
+		{"Q1_POS", []string{"modbus"}, "Q1_CMD"},             // holding command, no IEC
+		{"QS1_POS", []string{"modbus"}, "QS1_CMD"},           // coil command
+		{"G1.CB", []string{"modbus", "iec104"}, "G1.CB.Cmd"}, // coil command + IEC ctrlIoa
+	}
+	for _, c := range cases {
+		protos, cmd := operability(cfg, byID, get(c.id))
+		if cmd != c.cmd {
+			t.Errorf("operability(%s) cmd = %q, want %q", c.id, cmd, c.cmd)
+		}
+		if len(protos) != len(c.proto) {
+			t.Errorf("operability(%s) protos = %v, want %v", c.id, protos, c.proto)
+			continue
+		}
+		for i := range protos {
+			if protos[i] != c.proto[i] {
+				t.Errorf("operability(%s) protos = %v, want %v", c.id, protos, c.proto)
+				break
+			}
+		}
+	}
+}
+
+func TestCanonProtocol(t *testing.T) {
+	for _, in := range []string{"modbus", "MODBUS"} {
+		if p, err := canonProtocol(in); err != nil || p != "modbus" {
+			t.Errorf("canonProtocol(%q) = %q,%v", in, p, err)
+		}
+	}
+	for _, in := range []string{"iec104", "iec", "104"} {
+		if p, err := canonProtocol(in); err != nil || p != "iec104" {
+			t.Errorf("canonProtocol(%q) = %q,%v", in, p, err)
+		}
+	}
+	if _, err := canonProtocol("nope"); err == nil {
+		t.Error("canonProtocol(nope) should error")
+	}
+}
+
+func TestConnError(t *testing.T) {
+	base := errors.New("connection refused")
+	ce := &connError{base}
+	if !isConnError(ce) {
+		t.Error("connError should be recognised")
+	}
+	// Still recognised when wrapped further up the chain.
+	if !isConnError(fmt.Errorf("point X: %w", ce)) {
+		t.Error("wrapped connError should be recognised")
+	}
+	// A plain (per-point) error is not a connection error.
+	if isConnError(fmt.Errorf("illegal data value")) {
+		t.Error("plain error should not be a connError")
+	}
+	if !errors.Is(ce, base) {
+		t.Error("connError should unwrap to its cause")
+	}
+}
+
+func TestConnEndpoint(t *testing.T) {
+	dev := model.Device{Host: "10.0.0.5", Port: 502, IEC: &model.IEC104{Port: 2404}}
+	if got := connEndpoint(dev, "modbus"); got != "10.0.0.5:502" {
+		t.Errorf("modbus endpoint = %q, want 10.0.0.5:502", got)
+	}
+	if got := connEndpoint(dev, "iec104"); got != "10.0.0.5:2404" {
+		t.Errorf("iec104 endpoint = %q, want 10.0.0.5:2404", got)
+	}
+	// Without an IEC endpoint the device port is used.
+	noIEC := model.Device{Host: "h", Port: 1502}
+	if got := connEndpoint(noIEC, "iec104"); got != "h:1502" {
+		t.Errorf("fallback endpoint = %q, want h:1502", got)
 	}
 }
 

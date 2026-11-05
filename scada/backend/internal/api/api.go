@@ -18,6 +18,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"blueot/scada/internal/alarm"
 	"blueot/scada/internal/comm"
 	"blueot/scada/internal/model"
 	"blueot/scada/internal/realtime"
@@ -27,10 +28,11 @@ import (
 
 // Server bundles the dependencies of the HTTP handlers.
 type Server struct {
-	Store *store.Store
-	Hub   *realtime.Hub
-	Comm  *comm.Manager
-	Web   fs.FS // built HMI served for all non-API paths (optional)
+	Store  *store.Store
+	Hub    *realtime.Hub
+	Comm   *comm.Manager
+	Alarms *alarm.Engine
+	Web    fs.FS // built HMI served for all non-API paths (optional)
 }
 
 // Handler builds the HTTP router.
@@ -58,6 +60,8 @@ func (s *Server) Handler() http.Handler {
 		r.Get("/history/{tag}", s.getHistory)
 		r.Get("/events", s.getEvents)
 		r.Post("/commands", s.postCommand)
+		r.Get("/alarms", s.getAlarms)
+		r.Post("/alarms/ack", s.ackAlarms)
 
 		r.Get("/views", s.listViews)
 		r.Post("/views", s.createView)
@@ -216,13 +220,32 @@ func (s *Server) postCommand(w http.ResponseWriter, r *http.Request) {
 		text = "Skriv " + strconv.FormatFloat(req.Value, 'f', -1, 64)
 	}
 	s.Hub.AddEvent("command", "info", src, "Manöver begärd: "+text, req.User)
+	s.Alarms.Commanded(req.Tag, req.Value)
 	if err := s.Comm.Write(req); err != nil {
+		s.Alarms.Cancel(req.Tag)
 		s.Hub.AddEvent("command", "alarm", src, "Manöver misslyckades: "+text+" ("+err.Error()+")", req.User)
 		writeJSON(w, http.StatusBadGateway, map[string]any{"ok": false, "error": err.Error()})
 		return
 	}
 	s.Hub.AddEvent("command", "info", src, "Manöver skickad: "+text, req.User)
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
+func (s *Server) getAlarms(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.Hub.Alarms())
+}
+
+// ackAlarms acknowledges the alarms in ids, or all alarms when ids is empty.
+func (s *Server) ackAlarms(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		IDs  []string `json:"ids"`
+		User string   `json:"user"`
+	}
+	if err := readJSON(r, &req); err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]int{"acked": s.Hub.AckAlarms(req.IDs, req.User)})
 }
 
 // ---- views ----

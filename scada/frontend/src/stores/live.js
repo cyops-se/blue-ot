@@ -1,6 +1,6 @@
 // Realtime state fed by the backend WebSocket.
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { api } from '../lib/api'
 
 export const useLive = defineStore('live', () => {
@@ -9,6 +9,8 @@ export const useLive = defineStore('live', () => {
   const devices = reactive({}) // device -> status
   const events = ref([])
   const unseenAlarms = ref(0)
+  const alarms = ref([]) // alarm list, newest first
+  const unackedAlarms = computed(() => alarms.value.filter((a) => !a.acked))
   let ws = null
   let retry = 1000
 
@@ -36,12 +38,16 @@ export const useLive = defineStore('live', () => {
         case 'snapshot':
           applyValues(m.values)
           for (const d of m.devices || []) devices[d.device] = d
+          alarms.value = m.alarms || []
           break
         case 'values':
           applyValues(m.values)
           break
         case 'device':
           devices[m.device.device] = m.device
+          break
+        case 'alarms':
+          alarms.value = m.alarms || []
           break
         case 'event':
           events.value.unshift(m.event)
@@ -56,5 +62,10 @@ export const useLive = defineStore('live', () => {
     if (!ws) connect()
   }
 
-  return { connected, values, devices, events, unseenAlarms, start }
+  // ack acknowledges the given alarm ids, or all alarms when ids is empty.
+  function ack(ids = []) {
+    return api.ackAlarms(ids, 'operatör')
+  }
+
+  return { connected, values, devices, events, unseenAlarms, alarms, unackedAlarms, ack, start }
 })

@@ -20,11 +20,33 @@
   .lbl small { display:block; color:var(--dim); font-size:11px; }
   .val { font-variant-numeric: tabular-nums; text-align:right; white-space:nowrap; }
   .val.on { color:var(--alarm); font-weight:600; }
-  .val.closed { color:var(--closed); font-weight:600; }
-  .val.open { color:var(--open); font-weight:600; }
+  .val.closed { color:var(--open); font-weight:600; }
+  .val.open { color:var(--closed); font-weight:600; }
   button { background:#24303d; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 8px; cursor:pointer; font:inherit; }
   button:hover { border-color:var(--accent); }
   input { width:70px; background:#0f141a; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 4px; font:inherit; }
+  /* process schematic */
+  .sch { margin:12px 16px 0; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .sch h2 { font-size:14px; margin:0 0 6px; color:var(--accent); }
+  .sch svg { width:100%; height:auto; display:block; max-height:420px; }
+  .sch .wire { stroke:#5a6b7d; stroke-width:2.5; fill:none; }
+  .sch .wire.dead { stroke:#39434f; }
+  .sch .steam { stroke:#c08a3e; stroke-width:4; fill:none; stroke-linecap:round; }
+  .sch .bus { stroke:#aeb9c6; stroke-width:5; stroke-linecap:round; }
+  .sch .bus.dead { stroke:#44505d; }
+  .sch .box { fill:var(--card); stroke:#8494a6; stroke-width:2.5; }
+  .sch .box.sclosed { fill:var(--open); stroke:var(--open); }
+  .sch .box.sopen { fill:var(--card); stroke:var(--open); }
+  .sch .sym { fill:var(--card); stroke:#8494a6; stroke-width:2.5; }
+  .sch .sym.sclosed { fill:var(--open); stroke:var(--open); }
+  .sch .sym.sopen { fill:var(--card); stroke:var(--open); }
+  .sch .wind { fill:none; stroke:#8494a6; stroke-width:2.5; }
+  .sch text { fill:var(--fg); font:12px system-ui, sans-serif; }
+  .sch .lbl { fill:var(--dim); font-size:11px; }
+  .sch .ttl { fill:var(--fg); font-size:12px; }
+  .sch .meas { fill:var(--fg); font-variant-numeric:tabular-nums; font-size:12px; }
+  .sch .ind { fill:#39434f; }
+  .sch .ind.salarm { fill:var(--alarm); }
   #events { grid-column: 1 / -1; }
   #events ol { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; font-family:ui-monospace, monospace; font-size:12px; }
   #events li { padding:2px 0; border-top:1px solid var(--line); }
@@ -37,6 +59,80 @@
   <span class="dim">Kraftvärmeverk · 2 pannor · mottrycksturbin · fjärrvärme · Modbus TCP · IEC 60870-5-104</span>
   <span class="dim" id="clock"></span>
 </header>
+
+<section class="sch">
+  <h2>Processchema</h2>
+  <svg viewBox="0 0 760 380" role="img" aria-label="Processchema">
+    <circle class="ind" cx="690" cy="16" r="5" data-alarm="Plant.CommonAlarm"></circle>
+    <text class="lbl" x="700" y="20">Summalarm</text>
+
+    <!-- boilers -->
+    <text class="lbl" x="88" y="38">P1 flis</text>
+    <rect class="box" data-sw="P1.Running" x="88" y="44" width="62" height="40" rx="3"></rect>
+    <text class="meas" x="119" y="69" text-anchor="middle" data-meas="P1.Load">–</text>
+    <circle class="ind" cx="152" cy="50" r="5" data-alarm="P1.Trip"></circle>
+    <line class="steam" x1="119" y1="84" x2="119" y2="130"></line>
+
+    <text class="lbl" x="188" y="38">P2 bioolja</text>
+    <rect class="box" data-sw="P2.Running" x="188" y="44" width="62" height="40" rx="3"></rect>
+    <text class="meas" x="219" y="69" text-anchor="middle" data-meas="P2.Load">–</text>
+    <circle class="ind" cx="252" cy="50" r="5" data-alarm="P2.Trip"></circle>
+    <line class="steam" x1="219" y1="84" x2="219" y2="130"></line>
+
+    <!-- steam header -->
+    <line class="steam" x1="90" y1="130" x2="360" y2="130"></line>
+    <text class="lbl" x="92" y="124">Ångsamlare</text>
+    <text class="meas" x="340" y="124" text-anchor="end" data-meas="Steam.Pressure">–</text>
+    <circle class="ind" cx="352" cy="126" r="5" data-alarm="Steam.HighPressure"></circle>
+
+    <!-- turbine + generator -->
+    <line class="steam" x1="360" y1="130" x2="400" y2="130"></line>
+    <text class="lbl" x="400" y="106">Turbin</text>
+    <rect class="box" data-sw="Turbine.Run" x="400" y="112" width="72" height="40" rx="3"></rect>
+    <text class="meas" x="436" y="137" text-anchor="middle" data-meas="Turbine.Speed">–</text>
+    <circle class="ind" cx="478" cy="120" r="5" data-alarm="Turbine.Trip"></circle>
+    <line class="wire" x1="472" y1="132" x2="516" y2="132"></line>
+    <circle class="wind" cx="540" cy="132" r="22"></circle>
+    <text class="ttl" x="540" y="137" text-anchor="middle">G</text>
+    <circle class="ind" cx="566" cy="112" r="5" data-alarm="Gen.Trip"></circle>
+    <text class="meas" x="594" y="124" data-meas="Gen.U">–</text>
+    <text class="meas" x="594" y="140" data-meas="Gen.P" data-prefix="P ">–</text>
+    <!-- generator breaker to 20 kV -->
+    <line class="wire" x1="540" y1="154" x2="540" y2="220"></line>
+    <rect class="sym" data-sw="Gen.CB" x="528" y="220" width="24" height="24" rx="2"></rect>
+    <text class="lbl" x="558" y="236">Gen.CB</text>
+    <line class="wire" data-live="Gen.CB,Net.Live" x1="540" y1="244" x2="540" y2="276"></line>
+    <line class="bus" data-live="Net.Live" x1="470" y1="276" x2="650" y2="276"></line>
+    <text class="lbl" x="470" y="270">20 kV → blue-station</text>
+    <text class="meas" x="650" y="270" text-anchor="end" data-meas="Net.U">–</text>
+
+    <!-- bypass to district heating -->
+    <line class="steam" x1="119" y1="130" x2="119" y2="300"></line>
+    <path class="wire" d="M 108 196 L 130 212 L 130 196 L 108 212 Z"></path>
+    <text class="lbl" x="134" y="200">Bypass</text>
+    <text class="meas" x="134" y="216" data-meas="Bypass.Position">–</text>
+    <!-- turbine condenser heat to DH -->
+    <line class="wire" x1="436" y1="152" x2="436" y2="286" ></line>
+    <line class="wire" x1="436" y1="286" x2="340" y2="286"></line>
+
+    <!-- district heating + accumulator -->
+    <rect class="box" x="80" y="300" width="260" height="66" rx="4"></rect>
+    <text class="lbl" x="92" y="318">Fjärrvärmenät</text>
+    <text class="meas" x="92" y="338" data-meas="DH.SupplyTemp" data-prefix="Fram ">–</text>
+    <text class="meas" x="92" y="356" data-meas="DH.ReturnTemp" data-prefix="Retur ">–</text>
+    <text class="meas" x="210" y="338" data-meas="DH.Delivered" data-prefix="Levererat ">–</text>
+    <rect class="sym" data-sw="DH.Pump1" x="250" y="346" width="16" height="16" rx="2"></rect>
+    <rect class="sym" data-sw="DH.Pump2" x="272" y="346" width="16" height="16" rx="2"></rect>
+    <text class="lbl" x="250" y="344">Pumpar</text>
+
+    <rect class="box" x="360" y="300" width="120" height="66" rx="4"></rect>
+    <text class="lbl" x="372" y="318">Ackumulator</text>
+    <text class="meas" x="372" y="340" data-meas="Acc.Level" data-prefix="Nivå ">–</text>
+    <text class="meas" x="372" y="358" data-meas="Acc.Power" data-prefix="Effekt ">–</text>
+    <line class="wire" x1="340" y1="333" x2="360" y2="333"></line>
+  </svg>
+</section>
+
 <main id="main"></main>
 <div id="toast"></div>
 <script>
@@ -61,6 +157,29 @@ async function send(id, body) {
     body: JSON.stringify(Object.assign({ id }, body)) });
   if (!r.ok) toast(id + ': ' + ((await r.json()).error || r.statusText));
   load();
+}
+
+// Paint the schematic from the latest point values.
+function paintSchematic() {
+  for (const e of document.querySelectorAll('[data-sw]')) {
+    const p = current[e.dataset.sw];
+    if (!p) continue;
+    const on = p.value === true;
+    e.classList.toggle('sclosed', on);
+    e.classList.toggle('sopen', !on);
+  }
+  for (const e of document.querySelectorAll('[data-meas]')) {
+    const p = current[e.dataset.meas];
+    if (p) e.textContent = (e.dataset.prefix || '') + p.text;
+  }
+  for (const e of document.querySelectorAll('[data-live]')) {
+    const live = e.dataset.live.split(',').every(id => current[id] && current[id].value === true);
+    e.classList.toggle('dead', !live);
+  }
+  for (const e of document.querySelectorAll('[data-alarm]')) {
+    const p = current[e.dataset.alarm];
+    e.classList.toggle('salarm', !!p && ALARM.includes(p.text));
+  }
 }
 
 function build(points) {
@@ -121,6 +240,7 @@ function update(state) {
     if (p.kind === 'breaker') v.classList.add(p.value ? 'closed' : 'open');
     else if (ALARM.includes(p.text)) v.classList.add('on');
   }
+  paintSchematic();
   const list = document.getElementById('evlist');
   list.replaceChildren(...state.events.slice().reverse().map(e =>
     el('li', { textContent: new Date(e.time).toLocaleTimeString('sv-SE') + '  ' + e.text })));

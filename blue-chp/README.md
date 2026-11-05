@@ -104,7 +104,7 @@ Adresserna följer samma uppdelning: brytare från coil 0 / IOA 1001, omkopplare
 
 ## Webbgränssnitt och API
 
-`http://localhost:8082` visar alla signaler grupperade, med reglage och en händelselogg.
+`http://localhost:8082` visar alla signaler grupperade, med reglage och en händelselogg. Överst finns ett **processchema** som ritar de två pannorna, ångsamlaren, bypassventilen, turbinen med generator, generatorbrytaren mot 20 kV samt fjärrvärmenätet och ackumulatorn. Apparater i drift visas som fylld grön symbol och stoppade som grön kontur, som i SCADA-vyerna, och spänningslösa delar mörknar. Schemat uppdateras varje sekund från samma data som korten.
 
 - `GET /api/state` returnerar alla punkter och händelser.
 - `POST /api/control` tar emot `{"id": "P2.Run", "on": true}` eller `{"id": "Env.Outdoor", "value": -15}`.

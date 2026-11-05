@@ -21,10 +21,11 @@ type snapshotMsg struct {
 	Type    string               `json:"type"`
 	Values  []model.Value        `json:"values"`
 	Devices []model.DeviceStatus `json:"devices"`
+	Alarms  []model.Alarm        `json:"alarms"`
 }
 
 // serveWS streams realtime changes to the HMI. The first message is a full
-// snapshot; afterwards only changes ("values", "device", "event") are sent.
+// snapshot; afterwards only changes ("values", "device", "event", "alarms") are sent.
 func (s *Server) serveWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -36,7 +37,7 @@ func (s *Server) serveWS(w http.ResponseWriter, r *http.Request) {
 	sub := s.Hub.Subscribe()
 	defer s.Hub.Unsubscribe(sub)
 
-	snap, _ := json.Marshal(snapshotMsg{Type: "snapshot", Values: s.Hub.Snapshot(), Devices: s.Hub.Devices()})
+	snap, _ := json.Marshal(snapshotMsg{Type: "snapshot", Values: s.Hub.Snapshot(), Devices: s.Hub.Devices(), Alarms: s.Hub.Alarms()})
 	if err := conn.WriteMessage(websocket.TextMessage, snap); err != nil {
 		return
 	}

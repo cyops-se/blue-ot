@@ -6,6 +6,11 @@
         <v-divider class="mb-2" />
         <v-list-item to="/views" prepend-icon="mdi-monitor-dashboard" title="Vyer" />
         <v-list-item to="/values" prepend-icon="mdi-table" title="Mätvärden" />
+        <v-list-item to="/alarms" prepend-icon="mdi-bell" title="Larm">
+          <template #append>
+            <v-badge v-if="live.unackedAlarms.length" :content="live.unackedAlarms.length" color="error" inline />
+          </template>
+        </v-list-item>
         <v-list-item to="/events" prepend-icon="mdi-format-list-bulleted" title="Händelser">
           <template #append>
             <v-badge v-if="live.unseenAlarms" :content="live.unseenAlarms" color="error" inline />
@@ -35,6 +40,7 @@
     </v-app-bar>
 
     <v-main>
+      <AlarmBanner />
       <router-view />
     </v-main>
 
@@ -49,6 +55,7 @@ import { computed, onMounted, onUnmounted, provide, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLive } from './stores/live'
 import { useConfig } from './stores/config'
+import AlarmBanner from './components/AlarmBanner.vue'
 
 const live = useLive()
 const config = useConfig()
@@ -63,7 +70,7 @@ const deviceList = computed(() => Object.values(live.devices).sort((a, b) => a.d
 const title = computed(() => {
   if (route.path.startsWith('/views/') && route.path.endsWith('/edit')) return 'Vy-editor'
   if (route.path.startsWith('/views/')) return 'Driftbild'
-  return { '/views': 'Vyer', '/values': 'Mätvärden', '/events': 'Händelser', '/config': 'Konfiguration' }[route.path] || ''
+  return { '/views': 'Vyer', '/alarms': 'Larm', '/values': 'Mätvärden', '/events': 'Händelser', '/config': 'Konfiguration' }[route.path] || ''
 })
 
 let timer

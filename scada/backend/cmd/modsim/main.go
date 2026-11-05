@@ -19,9 +19,11 @@ package main
 import (
 	"encoding/binary"
 	"flag"
+	"fmt"
 	"log"
 	"math"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
@@ -32,6 +34,12 @@ import (
 
 const feeders = 4
 
+// evt is a timestamped line for the web dashboard event log.
+type evt struct {
+	Time time.Time `json:"time"`
+	Text string    `json:"text"`
+}
+
 type sim struct {
 	mu       sync.Mutex
 	breaker  [feeders]uint16 // DP position
@@ -41,6 +49,18 @@ type sim struct {
 	opDelay  time.Duration
 	started  time.Time
 	loadBase [feeders]float64
+	events   []evt
+}
+
+// event appends a line to the event log and mirrors it to the server log.
+// The caller must hold s.mu.
+func (s *sim) event(format string, args ...any) {
+	line := fmt.Sprintf(format, args...)
+	s.events = append(s.events, evt{Time: time.Now(), Text: line})
+	if len(s.events) > 200 {
+		s.events = s.events[len(s.events)-200:]
+	}
+	log.Print(line)
 }
 
 func newSim(delay time.Duration) *sim {
@@ -85,15 +105,38 @@ func (s *sim) update() {
 	s.input[40] = uint16(int16((55 + 8*math.Sin(t/60)) * 10))
 }
 
+// operateBreaker starts a breaker manoeuvre. target is 1 (frånslag) or 2
+// (tillslag). The caller must hold s.mu.
 func (s *sim) operateBreaker(i int, target uint16) {
 	s.breaker[i] = 0 // travelling
-	log.Printf("Q%d: manöver -> %d", i+1, target)
+	s.event("Q%d: %s", i+1, breakerCmdText(target))
 	time.AfterFunc(s.opDelay, func() {
 		s.mu.Lock()
 		s.breaker[i] = target
 		s.update()
 		s.mu.Unlock()
 	})
+}
+
+// setDisc requests a disconnector position. It enforces the interlock (the
+// breaker in the same bay must be open) and schedules the position change.
+// The caller must hold s.mu.
+func (s *sim) setDisc(i int, v bool) error {
+	if s.breaker[i] != 1 && v != s.disc[i] {
+		s.event("QS%d: förreglad (Q%d ej öppen)", i+1, i+1)
+		return modbus.ErrIllegalDataValue
+	}
+	s.discCmd[i] = v
+	if v != s.disc[i] {
+		s.event("QS%d: manöver → %s", i+1, discText(v))
+		time.AfterFunc(s.opDelay*2, func() {
+			s.mu.Lock()
+			s.disc[i] = s.discCmd[i]
+			s.update()
+			s.mu.Unlock()
+		})
+	}
+	return nil
 }
 
 func (s *sim) HandleCoils(req *modbus.CoilsRequest) ([]bool, error) {
@@ -103,24 +146,18 @@ func (s *sim) HandleCoils(req *modbus.CoilsRequest) ([]bool, error) {
 		return nil, modbus.ErrIllegalDataAddress
 	}
 	if req.IsWrite {
+		// Reject the whole request if any point is interlocked, so a
+		// multi-coil write behaves atomically.
 		for k, v := range req.Args {
 			i := int(req.Addr) + k
 			if s.breaker[i] != 1 && v != s.disc[i] {
-				log.Printf("QS%d: förreglad (Q%d ej öppen)", i+1, i+1)
+				s.event("QS%d: förreglad (Q%d ej öppen)", i+1, i+1)
 				return nil, modbus.ErrIllegalDataValue
 			}
 		}
 		for k, v := range req.Args {
-			i := int(req.Addr) + k
-			s.discCmd[i] = v
-			if v != s.disc[i] {
-				log.Printf("QS%d: manöver -> %v", i+1, v)
-				time.AfterFunc(s.opDelay*2, func() {
-					s.mu.Lock()
-					s.disc[i] = s.discCmd[i]
-					s.update()
-					s.mu.Unlock()
-				})
+			if err := s.setDisc(int(req.Addr)+k, v); err != nil {
+				return nil, err
 			}
 		}
 		return nil, nil
@@ -178,6 +215,7 @@ func (s *sim) HandleInputRegisters(req *modbus.InputRegistersRequest) ([]uint16,
 
 func main() {
 	addr := flag.String("addr", "0.0.0.0:5020", "listen address")
+	httpAddr := flag.String("http", "0.0.0.0:8081", "lyssnaradress för webbgränssnitt (tom = av)")
 	delay := flag.Duration("delay", 1500*time.Millisecond, "breaker operating time")
 	flag.Parse()
 
@@ -194,6 +232,16 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Printf("Modbus-simulator lyssnar på %s", *addr)
+
+	if *httpAddr != "" {
+		hs := &http.Server{Addr: *httpAddr, Handler: webHandler(s)}
+		go func() {
+			if err := hs.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Printf("webbgränssnitt: %v", err)
+			}
+		}()
+		log.Printf("Webbgränssnitt på http://localhost%s", *httpAddr)
+	}
 
 	go func() {
 		for range time.Tick(500 * time.Millisecond) {

@@ -104,7 +104,7 @@ The addresses follow the same layout: breakers from coil 0 / IOA 1001, switches 
 
 ## Web interface and API
 
-`http://localhost:8082` shows all signals grouped, with controls and an event log. The interface and the event texts are in Swedish.
+`http://localhost:8082` shows all signals grouped, with controls and an event log. The interface and the event texts are in Swedish. At the top a **process diagram** draws the two boilers, the steam header, the bypass valve, the turbine with its generator, the generator breaker to 20 kV, and the district heating network with its accumulator. Equipment in service is shown as a filled green symbol and stopped ones as a green outline, as in the SCADA views, and de-energized parts dim. It refreshes every second from the same data as the cards.
 
 - `GET /api/state` returns all points and events.
 - `POST /api/control` accepts `{"id": "P2.Run", "on": true}` or `{"id": "Env.Outdoor", "value": -15}`.

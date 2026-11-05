@@ -3,12 +3,13 @@
     {
       "id": "sim",
       "name": "Station Simulator",
+      "protocol": "modbus",
       "host": "172.16.47.68",
       "port": 1502,
       "unitId": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "blue-station",
@@ -24,12 +25,13 @@
     {
       "id": "blue-chp",
       "name": "Blue CHP kraftvärmeverk",
+      "protocol": "modbus",
       "host": "172.16.47.123",
       "port": 1502,
       "unitId": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "blue-water",
@@ -38,14 +40,14 @@
       "host": "localhost",
       "port": 1503,
       "unitId": 1,
+      "ca": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
-      "enabled": true,
+      "enabled": false,
       "iec104": {
         "port": 2406,
         "ca": 3
-      },
-      "ca": 1
+      }
     },
     {
       "id": "blue-wwtp",
@@ -56,7 +58,7 @@
       "unitId": 1,
       "pollMs": 1000,
       "timeoutMs": 2000,
-      "enabled": true,
+      "enabled": false,
       "iec104": {
         "port": 2407,
         "ca": 4
@@ -85,6 +87,13 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
+      },
+      "alarm": {
+        "values": [
+          1,
+          3
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -123,6 +132,12 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -214,6 +229,13 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
+      },
+      "alarm": {
+        "values": [
+          1,
+          3
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -252,6 +274,12 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -343,6 +371,13 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
+      },
+      "alarm": {
+        "values": [
+          1,
+          3
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -381,6 +416,12 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -472,6 +513,13 @@
         "1": "Öppen",
         "2": "Sluten",
         "3": "Fel"
+      },
+      "alarm": {
+        "values": [
+          1,
+          3
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -510,6 +558,12 @@
       "stateText": {
         "0": "Öppen",
         "1": "Sluten"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -777,6 +831,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -832,6 +892,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -870,6 +936,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1099,6 +1171,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1120,6 +1197,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1141,6 +1223,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1162,6 +1249,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1200,6 +1293,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1429,6 +1528,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1450,6 +1554,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1471,6 +1580,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1492,6 +1606,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1606,6 +1726,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1712,6 +1838,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1754,7 +1885,7 @@
     },
     {
       "id": "F1.OC.Pickup",
-      "name": "F1 inställning I>",
+      "name": "F1 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 0,
@@ -1788,6 +1919,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -1894,6 +2031,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -1936,7 +2078,7 @@
     },
     {
       "id": "F2.OC.Pickup",
-      "name": "F2 inställning I>",
+      "name": "F2 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 2,
@@ -1970,6 +2112,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -2076,6 +2224,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -2118,7 +2271,7 @@
     },
     {
       "id": "F3.OC.Pickup",
-      "name": "F3 inställning I>",
+      "name": "F3 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 4,
@@ -2152,6 +2305,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -2258,6 +2417,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -2300,7 +2464,7 @@
     },
     {
       "id": "F4.OC.Pickup",
-      "name": "F4 inställning I>",
+      "name": "F4 inställning I\u003e",
       "device": "blue-station",
       "area": "holding",
       "address": 6,
@@ -2419,6 +2583,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -2457,6 +2626,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -2708,6 +2883,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Utlöst"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -3034,6 +3214,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Utlöst"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -3276,7 +3461,7 @@
     },
     {
       "id": "CHP.Steam.HighPressure",
-      "name": "Högt ångtryck (>97 bar)",
+      "name": "Högt ångtryck (\u003e97 bar)",
       "description": "Ångsamlare och bypass",
       "device": "blue-chp",
       "area": "discrete",
@@ -3294,6 +3479,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -3526,6 +3716,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Utlöst"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -3566,6 +3761,12 @@
       "stateText": {
         "0": "Från",
         "1": "Till"
+      },
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
       }
     },
     {
@@ -3714,6 +3915,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Utlöst"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -4040,7 +4246,7 @@
     },
     {
       "id": "CHP.DH.LowDP",
-      "name": "Lågt differenstryck i nätet (<0,6 bar)",
+      "name": "Lågt differenstryck i nätet (\u003c0,6 bar)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",
@@ -4058,11 +4264,16 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
       "id": "CHP.DH.SupplyLow",
-      "name": "Låg framledningstemperatur (>8 °C under börvärde)",
+      "name": "Låg framledningstemperatur (\u003e8 °C under börvärde)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",
@@ -4080,11 +4291,16 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
       "id": "CHP.DH.SupplyHigh",
-      "name": "Hög framledningstemperatur (>120 °C)",
+      "name": "Hög framledningstemperatur (\u003e120 °C)",
       "description": "Fjärrvärmenät",
       "device": "blue-chp",
       "area": "discrete",
@@ -4102,6 +4318,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -4232,6 +4453,11 @@
       "stateText": {
         "0": "Normal",
         "1": "Larm"
+      },
+      "alarm": {
+        "values": [
+          1
+        ]
       }
     },
     {
@@ -4275,7 +4501,13 @@
       },
       "ioa": 1001,
       "ctrlIoa": 5001,
-      "cmd": "C_DC"
+      "cmd": "C_DC",
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
+      }
     },
     {
       "id": "WTR.Supply.CB.Cmd",
@@ -4359,7 +4591,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2001
+      "ioa": 2001,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Power.Total",
@@ -4486,7 +4723,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2003
+      "ioa": 2003,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.RP1.Speed",
@@ -4675,7 +4917,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2005
+      "ioa": 2005,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.RP2.Speed",
@@ -5040,7 +5287,7 @@
     },
     {
       "id": "WTR.F1.Clogged",
-      "name": "F1 igensatt (>2.2 m)",
+      "name": "F1 igensatt (\u003e2.2 m)",
       "description": "Beredning (fällning och filtrering)",
       "device": "blue-water",
       "area": "discrete",
@@ -5059,7 +5306,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2007
+      "ioa": 2007,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.F1.Backwash",
@@ -5142,7 +5394,7 @@
     },
     {
       "id": "WTR.F2.Clogged",
-      "name": "F2 igensatt (>2.2 m)",
+      "name": "F2 igensatt (\u003e2.2 m)",
       "description": "Beredning (fällning och filtrering)",
       "device": "blue-water",
       "area": "discrete",
@@ -5161,7 +5413,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2009
+      "ioa": 2009,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.F2.Backwash",
@@ -5240,7 +5497,7 @@
     },
     {
       "id": "WTR.Turb.High",
-      "name": "Hög turbiditet utgående vatten (>0,5 NTU)",
+      "name": "Hög turbiditet utgående vatten (\u003e0,5 NTU)",
       "description": "Beredning (fällning och filtrering)",
       "device": "blue-water",
       "area": "discrete",
@@ -5259,7 +5516,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2010
+      "ioa": 2010,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Cl.Auto",
@@ -5382,7 +5644,7 @@
     },
     {
       "id": "WTR.Cl.Low",
-      "name": "Låg restklor (<0,1 mg/l)",
+      "name": "Låg restklor (\u003c0,1 mg/l)",
       "description": "Desinfektion (klor)",
       "device": "blue-water",
       "area": "discrete",
@@ -5401,11 +5663,16 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2011
+      "ioa": 2011,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Cl.High",
-      "name": "Hög restklor (>1,0 mg/l)",
+      "name": "Hög restklor (\u003e1,0 mg/l)",
       "description": "Desinfektion (klor)",
       "device": "blue-water",
       "area": "discrete",
@@ -5424,7 +5691,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2012
+      "ioa": 2012,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Res.Level",
@@ -5466,7 +5738,7 @@
     },
     {
       "id": "WTR.Res.Low",
-      "name": "Låg nivå reservoar (<1,0 m)",
+      "name": "Låg nivå reservoar (\u003c1,0 m)",
       "description": "Rentvattenreservoar 8000 m³",
       "device": "blue-water",
       "area": "discrete",
@@ -5485,7 +5757,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2013
+      "ioa": 2013,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Res.High",
@@ -5508,7 +5785,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2014
+      "ioa": 2014,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.HP1.Run",
@@ -5597,7 +5879,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2016
+      "ioa": 2016,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.HP1.Speed",
@@ -5786,7 +6073,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2018
+      "ioa": 2018,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.HP2.Speed",
@@ -6009,7 +6301,7 @@
     },
     {
       "id": "WTR.Press.Low",
-      "name": "Lågt nättryck (<2,5 bar)",
+      "name": "Lågt nättryck (\u003c2,5 bar)",
       "description": "Distribution",
       "device": "blue-water",
       "area": "discrete",
@@ -6028,7 +6320,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2019
+      "ioa": 2019,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Raw.StormNTU",
@@ -6089,7 +6386,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2020
+      "ioa": 2020,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WTR.Plant.Reset",
@@ -6132,7 +6434,13 @@
       },
       "ioa": 1001,
       "ctrlIoa": 5001,
-      "cmd": "C_DC"
+      "cmd": "C_DC",
+      "alarm": {
+        "values": [
+          0
+        ],
+        "uncommanded": true
+      }
     },
     {
       "id": "WWT.Supply.CB.Cmd",
@@ -6216,7 +6524,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2001
+      "ioa": 2001,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Power.Total",
@@ -6296,7 +6609,7 @@
     },
     {
       "id": "WWT.Well.High",
-      "name": "Hög nivå pumpsump (>3,3 m)",
+      "name": "Hög nivå pumpsump (\u003e3,3 m)",
       "description": "Inloppspumpstation",
       "device": "blue-wwtp",
       "area": "discrete",
@@ -6315,7 +6628,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2002
+      "ioa": 2002,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Inlet.Auto",
@@ -6447,7 +6765,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2004
+      "ioa": 2004,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.IP1.Flow",
@@ -6617,7 +6940,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2006
+      "ioa": 2006,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.IP2.Flow",
@@ -6787,7 +7115,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2008
+      "ioa": 2008,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.IP3.Flow",
@@ -6994,7 +7327,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2011
+      "ioa": 2011,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Screen.FaultSim",
@@ -7169,7 +7507,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2013
+      "ioa": 2013,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.B1.Air",
@@ -7339,7 +7682,12 @@
         "0": "Normal",
         "1": "Utlöst"
       },
-      "ioa": 2015
+      "ioa": 2015,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.B2.Air",
@@ -7500,7 +7848,7 @@
     },
     {
       "id": "WWT.Bio.DOLow",
-      "name": "Lågt syre (<1,0 mg/l)",
+      "name": "Lågt syre (\u003c1,0 mg/l)",
       "description": "Biologisk rening (aktivslam)",
       "device": "blue-wwtp",
       "area": "discrete",
@@ -7519,7 +7867,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2016
+      "ioa": 2016,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Prec.Auto",
@@ -7718,7 +8071,7 @@
     },
     {
       "id": "WWT.Eff.NH4High",
-      "name": "Ammonium över gränsvärde (>5 mg/l)",
+      "name": "Ammonium över gränsvärde (\u003e5 mg/l)",
       "description": "In- och utgående vatten",
       "device": "blue-wwtp",
       "area": "discrete",
@@ -7737,11 +8090,16 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2017
+      "ioa": 2017,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Eff.PtotHigh",
-      "name": "Fosfor över gränsvärde (>0,3 mg/l)",
+      "name": "Fosfor över gränsvärde (\u003e0,3 mg/l)",
       "description": "In- och utgående vatten",
       "device": "blue-wwtp",
       "area": "discrete",
@@ -7760,7 +8118,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2018
+      "ioa": 2018,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Digester.Temp",
@@ -7783,7 +8146,7 @@
     },
     {
       "id": "WWT.Digester.TempLow",
-      "name": "Låg temperatur rötkammare (<33 °C)",
+      "name": "Låg temperatur rötkammare (\u003c33 °C)",
       "description": "Rötning och biogas",
       "device": "blue-wwtp",
       "area": "discrete",
@@ -7802,7 +8165,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2019
+      "ioa": 2019,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Boiler.Run",
@@ -7986,7 +8354,12 @@
         "0": "Normal",
         "1": "Larm"
       },
-      "ioa": 2021
+      "ioa": 2021,
+      "alarm": {
+        "values": [
+          1
+        ]
+      }
     },
     {
       "id": "WWT.Plant.Reset",

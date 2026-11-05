@@ -9,3 +9,4 @@ scada/backend/internal/web/dist/*
 bin
 obj
 publish
+/scada/backend/*.zip

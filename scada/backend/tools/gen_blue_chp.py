@@ -41,7 +41,9 @@ for p in points:
     k, a, g = p["kind"], p["modbus"], p["group"]
     texts = {"0": p["offText"].capitalize(), "1": p["onText"].capitalize()}
     if k == "breaker":
-        set_iec(tag(p["id"], p["desc"], "discrete", a, log=True, state={"0": "Från", "1": "Till"}, group=g), p, "C_DC")
+        t = tag(p["id"], p["desc"], "discrete", a, log=True, state={"0": "Från", "1": "Till"}, group=g)
+        t["alarm"] = {"values": [0], "uncommanded": True}  # opened without an HMI command
+        set_iec(t, p, "C_DC")
         tag(p["id"] + ".Cmd", p["desc"] + " – manöver", "coil", a, writable=True, group=g)
     elif k == "switch":
         set_iec(tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g), p, "C_SC")
@@ -49,7 +51,9 @@ for p in points:
     elif k == "pulse":
         tag(p["id"], p["desc"], "coil", a, writable=True, group=g)
     elif k == "status":
-        tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g)
+        t = tag(p["id"], p["desc"], "discrete", a, log=True, state=texts, group=g)
+        if texts["1"] in ("Larm", "Utlöst"):
+            t["alarm"] = {"values": [1]}
     elif k in ("measurement", "step"):
         tag(p["id"], p["desc"], "input", a, "float32", p["unit"], DEC.get(p["unit"], 0), group=g)
     elif k == "setpoint":

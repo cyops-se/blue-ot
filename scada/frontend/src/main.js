@@ -12,6 +12,7 @@ import ViewRuntime from './pages/ViewRuntime.vue'
 import ViewEditor from './pages/ViewEditor.vue'
 import ValuesPage from './pages/ValuesPage.vue'
 import EventsPage from './pages/EventsPage.vue'
+import AlarmsPage from './pages/AlarmsPage.vue'
 import ConfigPage from './pages/ConfigPage.vue'
 
 const router = createRouter({
@@ -22,6 +23,7 @@ const router = createRouter({
     { path: '/views/:id', component: ViewRuntime, props: true },
     { path: '/views/:id/edit', component: ViewEditor, props: true },
     { path: '/values', component: ValuesPage },
+    { path: '/alarms', component: AlarmsPage },
     { path: '/events', component: EventsPage },
     { path: '/config', component: ConfigPage },
   ],

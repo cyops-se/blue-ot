@@ -5,6 +5,7 @@
       <v-spacer />
       <v-btn-toggle v-model="kind" density="compact" variant="outlined">
         <v-btn value="">Alla</v-btn>
+        <v-btn value="alarm">Larm</v-btn>
         <v-btn value="command">Manövrar</v-btn>
         <v-btn value="state">Lägesändringar</v-btn>
         <v-btn value="comm">Kommunikation</v-btn>
@@ -30,7 +31,7 @@ import { useLive } from '../stores/live'
 
 const live = useLive()
 const kind = ref('')
-const kinds = { command: 'Manöver', state: 'Läge', comm: 'Kommunikation', system: 'System' }
+const kinds = { alarm: 'Larm', command: 'Manöver', state: 'Läge', comm: 'Kommunikation', system: 'System' }
 const headers = [
   { title: '', key: 'severity', width: 32, sortable: false },
   { title: 'Tid', key: 'ts' },

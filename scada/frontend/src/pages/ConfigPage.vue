@@ -34,6 +34,7 @@
         <template #item.addr="{ item }"><span class="mono">{{ devProto(item.device) === 'iec104' ? ('IOA ' + item.ioa + (item.ctrlIoa ? '/' + item.ctrlIoa : '')) : (item.area + ' ' + item.address) }}</span></template>
         <template #item.writable="{ item }"><v-icon v-if="item.writable" icon="mdi-pencil" size="small" /></template>
         <template #item.logEvents="{ item }"><v-icon v-if="item.logEvents" icon="mdi-format-list-bulleted" size="small" /></template>
+        <template #item.alarm="{ item }"><v-icon v-if="item.alarm" icon="mdi-bell" size="small" :title="item.alarm.uncommanded ? 'Larm utan manöver' : 'Larm'" /></template>
       </v-data-table>
     </div>
 
@@ -108,12 +109,22 @@
             <v-col cols="12">
               <v-text-field v-model="tg.stateText" label="Lägestexter (t.ex. 0=Mellanläge, 1=Öppen, 2=Sluten, 3=Fel)" />
             </v-col>
+            <v-col cols="4"><v-switch v-model="tg.alarmOn" label="Larm" /></v-col>
+            <template v-if="tg.alarmOn">
+              <v-col cols="4"><v-text-field v-model="tg.alarmValues" label="Larmvärden (t.ex. 1 eller 1, 3)" /></v-col>
+              <v-col cols="4"><v-switch v-model="tg.alarm.uncommanded" label="Bara utan manöver" /></v-col>
+              <v-col cols="6"><v-text-field v-model="tg.alarm.text" label="Larmtext (tom = lägestext)" /></v-col>
+              <v-col cols="6"><v-text-field v-model="tg.alarm.cmdTag" :disabled="!tg.alarm.uncommanded" label="Manövertagg (tom = .Cmd / _CMD)" /></v-col>
+            </template>
           </v-row>
           <div v-if="!tagIsIEC" class="text-caption text-medium-emphasis mt-2">
             Värde = råvärde × skala + offset. 32/64-bitarsvärden läses som big-endian (ABCD); använd ord-/bytebyte för andra ordningar.
           </div>
           <div v-else class="text-caption text-medium-emphasis mt-2">
             Övervaknings-IOA läses som M_SP/M_DP (bool) eller M_ME (flyttal). En styr-IOA gör taggen manövrerbar; kommandotypen är C_DC för brytare, C_SC för omkopplare/pumpar och C_SE_NC för börvärden. Värde = råvärde × skala + offset.
+          </div>
+          <div v-if="tg.alarmOn" class="text-caption text-medium-emphasis mt-1">
+            Larmet är aktivt så länge råvärdet är ett av larmvärdena. Med "Bara utan manöver" larmar taggen bara när den byter till ett larmvärde utan att samma värde har manövrerats från HMI:t de senaste 30 sekunderna, t.ex. en brytare som löser ut.
           </div>
           <v-alert v-if="tg.error" type="error" variant="tonal" density="compact" class="mt-2">{{ tg.error }}</v-alert>
         </v-card-text>
@@ -175,10 +186,11 @@ const tagHeaders = [
   { title: 'Enhet', key: 'unit' },
   { title: 'Skrivbar', key: 'writable' },
   { title: 'Händelser', key: 'logEvents' },
+  { title: 'Larm', key: 'alarm', sortable: false },
 ]
 
 const dev = reactive({ show: false, oldId: '', d: {}, error: '' })
-const tg = reactive({ show: false, oldId: '', t: {}, stateText: '', error: '' })
+const tg = reactive({ show: false, oldId: '', t: {}, stateText: '', alarmOn: false, alarm: {}, alarmValues: '', error: '' })
 const isBitArea = computed(() => tg.t.area === 'coil' || tg.t.area === 'discrete')
 
 const devProto = (id) => (config.devices.find((d) => d.id === id) || {}).protocol || 'modbus'
@@ -224,6 +236,9 @@ function editTag(t) {
     oldId: t ? t.id : '',
     t: tag,
     stateText: Object.entries(tag.stateText || {}).map(([k, v]) => `${k}=${v}`).join(', '),
+    alarmOn: !!tag.alarm,
+    alarm: { uncommanded: false, text: '', cmdTag: '', ...tag.alarm },
+    alarmValues: (tag.alarm?.values || [1]).join(', '),
   })
 }
 
@@ -238,7 +253,12 @@ function parseStateText(s) {
 
 async function saveTag() {
   try {
-    const t = { ...tg.t, stateText: parseStateText(tg.stateText) }
+    const t = { ...tg.t, stateText: parseStateText(tg.stateText), alarm: undefined }
+    if (tg.alarmOn) {
+      const values = tg.alarmValues.split(',').map((v) => v.trim()).filter((v) => v !== '').map(Number)
+      if (!values.length || values.some(Number.isNaN)) throw new Error('Ange larmvärden som tal, t.ex. 1 eller 1, 3')
+      t.alarm = { ...tg.alarm, values }
+    }
     if (!tagIsIEC.value && isBitArea.value) t.dataType = 'bool'
     await api.saveTag(tg.oldId, t)
     await config.load()

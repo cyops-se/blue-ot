@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -401,6 +402,73 @@ func (s *Store) View(id string) (model.View, error) {
 		v.Elements = []json.RawMessage{}
 	}
 	return v, err
+}
+
+// AlarmLocation resolves the station (device name) of an alarm and the id of
+// a view that shows its object. alarmID is a tag id or "comm:<device>".
+// The view is the one whose symbols reference the tag; for a communication
+// alarm, or a tag not placed on any view, it is the first view that shows any
+// tag of the same device. Either result may be empty.
+func (s *Store) AlarmLocation(alarmID string) (station, viewID string) {
+	device := alarmID
+	if d, ok := strings.CutPrefix(alarmID, "comm:"); ok {
+		device = d
+	} else if t, ok := s.Tag(alarmID); ok {
+		device = t.Device
+	}
+
+	s.mu.RLock()
+	devTags := map[string]bool{}
+	for _, t := range s.cfg.Tags {
+		if t.Device == device {
+			devTags[t.ID] = true
+		}
+	}
+	for _, d := range s.cfg.Devices {
+		if d.ID == device {
+			if station = d.Name; station == "" {
+				station = d.ID
+			}
+			break
+		}
+	}
+	s.mu.RUnlock()
+
+	sums, err := s.Views()
+	if err != nil {
+		return station, ""
+	}
+	deviceView := ""
+	for _, sum := range sums {
+		v, err := s.View(sum.ID)
+		if err != nil {
+			continue
+		}
+		for _, raw := range v.Elements {
+			var e struct {
+				Props struct {
+					StatusTag  string `json:"statusTag"`
+					ControlTag string `json:"controlTag"`
+					Tag        string `json:"tag"`
+				} `json:"props"`
+			}
+			if json.Unmarshal(raw, &e) != nil {
+				continue
+			}
+			for _, ref := range []string{e.Props.StatusTag, e.Props.ControlTag, e.Props.Tag} {
+				if ref == "" {
+					continue
+				}
+				if ref == alarmID {
+					return station, v.ID // exact tag match wins
+				}
+				if deviceView == "" && devTags[ref] {
+					deviceView = v.ID
+				}
+			}
+		}
+	}
+	return station, deviceView
 }
 
 // SaveView creates (empty id) or updates a view.

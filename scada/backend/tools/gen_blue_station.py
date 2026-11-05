@@ -58,7 +58,9 @@ def setpoint(id, name, hr, unit):
 
 def breaker(id, name, n):
     # status in discrete input n, command in coil n (1 = TILL)
-    set_iec(tag(id, name, "discrete", n, log=True, state=CB), "C_DC")
+    t = tag(id, name, "discrete", n, log=True, state=CB)
+    t["alarm"] = {"values": [0], "uncommanded": True}  # opened without an HMI command
+    set_iec(t, "C_DC")
     tag(id + ".Cmd", name + " – manöver", "coil", n, writable=True)
 
 
@@ -68,7 +70,7 @@ def switch(id, name, n):
 
 
 def alarm(id, name, di):
-    tag(id, name, "discrete", di, log=True, state=ALARM)
+    tag(id, name, "discrete", di, log=True, state=ALARM)["alarm"] = {"values": [1]}
 
 
 def pulse(id, name, coil):

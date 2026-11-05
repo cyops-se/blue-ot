@@ -10,6 +10,7 @@ Detta ingår:
 - **Manöver** av brytare, frånskiljare, omkopplare, pumpar, ventiler och börvärden. Varje manöver kräver ett val och sedan en bekräftelse (select-before-operate), och dialogen visar när läget har ändrats.
 - **Vy-editor** i webbläsaren. Där ritar du bilder och kopplar varje symbol till de taggar och värden den ska visa.
 - **Mätvärdestabell** med flyttal, kvalitet och tidsstämpel, trend per tagg och direkt skrivning till skrivbara taggar.
+- **Larm** med kvittering: larm för brytare som öppnar utan manöver från HMI:t, för larmsignaler (skydd utlöst, överlast m.m.) och för kommunikationsfel. Överst på varje sida visas de senaste larmen.
 - **Händelselista** med manövrar, lägesändringar, kommunikationsstatus och konfigurationsändringar.
 - **Konfiguration** av enheter och taggar i HMI:t. Taggar kan ha alla Modbus-områden, flera datatyper, valfri ordning på ord och byte samt skala och offset.
 
@@ -27,7 +28,8 @@ Detta ingår:
 | `backend/cmd/modsim` | Modbus TCP-simulator (se [modsim](#modsim)) |
 | `backend/cmd/opctl` | Kommandoradsverktyg för att manövrera brytare och frånskiljare (se [opctl](#opctl)) |
 | `backend/internal/mbus` | En poller per enhet. Den slår ihop närliggande adresser till få läsningar, avkodar datatyper, återansluter vid fel och skriver vid manöver |
-| `backend/internal/realtime` | Processbild, historik i minnet (3600 värden per tagg), händelselista (1000 senaste) och utskick till WebSocket-klienter |
+| `backend/internal/realtime` | Processbild, historik i minnet (3600 värden per tagg), händelselista (1000 senaste), larmlista och utskick till WebSocket-klienter |
+| `backend/internal/alarm` | Larmmotor: aktiverar och återställer larm utifrån taggvärden, manövrar och kommunikationsstatus |
 | `backend/internal/store` | JSON-lagring av enheter, taggar, vyer och uppladdade bilder |
 | `backend/internal/api` | REST-API och WebSocket |
 | `backend/internal/web` | Inbäddat HMI (`go:embed` av `dist/`, som skrivs av frontend-bygget) |
@@ -89,13 +91,32 @@ Exe-filen `scada` behöver bara katalogen `data/`. Bygg HMI:t före `go build`, 
 | Kommandoknapp | Skrivbar tagg och värde. Med "Fråga efter värde" fungerar den som börvärdesinmatning |
 | Vy-länk | Navigering till en annan vy |
 
+### Larm
+
+Larmlistan innehåller alla larm som är aktiva eller inte kvitterade:
+
+| Tillstånd | Visning |
+|---|---|
+| Aktivt, ej kvitterat | Röd text, blinkande klocka |
+| Aktivt, kvitterat | Mörkgul text, fast mörkgul klocka. Står kvar tills felet har försvunnit |
+| Återgått, ej kvitterat | Vit text, blinkande grå klocka. Står kvar tills larmet kvitteras |
+| Återgått, kvitterat | Försvinner ur listan |
+
+- **Larmbanner:** överst på varje sida visas de tre senaste okvitterade larmen. Är alla kvitterade visas i stället de tre senaste kvarstående. Larmen kvitteras ett och ett eller med *Kvittera alla*. Varje larm visar vilken station det kommer från, och klickar man på larmet öppnas den driftbild som visar objektet.
+- **Larmlista (`/alarms`):** alla larm med tid, typ, station, objekt, tillstånd och vem som kvitterat. Stationen är en länk till driftbilden, och ett klick på raden öppnar den.
+- **Larmkällor:**
+  - **Taggar med larm:** larmet är aktivt så länge råvärdet är ett av taggens larmvärden, t.ex. `1` för "Utlöst".
+  - **Ej beordrad lägesändring:** för taggar med *Bara utan manöver* aktiveras larmet bara när taggen byter till ett larmvärde utan att samma värde har manövrerats från HMI:t de senaste 30 sekunderna. Det används för brytare: ett frånslag från operatören larmar inte, men en brytare som löser ut eller manövreras av någon annan (t.ex. med `opctl` eller av en angripare direkt mot enheten) gör det. Larmet står kvar tills brytaren är sluten igen. Manövertaggen är `<id>.Cmd`, `<id>_CMD` eller, för `<x>_POS`, `<x>_CMD`, om ingen annan anges.
+  - **Kommunikationsfel:** ett larm per enhet så länge enheten inte svarar.
+- Larm, återgång och kvittering loggas i händelselistan.
+
 ### Mätvärden, händelser och konfiguration
 
 - **Mätvärden (`/values`):** alla taggar med värde, kvalitet och tid för senaste ändring. Klicka på en rad för att se trenden. Skrivbara taggar har en knapp för att skriva ett värde.
-- **Händelser (`/events`):** filtreras på manövrar, lägesändringar, kommunikation och system. Lägesändringar loggas för taggar med "Logga ändringar" och visas med taggens lägestexter, t.ex. "Till → Från".
+- **Händelser (`/events`):** filtreras på larm, manövrar, lägesändringar, kommunikation och system. Lägesändringar loggas för taggar med "Logga ändringar" och visas med taggens lägestexter, t.ex. "Till → Från".
 - **Konfiguration (`/config`):**
   - **Enheter:** protokoll (Modbus TCP eller IEC 60870-5-104), IP-adress och port, och sedan unit id (Modbus) eller gemensam adress CA (IEC 104), pollintervall, timeout och aktiv/inaktiv.
-  - **Modbus-taggar:** område (coil, discrete, input, holding), adress (0-baserad), datatyp (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), ord- och bytebyte, skala och offset, bit i register, skrivbar, händelseloggning och lägestexter.
+  - **Modbus-taggar:** område (coil, discrete, input, holding), adress (0-baserad), datatyp (`bool`, `uint16`, `int16`, `uint32`, `int32`, `float32`, `float64`), ord- och bytebyte, skala och offset, bit i register, skrivbar, händelseloggning, lägestexter och larm (larmvärden, bara utan manöver, larmtext och manövertagg).
   - **IEC 104-taggar:** övervaknings-IOA, datatyp (`bool` för M_SP/M_DP, numerisk för M_ME/M_ST), styr-IOA och kommandotyp (`C_DC` brytare, `C_SC` omkopplare, `C_RC` steg, `C_SE_NC` börvärde) för manövrerbara taggar, skala, offset, enhet, decimaler, händelseloggning och lägestexter. En tagg blir skrivbar när den har en styr-IOA.
   - Ändringar sparas i `data/config.json`, och pollern startas om direkt.
 
@@ -135,9 +156,12 @@ Taggkonventioner för simulatorerna:
 
 Frånskiljarna är förreglade: de kan bara manövreras när facket har öppen brytare, annars svarar simulatorn med undantaget *illegal data value*.
 
+Precis som blue-station och blue-chp har modsim ett lokalt **webbgränssnitt** (`-http`, standard `0.0.0.0:8081`). Där visas alla punkter per fack med reglage och en händelselogg, och överst ett **enlinjeschema** med samlingsskenan och de fyra facken: varje fack har sin frånskiljare QS och brytare Q med U/I/P. Slutna brytare visas som fylld grön symbol och öppna som grön kontur, frånskiljarna som knivfrånskiljare – samma symboler som i SCADA-vyn – och fack med öppen brytare mörknar. Gränssnittet styr simulatorn direkt (det går alltså att öppna och sluta utan att gå via SCADA) och är användbart för att framkalla larm i HMI:t, t.ex. en ej beordrad brytaröppning.
+
 ```bash
-go run ./cmd/modsim                         # lyssnar på 0.0.0.0:5020
+go run ./cmd/modsim                         # Modbus på 0.0.0.0:5020, webb på :8081
 go run ./cmd/modsim -addr :1503 -delay 3s   # annan port, brytarens manövertid 3 s
+go run ./cmd/modsim -http ""                # utan webbgränssnitt
 ```
 
 | Område | Adress | Innehåll |
@@ -158,11 +182,15 @@ Unit id ignoreras. Vyn **Station Norra** och enheten `sim` i `data/config.json` 
 
 ```bash
 opctl [flaggor] <tagg> <open|close>
+opctl [flaggor] <all|type:TYP> <open|close>
+opctl [flaggor] -category <TYP> <open|close>
 opctl -list [brytare|frånskiljare|pump]
 ```
 
 - **Tagg:** lägestaggen (`G1.CB`, `Q1_POS`) eller manövertaggen (`G1.CB.Cmd`, `Q1_CMD`). Verktyget hittar den andra av de två och enheten utifrån konfigurationen.
 - **Tillstånd:** `open`/`close`, `från`/`till`, `öppna`/`slut`, `0`/`1`. För pumpar betyder `close` = starta (drift) och `open` = stoppa.
+- **Hela typer:** i stället för en tagg kan `all`, `type:<typ>` eller `-category <typ>` anges, och då manövreras alla manövrerbara punkter av typen (`brytare`, `frånskiljare`, `pump`) över det valda protokollet, på samma sätt som `-proxy` fryser och blockerar per typ. Varje punkt manövreras som en enskild manöver, och till sist skrivs hur många som lyckades, misslyckades och hoppades över. Kunde någon punkt inte manövreras avslutas kommandot med felkod.
+- **Anslutningsfel per enhet:** får en punkt anslutningsfel mot en enhet (`host:port`) hoppas återstående punkter mot samma enhet över direkt, med ett tydligt meddelande, i stället för att vänta ut timeouten igen. Manövern går vidare till nästa enhet. Fel på en enskild punkt som ändå når enheten (t.ex. förregling) hoppar däremot inte över resten.
 
 ```bash
 cd backend
@@ -171,15 +199,19 @@ opctl -list pump                       # bara pumpar
 opctl G1.CB close                      # Modbus TCP, läser data/config.json
 opctl -protocol iec104 Q0.CB open      # IEC 104
 opctl -data ../annan/data QS1_POS open # annan datakatalog
+opctl type:brytare open                # slå från alla brytare
+opctl -category frånskiljare close     # slut alla frånskiljare
+opctl all open                         # alla manövrerbara punkter
+opctl -dry-run type:brytare open       # visa vad som skulle göras
 ```
 
-Med `-list` skrivs en tabell över kända brytare, frånskiljare och pumpar, vilken enhet de hör till, vilka protokoll de kan manövreras med och deras manövertagg. Typen gissas från taggens id och namn (konfigurationen har ingen uttrycklig typ). Ett valfritt filter (`brytare`, `frånskiljare` eller `pump`) begränsar listan.
+Med `-list` skrivs en tabell över kända brytare, frånskiljare och pumpar, vilken enhet de hör till, vilka protokoll de kan manövreras med och deras manövertagg. Typen gissas från taggens id och namn (konfigurationen har ingen uttrycklig typ). Ett valfritt filter (`brytare`, `frånskiljare` eller `pump`) begränsar listan. Samma typer gäller för manöver per typ. Vid manöver per typ gäller eventuella `-host`/`-port`/`-unit` varje punkt, så använd dem bara mot en enskild enhet.
 
 | Flagga | Standard | Beskrivning |
 |---|---|---|
 | `-list` | `false` | Lista brytare, frånskiljare och pumpar (valfritt filter som argument) |
 | `-proxy` | – | Adress till en blue-proxy för frys/block-åtgärder (se nedan) |
-| `-category` | – | Med `-proxy`: tillämpa åtgärden på en hel typ (måste stå före åtgärden) |
+| `-category` | – | Tillämpa åtgärden på en hel typ, vid manöver och med `-proxy` (måste stå före tillståndet/åtgärden) |
 | `-protocol` | `modbus` | `modbus` eller `iec104` |
 | `-data` | `data` | Datakatalog eller sökväg direkt till `config.json` |
 | `-timeout` | `5s` | Tidsgräns per anrop |
@@ -226,11 +258,13 @@ opctl -proxy http://127.0.0.1:8083 unfreeze all           # alla punkter
 | GET | `/api/status` | Kommunikationsstatus per enhet |
 | GET | `/api/history/{tag}?minutes=10` | Historik `[{t, v}]` |
 | GET | `/api/events` | Händelselista, nyast först |
+| GET | `/api/alarms` | Larmlista, nyast först |
+| POST | `/api/alarms/ack` | Kvittera larm: `{"ids":["F1.CB"],"user":"operatör"}`. Utan `ids` kvitteras alla |
 | POST | `/api/commands` | Manöver: `{"tag":"Q1_CMD","value":1,"source":"Q1","text":"Frånslag"}` |
 | GET/POST | `/api/views` | Lista eller skapa vyer |
 | GET/PUT/DELETE | `/api/views/{id}` | Läs, spara eller ta bort en vy |
 | GET/POST | `/api/images` | Lista eller ladda upp bilder (multipart, fältet `file`) |
-| WS | `/ws` | Först `snapshot` med alla värden och enheter, därefter `values`, `device` och `event` vid ändringar |
+| WS | `/ws` | Först `snapshot` med alla värden och enheter, och larm, därefter `values`, `device`, `event` och `alarms` (hela larmlistan) vid ändringar |
 
 Värden har formen `{"tag": "...", "v": 10.5, "q": "good" | "bad", "ts": "..."}`. Booleska värden skickas som 0 och 1.
 
@@ -238,5 +272,5 @@ Värden har formen `{"tag": "...", "v": 10.5, "q": "good" | "bad", "ts": "..."}`
 
 - Det finns ingen inloggning eller behörighetsstyrning, och alla manövrar loggas som "operatör". Lägg till autentisering innan systemet används mot riktig utrustning.
 - Historiken finns bara i minnet, 1 timme per tagg vid 1 s polling. För längre lagring behövs en tidsseriedatabas.
-- Det finns ingen larmhantering med kvittering. Gränsvärden på mätvärdessymboler påverkar bara färgen.
+- Larmlistan finns bara i minnet och töms när servern startas om. Gränsvärden på mätvärdessymboler påverkar bara färgen och ger inga larm.
 - Modbus TCP och IEC 60870-5-104 stöds som klientprotokoll (per enhet). IEC 104-pollern gör STARTDT och en generalförfrågan vid anslutning, tar emot spontana ändringar och återansluter automatiskt. Monitortyperna M_SP, M_DP, M_ST och M_ME (normaliserad, skalad och flyttal, med och utan tidsstämpel) avkodas; kommandon skickas som C_SC, C_DC, C_RC eller C_SE_NC med direct execute.

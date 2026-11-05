@@ -20,11 +20,28 @@
   .lbl small { display:block; color:var(--dim); font-size:11px; }
   .val { font-variant-numeric: tabular-nums; text-align:right; white-space:nowrap; }
   .val.on { color:var(--alarm); font-weight:600; }
-  .val.closed { color:var(--closed); font-weight:600; }
-  .val.open { color:var(--open); font-weight:600; }
+  .val.closed { color:var(--open); font-weight:600; }
+  .val.open { color:var(--closed); font-weight:600; }
   button { background:#24303d; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 8px; cursor:pointer; font:inherit; }
   button:hover { border-color:var(--accent); }
   input { width:70px; background:#0f141a; color:var(--fg); border:1px solid var(--line); border-radius:4px; padding:3px 4px; font:inherit; }
+  /* single-line schematic */
+  .sch { margin:12px 16px 0; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .sch h2 { font-size:14px; margin:0 0 6px; color:var(--accent); }
+  .sch svg { width:100%; height:auto; display:block; max-height:420px; }
+  .sch .wire { stroke:#5a6b7d; stroke-width:2.5; fill:none; }
+  .sch .wire.dead { stroke:#39434f; }
+  .sch .bus { stroke:#aeb9c6; stroke-width:5; stroke-linecap:round; }
+  .sch .bus.dead { stroke:#44505d; }
+  .sch .wind { fill:none; stroke:#8494a6; stroke-width:2.5; }
+  .sch .sym { fill:var(--card); stroke:#8494a6; stroke-width:2.5; }
+  .sch .sym.sclosed { fill:var(--open); stroke:var(--open); }
+  .sch .sym.sopen { fill:var(--card); stroke:var(--open); }
+  .sch text { fill:var(--fg); font:12px system-ui, sans-serif; }
+  .sch .lbl { fill:var(--dim); font-size:11px; }
+  .sch .meas { fill:var(--fg); font-variant-numeric:tabular-nums; font-size:12px; }
+  .sch .ind { fill:#39434f; }
+  .sch .ind.salarm { fill:var(--alarm); }
   #events { grid-column: 1 / -1; }
   #events ol { list-style:none; margin:0; padding:0; max-height:260px; overflow:auto; font-family:ui-monospace, monospace; font-size:12px; }
   #events li { padding:2px 0; border-top:1px solid var(--line); }
@@ -37,6 +54,39 @@
   <span class="dim">Transformatorstation 220/20 kV · Modbus TCP · IEC 60870-5-104</span>
   <span class="dim" id="clock"></span>
 </header>
+
+<section class="sch">
+  <h2>Enlinjeschema</h2>
+  <svg viewBox="0 0 760 360" role="img" aria-label="Enlinjeschema">
+    <text class="lbl" x="300" y="22">Stamnät 220 kV</text>
+    <text class="meas" x="300" y="40" data-meas="Grid.U" data-prefix="U ">–</text>
+    <circle class="ind" cx="474" cy="18" r="5" data-alarm="Station.CommonAlarm"></circle>
+    <text class="lbl" x="484" y="22">Summalarm</text>
+    <!-- grid to line breaker Q0 -->
+    <line class="wire" x1="380" y1="30" x2="380" y2="44"></line>
+    <rect class="sym" data-sw="Q0.CB" x="368" y="44" width="24" height="24" rx="2"></rect>
+    <text class="lbl" x="398" y="60">Q0</text>
+    <line class="wire" data-live="Q0.CB" x1="380" y1="68" x2="380" y2="100"></line>
+    <!-- 220 kV busbar -->
+    <line class="bus" data-live="Q0.CB" x1="300" y1="100" x2="460" y2="100"></line>
+    <text class="lbl" x="300" y="94">220 kV</text>
+    <!-- 20 kV busbar sections -->
+    <line class="bus" data-live="BUS.A.Live" x1="100" y1="252" x2="360" y2="252"></line>
+    <line class="bus" data-live="BUS.B.Live" x1="400" y1="252" x2="680" y2="252"></line>
+    <text class="lbl" x="100" y="246">20 kV sektion A</text>
+    <text class="meas" x="360" y="246" text-anchor="end" data-meas="BUS.A.U">–</text>
+    <text class="lbl" x="408" y="246">sektion B</text>
+    <text class="meas" x="680" y="246" text-anchor="end" data-meas="BUS.B.U">–</text>
+    <!-- bus coupler -->
+    <line class="wire" x1="360" y1="252" x2="368" y2="252"></line>
+    <rect class="sym" data-sw="BUS.Coupler.CB" x="368" y="240" width="24" height="24" rx="2"></rect>
+    <line class="wire" x1="392" y1="252" x2="400" y2="252"></line>
+    <text class="lbl" x="362" y="280">Coupler</text>
+    <g id="trafos"></g>
+    <g id="feeders"></g>
+  </svg>
+</section>
+
 <main id="main"></main>
 <div id="toast"></div>
 <script>
@@ -46,6 +96,13 @@ let built = false;
 function el(tag, attrs, ...kids) {
   const e = document.createElement(tag);
   Object.assign(e, attrs || {});
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+function svg(tag, attrs, ...kids) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const k in (attrs || {})) e.setAttribute(k, attrs[k]);
   for (const k of kids) e.append(k);
   return e;
 }
@@ -61,6 +118,69 @@ async function send(id, body) {
     body: JSON.stringify(Object.assign({ id }, body)) });
   if (!r.ok) toast(id + ': ' + ((await r.json()).error || r.statusText));
   load();
+}
+
+// Draw the two transformers and the feeder bays into the schematic.
+function buildSchematic() {
+  const tg = document.getElementById('trafos');
+  for (const t of [{ id: 'T1', x: 340, bus: 'A' }, { id: 'T2', x: 420, bus: 'B' }]) {
+    const x = t.x;
+    tg.append(
+      svg('line', { class: 'wire', 'data-live': 'Q0.CB', x1: x, y1: 100, x2: x, y2: 116 }),
+      svg('rect', { class: 'sym', 'data-sw': t.id + '.HV.CB', x: x - 12, y: 116, width: 24, height: 24, rx: 2 }),
+      svg('line', { class: 'wire', x1: x, y1: 140, x2: x, y2: 148 }),
+      svg('circle', { class: 'wind', cx: x, cy: 160, r: 12 }),
+      svg('circle', { class: 'wind', cx: x, cy: 174, r: 12 }),
+      svg('circle', { class: 'ind', cx: x - 22, cy: 167, r: 5, 'data-alarm': t.id + '.Trip' }),
+      svg('text', { class: 'lbl', x: x + 18, y: 162 }, t.id),
+      svg('text', { class: 'meas', x: x + 18, y: 178, 'data-meas': t.id + '.Loading' }, '–'),
+      svg('line', { class: 'wire', x1: x, y1: 186, x2: x, y2: 196 }),
+      svg('rect', { class: 'sym', 'data-sw': t.id + '.LV.CB', x: x - 12, y: 196, width: 24, height: 24, rx: 2 }),
+      svg('line', { class: 'wire', 'data-live': t.id + '.LV.CB', x1: x, y1: 220, x2: x, y2: 252 }),
+    );
+  }
+
+  const fg = document.getElementById('feeders');
+  const feeders = [
+    { id: 'F1', x: 140, bus: 'A' }, { id: 'F2', x: 220, bus: 'A' },
+    { id: 'F3', x: 470, bus: 'B' }, { id: 'F4', x: 550, bus: 'B' }, { id: 'G1', x: 630, bus: 'B', gen: true },
+  ];
+  for (const f of feeders) {
+    const x = f.x, live = f.id + '.CB,BUS.' + f.bus + '.Live';
+    fg.append(
+      svg('line', { class: 'wire', 'data-live': 'BUS.' + f.bus + '.Live', x1: x, y1: 252, x2: x, y2: 272 }),
+      svg('rect', { class: 'sym', 'data-sw': f.id + '.CB', x: x - 12, y: 272, width: 24, height: 24, rx: 2 }),
+      svg('text', { class: 'lbl', x: x + 16, y: 288 }, f.id),
+      svg('line', { class: 'wire', 'data-live': live, x1: x, y1: 296, x2: x, y2: 316 }),
+      f.gen
+        ? svg('circle', { class: 'wind', cx: x, cy: 328, r: 12 })
+        : svg('path', { class: 'wire', 'data-live': live, d: `M ${x - 9} 316 L ${x} 328 L ${x + 9} 316 Z` }),
+      svg('text', { class: 'meas', x: x, y: 350, 'text-anchor': 'middle', 'data-meas': f.id + '.P', 'data-prefix': 'P ' }, '–'),
+    );
+  }
+}
+
+// Paint the schematic from the latest point values.
+function paintSchematic() {
+  for (const e of document.querySelectorAll('[data-sw]')) {
+    const p = current[e.dataset.sw];
+    if (!p) continue;
+    const closed = p.value === true;
+    e.classList.toggle('sclosed', closed);
+    e.classList.toggle('sopen', !closed);
+  }
+  for (const e of document.querySelectorAll('[data-meas]')) {
+    const p = current[e.dataset.meas];
+    if (p) e.textContent = (e.dataset.prefix || '') + p.text;
+  }
+  for (const e of document.querySelectorAll('[data-live]')) {
+    const live = e.dataset.live.split(',').every(id => current[id] && current[id].value === true);
+    e.classList.toggle('dead', !live);
+  }
+  for (const e of document.querySelectorAll('[data-alarm]')) {
+    const p = current[e.dataset.alarm];
+    e.classList.toggle('salarm', !!p && ALARM.includes(p.text));
+  }
 }
 
 function build(points) {
@@ -105,6 +225,7 @@ function build(points) {
     main.append(sec);
   }
   main.append(el('section', { id: 'events' }, el('h2', { textContent: 'Händelser' }), el('ol', { id: 'evlist' })));
+  buildSchematic();
   built = true;
 }
 
@@ -121,6 +242,7 @@ function update(state) {
     if (p.kind === 'breaker') v.classList.add(p.value ? 'closed' : 'open');
     else if (ALARM.includes(p.text)) v.classList.add('on');
   }
+  paintSchematic();
   const list = document.getElementById('evlist');
   list.replaceChildren(...state.events.slice().reverse().map(e =>
     el('li', { textContent: new Date(e.time).toLocaleTimeString('sv-SE') + '  ' + e.text })));

@@ -29,6 +29,8 @@ export const api = {
   history: (tag, minutes = 10) => request('GET', `/api/history/${enc(tag)}?minutes=${minutes}`),
   events: () => request('GET', '/api/events'),
   command: (cmd) => request('POST', '/api/commands', cmd),
+  alarms: () => request('GET', '/api/alarms'),
+  ackAlarms: (ids, user) => request('POST', '/api/alarms/ack', { ids, user }),
 
   views: () => request('GET', '/api/views'),
   view: (id) => request('GET', `/api/views/${enc(id)}`),

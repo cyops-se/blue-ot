@@ -230,7 +230,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.editor { height: calc(100vh - 48px); display: flex; flex-direction: column; }
+.editor { height: calc(100vh - 48px - var(--alarm-h)); display: flex; flex-direction: column; }
 .toolbar { height: 44px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex: none; }
 .body { flex: 1; display: flex; min-height: 0; }
 .palette { width: 220px; flex: none; overflow-y: auto; border-right: 1px solid rgba(255, 255, 255, 0.08); }

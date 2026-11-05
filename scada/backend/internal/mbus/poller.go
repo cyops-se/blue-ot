@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 
@@ -232,20 +231,8 @@ func (w *Worker) poll() {
 		if t == nil || !t.LogEvents || v.Quality != model.QualityGood || prev[i].Quality != model.QualityGood {
 			continue
 		}
-		w.hub.AddEvent("state", "info", t.Name, fmt.Sprintf("%s → %s", stateText(t, prev[i].V), stateText(t, v.V)), "")
+		w.hub.AddEvent("state", "info", t.Name, fmt.Sprintf("%s → %s", t.Text(prev[i].V), t.Text(v.V)), "")
 	}
-}
-
-func stateText(t *model.Tag, v float64) string {
-	key := strconv.FormatFloat(v, 'f', -1, 64)
-	if s, ok := t.StateText[key]; ok {
-		return s
-	}
-	s := strconv.FormatFloat(v, 'f', t.Decimals, 64)
-	if t.Unit != "" {
-		s += " " + t.Unit
-	}
-	return s
 }
 
 func (w *Worker) readBlock(b block, now time.Time) ([]model.Value, error) {

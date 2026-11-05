@@ -1,6 +1,6 @@
 // Package realtime holds the current process image, a short in-memory
-// history per tag, the event list and fans out changes to subscribers
-// (WebSocket clients).
+// history per tag, the event list, the alarm list and fans out changes to
+// subscribers (WebSocket clients).
 package realtime
 
 import (
@@ -18,10 +18,19 @@ const (
 
 // Message is pushed to subscribers. It is serialised as-is on the websocket.
 type Message struct {
-	Type    string               `json:"type"` // values, device, event
-	Values  []model.Value        `json:"values,omitempty"`
-	Device  *model.DeviceStatus  `json:"device,omitempty"`
-	Event   *model.Event         `json:"event,omitempty"`
+	Type   string              `json:"type"` // values, device, event, alarms
+	Values []model.Value       `json:"values,omitempty"`
+	Device *model.DeviceStatus `json:"device,omitempty"`
+	Event  *model.Event        `json:"event,omitempty"`
+	Alarms []model.Alarm       `json:"alarms,omitempty"`
+}
+
+// Watcher is notified of value and device status changes after the hub has
+// stored them. It is called from the polling goroutines without the hub lock
+// held, so it may call back into the hub.
+type Watcher interface {
+	ValuesChanged(vals []model.Value)
+	DeviceChanged(s model.DeviceStatus)
 }
 
 type ring struct {
@@ -61,13 +70,15 @@ func (r *ring) since(t int64) []model.Sample {
 
 // Hub is the realtime database.
 type Hub struct {
-	mu      sync.RWMutex
-	values  map[string]model.Value
-	history map[string]*ring
-	devices map[string]model.DeviceStatus
-	events  []model.Event
-	eventID int64
-	subs    map[chan []byte]struct{}
+	mu       sync.RWMutex
+	values   map[string]model.Value
+	history  map[string]*ring
+	devices  map[string]model.DeviceStatus
+	events   []model.Event
+	eventID  int64
+	alarms   map[string]*model.Alarm
+	subs     map[chan []byte]struct{}
+	watchers []Watcher
 }
 
 // New creates an empty hub.
@@ -76,8 +87,16 @@ func New() *Hub {
 		values:  map[string]model.Value{},
 		history: map[string]*ring{},
 		devices: map[string]model.DeviceStatus{},
+		alarms:  map[string]*model.Alarm{},
 		subs:    map[chan []byte]struct{}{},
 	}
+}
+
+// Watch registers a watcher of value and device changes.
+func (h *Hub) Watch(w Watcher) {
+	h.mu.Lock()
+	h.watchers = append(h.watchers, w)
+	h.mu.Unlock()
 }
 
 // Subscribe registers a subscriber. The channel receives encoded messages;
@@ -119,7 +138,6 @@ func (h *Hub) broadcast(m Message) {
 // previous value (for event generation).
 func (h *Hub) Update(vals []model.Value) (changed []model.Value, previous []model.Value) {
 	h.mu.Lock()
-	defer h.mu.Unlock()
 	for _, v := range vals {
 		old, existed := h.values[v.Tag]
 		if v.Quality == model.QualityGood {
@@ -145,6 +163,13 @@ func (h *Hub) Update(vals []model.Value) (changed []model.Value, previous []mode
 	}
 	if len(changed) > 0 {
 		h.broadcast(Message{Type: "values", Values: changed})
+	}
+	watchers := h.watchers
+	h.mu.Unlock()
+	if len(changed) > 0 {
+		for _, w := range watchers {
+			w.ValuesChanged(changed)
+		}
 	}
 	return changed, previous
 }
@@ -194,12 +219,18 @@ func (h *Hub) History(tag string, since time.Time) []model.Sample {
 // SetDevice updates the communication status of a device.
 func (h *Hub) SetDevice(s model.DeviceStatus) (changed bool) {
 	h.mu.Lock()
-	defer h.mu.Unlock()
 	old, ok := h.devices[s.Device]
 	h.devices[s.Device] = s
 	changed = !ok || old.Connected != s.Connected || old.Error != s.Error
 	if changed {
 		h.broadcast(Message{Type: "device", Device: &s})
+	}
+	watchers := h.watchers
+	h.mu.Unlock()
+	if changed {
+		for _, w := range watchers {
+			w.DeviceChanged(s)
+		}
 	}
 	return changed
 }
@@ -226,6 +257,11 @@ func (h *Hub) Devices() []model.DeviceStatus {
 func (h *Hub) AddEvent(kind, severity, source, msg, user string) model.Event {
 	h.mu.Lock()
 	defer h.mu.Unlock()
+	return h.addEvent(kind, severity, source, msg, user)
+}
+
+// addEvent must be called with h.mu held.
+func (h *Hub) addEvent(kind, severity, source, msg, user string) model.Event {
 	h.eventID++
 	e := model.Event{ID: h.eventID, TS: time.Now(), Kind: kind, Severity: severity, Source: source, Message: msg, User: user}
 	h.events = append(h.events, e)

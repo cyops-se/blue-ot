@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"text/tabwriter"
@@ -51,7 +52,7 @@ func run() error {
 	dryRun := flag.Bool("dry-run", false, "visa vad som skulle göras utan att ansluta")
 	list := flag.Bool("list", false, "lista kända brytare, frånskiljare och pumpar (valfritt filter som argument)")
 	proxy := flag.String("proxy", "", "adress till en blue-proxy, t.ex. http://127.0.0.1:8083, för frys/block-åtgärder")
-	category := flag.String("category", "", "med -proxy: tillämpa åtgärden på en hel typ (brytare, mätvärde … eller all)")
+	category := flag.String("category", "", "tillämpa åtgärden på en hel typ (brytare, frånskiljare, pump …); gäller både manöver och -proxy")
 	flag.Usage = usage
 	flag.Parse()
 
@@ -65,6 +66,22 @@ func run() error {
 			return err
 		}
 		return listTags(cfg, flag.Arg(0))
+	}
+
+	// Bulk manoeuvre of a whole type, mirroring the proxy's -category / type:
+	// targets: operate every operable point of the type over one protocol.
+	if want, state, bulk, err := operateTarget(*category, flag.Args()); err != nil {
+		return err
+	} else if bulk {
+		closeOp, err := parseState(state)
+		if err != nil {
+			return err
+		}
+		cfg, err := loadConfig(*data)
+		if err != nil {
+			return err
+		}
+		return doBulk(cfg, want, closeOp, *protocol, *host, *port, *unit, *openVal, *closeVal, *timeout, *verify, *dryRun)
 	}
 
 	if flag.NArg() != 2 {
@@ -85,18 +102,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	dev := r.device
-	if *host != "" {
-		dev.Host = *host
-	}
-	if *port > 0 {
-		dev.Port = *port
-		if dev.IEC != nil {
-			iec := *dev.IEC // copy so the shared config struct is left untouched
-			iec.Port = *port
-			dev.IEC = &iec
-		}
-	}
+	dev := applyOverrides(r.device, *host, *port)
 	action := "öppna/frånslag"
 	if closeOp {
 		action = "slut/tillslag"
@@ -151,7 +157,7 @@ func doModbus(r resolved, dev model.Device, closeOp bool, action string, openVal
 		return err
 	}
 	if err := mc.Open(); err != nil {
-		return fmt.Errorf("ansluter till %s:%d: %w", dev.Host, dev.Port, err)
+		return &connError{fmt.Errorf("ansluter till %s:%d: %w", dev.Host, dev.Port, err)}
 	}
 	defer mc.Close()
 
@@ -256,7 +262,7 @@ func doIEC(r resolved, dev model.Device, closeOp bool, action string, timeout ti
 
 	cl, err := iec104client.Dial(addr, timeout)
 	if err != nil {
-		return err
+		return &connError{err}
 	}
 	defer cl.Close()
 
@@ -320,10 +326,7 @@ func (r resolved) statusName() string {
 // resolve finds the status tag and the writable command tag for the given id,
 // which may be either of them, and the device they belong to.
 func resolve(cfg *model.Config, id string) (resolved, error) {
-	byID := map[string]*model.Tag{}
-	for i := range cfg.Tags {
-		byID[cfg.Tags[i].ID] = &cfg.Tags[i]
-	}
+	byID := indexByID(cfg)
 	t := byID[id]
 	if t == nil {
 		return resolved{}, fmt.Errorf("okänd tagg %q i konfigurationen", id)
@@ -442,10 +445,7 @@ func listTags(cfg *model.Config, filter string) error {
 		return fmt.Errorf("okänt filter %q (använd brytare, frånskiljare eller pump)", filter)
 	}
 
-	byID := map[string]*model.Tag{}
-	for i := range cfg.Tags {
-		byID[cfg.Tags[i].ID] = &cfg.Tags[i]
-	}
+	byID := indexByID(cfg)
 
 	type row struct{ typ, tag, dev, proto, cmd string }
 	var rows []row
@@ -458,18 +458,7 @@ func listTags(cfg *model.Config, filter string) error {
 		if cat == "" || (want != "" && cat != want) {
 			continue
 		}
-		cmd := firstOf(byID, cmdCandidates(t.ID))
-		dev, _ := deviceByID(cfg, t.Device)
-
-		var protos []string
-		cmdName := "–"
-		if cmd != nil && (cmd.Area == model.AreaCoil || cmd.Area == model.AreaHolding) {
-			protos = append(protos, "modbus")
-			cmdName = cmd.ID
-		}
-		if dev.IEC != nil && t.CtrlIOA != 0 {
-			protos = append(protos, "iec104")
-		}
+		protos, cmdName := operability(cfg, byID, t)
 		if len(protos) == 0 { // not operable: skip
 			continue
 		}
@@ -500,6 +489,217 @@ func listTags(cfg *model.Config, filter string) error {
 	return nil
 }
 
+// indexByID maps every tag id to its tag in the config.
+func indexByID(cfg *model.Config) map[string]*model.Tag {
+	m := make(map[string]*model.Tag, len(cfg.Tags))
+	for i := range cfg.Tags {
+		m[cfg.Tags[i].ID] = &cfg.Tags[i]
+	}
+	return m
+}
+
+// operability reports which protocols can operate the status tag t, and the
+// name of its Modbus command tag (or "–"). It is the single source of truth
+// for "is this point operable" used by both -list and bulk manoeuvres.
+func operability(cfg *model.Config, byID map[string]*model.Tag, t *model.Tag) (protos []string, cmdName string) {
+	cmdName = "–"
+	if cmd := firstOf(byID, cmdCandidates(t.ID)); cmd != nil && (cmd.Area == model.AreaCoil || cmd.Area == model.AreaHolding) {
+		protos = append(protos, "modbus")
+		cmdName = cmd.ID
+	}
+	if dev, ok := deviceByID(cfg, t.Device); ok && dev.IEC != nil && t.CtrlIOA != 0 {
+		protos = append(protos, "iec104")
+	}
+	return protos, cmdName
+}
+
+// applyOverrides returns a copy of dev with the -host/-port overrides applied.
+// The IEC endpoint is copied so the shared config struct is left untouched.
+func applyOverrides(dev model.Device, host string, port int) model.Device {
+	if host != "" {
+		dev.Host = host
+	}
+	if port > 0 {
+		dev.Port = port
+		if dev.IEC != nil {
+			iec := *dev.IEC
+			iec.Port = port
+			dev.IEC = &iec
+		}
+	}
+	return dev
+}
+
+// ---- bulk manoeuvre over a whole type ----
+
+// connError marks a failure to reach a device endpoint (the connect step), as
+// opposed to a per-point protocol error such as an interlock rejection. In a
+// bulk manoeuvre the remaining points on the same endpoint are skipped once a
+// connError is seen for it.
+type connError struct{ err error }
+
+func (e *connError) Error() string { return e.err.Error() }
+func (e *connError) Unwrap() error { return e.err }
+
+func isConnError(err error) bool {
+	var c *connError
+	return errors.As(err, &c)
+}
+
+// connEndpoint is the host:port a manoeuvre connects to, used as the key for
+// endpoints already known to be unreachable.
+func connEndpoint(dev model.Device, proto string) string {
+	port := dev.Port
+	if proto == "iec104" && dev.IEC != nil {
+		port = dev.IEC.Port
+	}
+	return fmt.Sprintf("%s:%d", dev.Host, port)
+}
+
+// canonProtocol maps a -protocol value (with aliases) to "modbus" or "iec104".
+func canonProtocol(p string) (string, error) {
+	switch strings.ToLower(p) {
+	case "modbus":
+		return "modbus", nil
+	case "iec104", "iec", "104":
+		return "iec104", nil
+	}
+	return "", fmt.Errorf("okänt protokoll %q (välj modbus eller iec104)", p)
+}
+
+// operateTarget detects a bulk manoeuvre: the -category flag, or an "all" or
+// "type:<cat>" argument in place of a tag. It returns the canonical category to
+// operate ("" means every operable point), the state argument, and whether this
+// is a bulk operation. A non-bulk result (bulk == false) falls through to the
+// single-tag path.
+func operateTarget(category string, args []string) (want, state string, bulk bool, err error) {
+	parseType := func(s string) (string, error) {
+		c, ok := matchFilter(s)
+		if !ok {
+			return "", fmt.Errorf("okänd typ %q (brytare, frånskiljare eller pump)", s)
+		}
+		return c, nil
+	}
+	if category != "" {
+		c, err := parseType(category)
+		if err != nil {
+			return "", "", true, err
+		}
+		if len(args) != 1 {
+			return "", "", true, errors.New("ange ett tillstånd (open/close) efter -category")
+		}
+		return c, args[0], true, nil
+	}
+	if len(args) == 2 {
+		switch {
+		case strings.EqualFold(args[0], "all"):
+			return "", args[1], true, nil
+		case strings.HasPrefix(args[0], "type:"):
+			c, err := parseType(strings.TrimPrefix(args[0], "type:"))
+			if err != nil {
+				return "", "", true, err
+			}
+			return c, args[1], true, nil
+		}
+	}
+	return "", "", false, nil
+}
+
+// doBulk operates every operable point of the wanted category (or all operable
+// points when want is "") over one protocol. Each point is resolved and operated
+// exactly as a single manoeuvre, so the overrides and -verify/-dry-run behave
+// identically; the overrides apply to every point, so use them only against a
+// single device.
+func doBulk(cfg *model.Config, want string, closeOp bool, protocol, host string, port, unit, openVal, closeVal int, timeout time.Duration, verify, dry bool) error {
+	proto, err := canonProtocol(protocol)
+	if err != nil {
+		return err
+	}
+	byID := indexByID(cfg)
+	var targets []*model.Tag
+	for i := range cfg.Tags {
+		t := &cfg.Tags[i]
+		if t.Writable {
+			continue
+		}
+		cat := category(t)
+		if cat == "" || (want != "" && cat != want) {
+			continue
+		}
+		if protos, _ := operability(cfg, byID, t); slices.Contains(protos, proto) {
+			targets = append(targets, t)
+		}
+	}
+	slices.SortFunc(targets, func(a, b *model.Tag) int {
+		if ca, cb := category(a), category(b); ca != cb {
+			return catOrder[ca] - catOrder[cb]
+		}
+		if a.Device != b.Device {
+			return strings.Compare(a.Device, b.Device)
+		}
+		return strings.Compare(a.ID, b.ID)
+	})
+
+	label := "alla typer"
+	if want != "" {
+		label = "typ " + want
+	}
+	if len(targets) == 0 {
+		return fmt.Errorf("inga manövrerbara punkter för %s via %s", label, proto)
+	}
+	action := "öppna/frånslag"
+	if closeOp {
+		action = "slut/tillslag"
+	}
+	fmt.Printf("%s: %s för %s (%d punkt(er))\n\n", proto, action, label, len(targets))
+
+	unreachable := map[string]bool{} // endpoints that already refused a connection
+	failed, skipped := 0, 0
+	for _, st := range targets {
+		r, err := resolve(cfg, st.ID)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "  %s: %v\n\n", st.ID, err)
+			failed++
+			continue
+		}
+		dev := applyOverrides(r.device, host, port)
+		endpoint := connEndpoint(dev, proto)
+		// Skip points on an endpoint that already refused a connection, instead
+		// of waiting for the same timeout again.
+		if unreachable[endpoint] {
+			fmt.Fprintf(os.Stderr, "  %s: hoppar över, ingen förbindelse med %s\n\n", st.ID, endpoint)
+			skipped++
+			continue
+		}
+		if proto == "modbus" {
+			err = doModbus(r, dev, closeOp, action, openVal, closeVal, unit, timeout, verify, dry)
+		} else {
+			err = doIEC(r, dev, closeOp, action, timeout, dry)
+		}
+		if err != nil {
+			failed++
+			if isConnError(err) {
+				unreachable[endpoint] = true
+				fmt.Fprintf(os.Stderr, "  %s: %v – hoppar över återstående punkter mot %s\n", st.ID, err, endpoint)
+			} else {
+				fmt.Fprintf(os.Stderr, "  %s: %v\n", st.ID, err)
+			}
+		}
+		fmt.Println()
+	}
+
+	done := len(targets) - failed - skipped
+	fmt.Printf("Klart: %d av %d lyckades", done, len(targets))
+	if failed > 0 || skipped > 0 {
+		fmt.Printf(" (%d misslyckade, %d överhoppade)", failed, skipped)
+	}
+	fmt.Println(".")
+	if n := failed + skipped; n > 0 {
+		return fmt.Errorf("%d punkt(er) kunde inte manövreras", n)
+	}
+	return nil
+}
+
 func defaultValues(area string) (open, close int) {
 	if area == model.AreaHolding {
 		return 1, 2 // double-point command convention (modsim): 1 = frånslag, 2 = tillslag
@@ -523,6 +723,8 @@ func usage() {
 
 Användning:
   opctl [flaggor] <tagg> <open|close>
+  opctl [flaggor] <all|type:TYP> <open|close>
+  opctl [flaggor] -category <TYP> <open|close>
   opctl -list [brytare|frånskiljare|pump]
   opctl -proxy <url> <freeze|unfreeze|block|unblock> <tagg>
   opctl -proxy <url> <freeze|unfreeze|block|unblock> <all|type:TYP>
@@ -530,6 +732,11 @@ Användning:
 
 Tagg kan vara lägestaggen (t.ex. G1.CB, Q1_POS) eller manövertaggen
 (G1.CB.Cmd, Q1_CMD). Tillstånd: open/close, från/till, öppna/slut, 0/1.
+
+Med all, type:TYP eller -category manövreras alla manövrerbara punkter av
+typen (brytare, frånskiljare, pump) över det valda protokollet, på samma sätt
+som -proxy fryser och blockerar per typ. Eventuella -host/-port/-unit gäller
+då varje punkt, så använd dem bara mot en enskild enhet.
 
 Flaggor:
 `)
@@ -541,6 +748,9 @@ Exempel:
   opctl G1.CB close
   opctl -protocol iec104 Q0.CB open
   opctl -data ../blue/data QS1_POS open
+  opctl type:brytare open
+  opctl -category frånskiljare close
+  opctl all open
   opctl -proxy http://127.0.0.1:8083 freeze Grid.U
   opctl -proxy http://127.0.0.1:8083 block type:brytare
   opctl -proxy http://127.0.0.1:8083 unfreeze all

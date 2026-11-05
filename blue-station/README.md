@@ -102,7 +102,7 @@ På Linux krävs root eller `CAP_NET_BIND_SERVICE` för port 502. Använd annars
 
 ## Webbgränssnitt och API
 
-`http://localhost:8080` visar alla signaler grupperade per fack, med reglage och en händelselogg.
+`http://localhost:8080` visar alla signaler grupperade per fack, med reglage och en händelselogg. Överst finns ett **enlinjeschema** som ritar stamnät, linjebrytare Q0, de två transformatorerna, 20 kV-skenans sektioner A och B med sektioneringsbrytaren samt avgångarna F1–F4 och fack G1. Slutna brytare visas som fylld grön symbol och öppna som grön kontur, som i SCADA-vyerna, och spänningslösa delar mörknar. Schemat uppdateras varje sekund från samma data som korten.
 
 - `GET /api/state` returnerar alla punkter och händelser.
 - `POST /api/control` tar emot `{"id": "F1.CB", "on": false}` eller `{"id": "AVR.USet", "value": 20.8}`.

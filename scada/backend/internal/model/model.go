@@ -4,6 +4,7 @@ package model
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 )
 
@@ -98,6 +99,36 @@ type Tag struct {
 	IOA     uint32 `json:"ioa,omitempty"`
 	CtrlIOA uint32 `json:"ctrlIoa,omitempty"`
 	Cmd     string `json:"cmd,omitempty"`
+	// Alarm enables alarm supervision of the tag.
+	Alarm *TagAlarm `json:"alarm,omitempty"`
+}
+
+// TagAlarm configures alarm supervision of a tag. The alarm is active while
+// the raw value of the tag is one of Values.
+type TagAlarm struct {
+	Values []float64 `json:"values"`
+	// Uncommanded only raises the alarm when the tag changes to an alarm value
+	// without a matching command from the HMI, e.g. a breaker that opens
+	// without an operator manoeuvre. A command matches when it wrote the new
+	// value to the command tag within the last 30 seconds.
+	Uncommanded bool `json:"uncommanded,omitempty"`
+	// CmdTag is the command tag of the object. Empty means the tag itself,
+	// "<id>.Cmd", "<id>_CMD" or, for "<x>_POS", "<x>_CMD".
+	CmdTag string `json:"cmdTag,omitempty"`
+	// Text is the alarm text. Empty means the state text of the value.
+	Text string `json:"text,omitempty"`
+}
+
+// Text returns the state text of a raw value, or the value with its unit.
+func (t *Tag) Text(v float64) string {
+	if s, ok := t.StateText[strconv.FormatFloat(v, 'f', -1, 64)]; ok {
+		return s
+	}
+	s := strconv.FormatFloat(v, 'f', t.Decimals, 64)
+	if t.Unit != "" {
+		s += " " + t.Unit
+	}
+	return s
 }
 
 // RegisterCount returns how many 16-bit registers the tag occupies.
@@ -155,6 +186,26 @@ type Event struct {
 	Message  string    `json:"message"`
 	User     string    `json:"user,omitempty"`
 }
+
+// Alarm is an entry in the alarm list. It stays in the list while it is
+// active or not yet acknowledged.
+type Alarm struct {
+	ID      string     `json:"id"`      // tag id, or CommAlarmID(device)
+	Kind    string     `json:"kind"`    // state, comm
+	Source  string     `json:"source"`  // tag or device name
+	Station string     `json:"station"` // device name the alarm belongs to
+	View    string     `json:"view"`    // id of a view that shows the object
+	Message string     `json:"message"`
+	Active  bool       `json:"active"`
+	Acked   bool       `json:"acked"`
+	Raised  time.Time  `json:"raised"`
+	Cleared *time.Time `json:"cleared,omitempty"`
+	AckedAt *time.Time `json:"ackedAt,omitempty"`
+	AckedBy string     `json:"ackedBy,omitempty"`
+}
+
+// CommAlarmID is the alarm id of the communication alarm of a device.
+func CommAlarmID(device string) string { return "comm:" + device }
 
 // View is an HMI picture. Elements are stored as opaque JSON so the
 // frontend can evolve the symbol library without backend changes.

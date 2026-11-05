@@ -1,6 +1,13 @@
 html, body { overflow: hidden; }
+:root {
+  --alarm-h: 78px; /* height of the alarm banner above every page */
+  --alarm-acked: #c9a227; /* active, acknowledged alarms */
+}
+.alarm-acked { color: var(--alarm-acked); }
 .v-main { height: 100vh; }
-.fill-page { height: calc(100vh - 48px); overflow: auto; }
+.fill-page { height: calc(100vh - 48px - var(--alarm-h)); overflow: auto; }
+@keyframes alarm-blink { 50% { opacity: 0.15; } }
+.alarm-blink { animation: alarm-blink 1s step-start infinite; }
 .mono { font-family: Consolas, 'Roboto Mono', monospace; }
 .hmi-svg text { user-select: none; }
 .hmi-clickable { cursor: pointer; }

@@ -78,7 +78,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.runtime { height: calc(100vh - 48px); display: flex; flex-direction: column; }
+.runtime { height: calc(100vh - 48px - var(--alarm-h)); display: flex; flex-direction: column; }
 .toolbar { height: 44px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 .stage { flex: 1; min-height: 0; padding: 8px; }
 </style>
