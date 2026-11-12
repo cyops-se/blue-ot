@@ -1,0 +1,31 @@
+#cloud-config
+# NoCloud user-data for this blue-ot container.
+#
+# Replace the contents here, or mount your own seed over
+# /var/lib/cloud/seed/nocloud, to provision the container at boot. The examples
+# below are inert until you uncomment them. After editing, re-provisioning needs
+# a fresh instance-id (change meta-data) or `cloud-init clean --logs && reboot`.
+
+write_files:
+  - path: /etc/blue-ot/cloud-init.txt
+    permissions: '0644'
+    content: |
+      This container was provisioned by cloud-init (NoCloud datasource).
+
+# Add a lab operator with an SSH key:
+# users:
+#   - default
+#   - name: operator
+#     groups: [sudo]
+#     shell: /bin/bash
+#     sudo: ['ALL=(ALL) NOPASSWD:ALL']
+#     ssh_authorized_keys:
+#       - ssh-ed25519 AAAA... you@host
+
+# Extra troubleshooting tools:
+# packages:
+#   - python3-scapy
+
+# Commands run once, late in boot (cloud-final stage):
+# runcmd:
+#   - [ iptables, -A, INPUT, -p, tcp, --dport, "1502", -j, ACCEPT ]

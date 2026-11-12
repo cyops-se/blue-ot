@@ -1,0 +1,17 @@
+[Unit]
+Description=Blue OT blue-proxy (takes over Modbus TCP :1502 -> simulator :5020)
+Documentation=file:/opt/blue-ot
+After=network.target simulator.service
+Wants=simulator.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/blue-ot/proxy.env
+ExecStart=/opt/blue-ot/blue-proxy $PROXY_ARGS
+Restart=always
+RestartSec=2
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

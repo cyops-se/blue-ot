@@ -1,0 +1,101 @@
+# Blue OT simulators, each fronted by blue-proxy, as systemd services.
+#
+#   cd docker
+#   docker compose build          # build all five images
+#   docker compose up -d          # start them
+#   docker compose logs -f modsim # follow a container's boot/log
+#   docker compose exec modsim bash   # shell inside, then: journalctl -u blue-proxy -f
+#
+# Inside each container blue-proxy owns Modbus TCP :1502 and forwards to the
+# simulator on 127.0.0.1:5020. The host ports below are only for reach-in from
+# the host; on separate hosts/VMs every container can keep the native ports.
+#
+# systemd as PID 1 needs a privileged container and a writable /run. On a
+# cgroup v2 host that is enough; if systemd fails to boot, add  cgroup: host
+# to the service (Compose v2.15+) or run with  docker run --cgroupns=host.
+
+x-sim: &sim-common
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile
+  privileged: true
+  tmpfs:
+    - /run
+    - /run/lock
+  restart: unless-stopped
+
+services:
+  modsim:
+    <<: *sim-common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        SIM: modsim
+    image: blueot/modsim
+    container_name: blueot-modsim
+    hostname: modsim
+    ports:
+      - "1502:1502"   # blue-proxy Modbus TCP (takeover)
+      - "8183:8083"   # blue-proxy web
+      - "8081:8081"   # simulator web
+
+  blue-station:
+    <<: *sim-common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        SIM: blue-station
+    image: blueot/blue-station
+    container_name: blueot-blue-station
+    hostname: blue-station
+    ports:
+      - "1512:1502"   # blue-proxy Modbus TCP (takeover)
+      - "8283:8083"   # blue-proxy web
+      - "8080:8080"   # simulator web
+
+  blue-chp:
+    <<: *sim-common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        SIM: blue-chp
+    image: blueot/blue-chp
+    container_name: blueot-blue-chp
+    hostname: blue-chp
+    ports:
+      - "1522:1502"   # blue-proxy Modbus TCP (takeover)
+      - "8383:8083"   # blue-proxy web
+      - "8082:8082"   # simulator web
+
+  blue-water:
+    <<: *sim-common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        SIM: blue-water
+    image: blueot/blue-water
+    container_name: blueot-blue-water
+    hostname: blue-water
+    ports:
+      - "1532:1502"   # blue-proxy Modbus TCP (takeover)
+      - "8483:8083"   # blue-proxy web
+      - "8085:8085"   # simulator web
+
+  blue-wwtp:
+    <<: *sim-common
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        SIM: blue-wwtp
+    image: blueot/blue-wwtp
+    container_name: blueot-blue-wwtp
+    hostname: blue-wwtp
+    ports:
+      - "1542:1502"   # blue-proxy Modbus TCP (takeover)
+      - "8583:8083"   # blue-proxy web
+      - "8086:8086"   # simulator web

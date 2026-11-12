@@ -1,0 +1,16 @@
+[Unit]
+Description=Blue OT simulator (Modbus TCP on 0.0.0.0:5020)
+Documentation=file:/opt/blue-ot
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/blue-ot/sim.env
+ExecStart=/opt/blue-ot/simulator $SIM_ARGS
+Restart=always
+RestartSec=2
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

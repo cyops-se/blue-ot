@@ -1,0 +1,17 @@
+# Keep the Docker build context small and reproducible.
+.git
+.gitignore
+**/node_modules
+bin/
+blue-lock/
+**/*.exe
+**/*.zip
+**/*.tmp
+# the compiled HMI is not needed to build the simulators (they embed their own
+# index.html); scada/backend is only used for the modsim command
+scada/backend/internal/web/dist
+scada/backend/bin
+# prebuilt binaries committed next to sources
+blue-proxy/blue-proxy
+blue-proxy/main
+**/*.log

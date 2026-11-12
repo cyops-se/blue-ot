@@ -23,6 +23,7 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -213,6 +214,19 @@ func (s *sim) HandleInputRegisters(req *modbus.InputRegistersRequest) ([]uint16,
 	return append([]uint16(nil), s.input[req.Addr:req.Addr+req.Quantity]...), nil
 }
 
+// displayURL turns a listen address into a clickable URL, mapping a wildcard
+// or empty host to localhost.
+func displayURL(addr string) string {
+	host, port, err := net.SplitHostPort(addr)
+	if err != nil {
+		return addr
+	}
+	if host == "" || host == "0.0.0.0" || host == "::" {
+		host = "localhost"
+	}
+	return net.JoinHostPort(host, port)
+}
+
 func main() {
 	addr := flag.String("addr", "0.0.0.0:5020", "listen address")
 	httpAddr := flag.String("http", "0.0.0.0:8081", "lyssnaradress för webbgränssnitt (tom = av)")
@@ -240,7 +254,7 @@ func main() {
 				log.Printf("webbgränssnitt: %v", err)
 			}
 		}()
-		log.Printf("Webbgränssnitt på http://localhost%s", *httpAddr)
+		log.Printf("Webbgränssnitt på http://%s", displayURL(*httpAddr))
 	}
 
 	go func() {
